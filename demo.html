@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Holographic Systems - 30 Variations Mega Demo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Orbitron', 'Courier New', monospace;
+            height: 100vh;
+            cursor: crosshair;
+            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 70%);
+            user-select: none; /* Prevent text selection */
+        }
+        
+        /* SINGLE HOLOGRAPHIC DISPLAY */
+        .holographic-display {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            z-index: 10; /* Below control panel */
+            /* Enable selective touch capture */
+            touch-action: none;
+            overscroll-behavior: none;
+            
+            /* Neoskeuomorphic shadow system */
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 8px 16px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 2px rgba(0, 0, 0, 0.1),
+                0 0 0 2px rgba(0, 255, 255, 0.3),
+                0 0 30px rgba(0, 255, 255, 0.2);
+        }
+        
+        .holographic-display:hover {
+            transform: scale(1.02) translateZ(10px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 12px 24px rgba(0, 0, 0, 0.4),
+                inset 0 3px 6px rgba(255, 255, 255, 0.15),
+                inset 0 -3px 3px rgba(0, 0, 0, 0.15),
+                0 0 0 3px rgba(0, 255, 255, 0.5),
+                0 0 50px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* CONTROL PANEL */
+        .control-panel {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg,
+                rgba(0, 0, 0, 0.9) 0%,
+                rgba(25, 0, 50, 0.8) 100%
+            );
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #00ffff;
+            font-family: 'Orbitron', monospace;
+            z-index: 2500; /* Higher than buttons */
+            backdrop-filter: blur(25px);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                0 0 0 1px rgba(0, 255, 255, 0.2);
+            /* Ensure UI controls work normally */
+            touch-action: manipulation;
+            pointer-events: auto;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* PARAMETER DISPLAY */
+        .param-display {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: #0ff;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .param-display.active {
+            display: block;
+        }
+        
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            min-width: 200px;
+        }
+        
+        .param-label {
+            color: rgba(0, 255, 255, 0.7);
+        }
+        
+        .param-value {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .variant-display {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #00ffff;
+            font-size: 0.9rem;
+        }
+        
+        .variant-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            /* Ensure buttons work on touch devices */
+            touch-action: manipulation;
+            pointer-events: auto;
+            min-height: 44px; /* iOS touch target requirement */
+            min-width: 44px;
+            /* Force higher z-index and better mobile handling */
+            position: relative;
+            z-index: 3000;
+            -webkit-tap-highlight-color: rgba(0, 255, 255, 0.3);
+            -webkit-touch-callout: none;
+            user-select: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
+        }
+        
+        .auto-cycle {
+            margin-top: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+        
+        /* HOLOGRAPHIC CANVAS LAYERS */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Infinite scroll and touch support */
+            touch-action: none;
+            overscroll-behavior: none;
+        }
+        
+        /* EXPANDED VIEW */
+        .expanded-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        .expanded-view.active {
+            display: block;
+        }
+        
+        .expanded-card {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                0 0 0 2px rgba(0, 255, 255, 0.4),
+                0 0 40px rgba(0, 255, 255, 0.3);
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+        
+        .close-button:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+        
+        /* GRID OVERLAY SYSTEM */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0, 255, 255, 0.1) 20px, rgba(0, 255, 255, 0.1) 21px),
+                repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0, 255, 255, 0.1) 20px, rgba(0, 255, 255, 0.1) 21px);
+        }
+        
+        .grid-overlay.active {
+            opacity: 0.3;
+        }
+        
+        /* INTERACTION RIPPLE */
+        .interaction-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.6) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 30;
+            animation: rippleExpand 0.6s ease-out forwards;
+        }
+        
+        @keyframes rippleExpand {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 100px; height: 100px; opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- GRID OVERLAY -->
+    <div class="grid-overlay" id="gridOverlay"></div>
+    
+    <!-- CONTROL PANEL -->
+    <div class="control-panel">
+        <div class="variant-display">
+            <div>HOLOGRAPHIC VARIANT</div>
+            <div class="variant-number" id="variantNumber">01</div>
+            <div id="variantName">HYPERCUBE LATTICE</div>
+        </div>
+        <div class="control-buttons">
+            <button class="control-btn" onclick="previousVariant()">◀ PREV</button>
+            <button class="control-btn" onclick="nextVariant()">NEXT ▶</button>
+        </div>
+        <div class="control-buttons">
+            <button class="control-btn" onclick="randomVariant()">🎲 RANDOM</button>
+            <button class="control-btn" onclick="toggleAutoCycle()" id="autoCycleBtn">⏸ AUTO</button>
+            <button class="control-btn" onclick="toggleAudio()" id="audioBtn" style="background: rgba(255,0,77,0.3); border-color: #ff004d; color: #ff004d;">🎵 AUDIO</button>
+        </div>
+        <div class="auto-cycle" id="autoCycleStatus">Auto-cycle: OFF</div>
+    </div>
+    
+    <!-- PARAMETER DISPLAY -->
+    <div class="param-display" id="paramDisplay">
+        <div class="param-row">
+            <span class="param-label">Geometry:</span>
+            <span class="param-value" id="paramGeometry">HYPERCUBE</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Density:</span>
+            <span class="param-value" id="paramDensity">1.0</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Speed:</span>
+            <span class="param-value" id="paramSpeed">0.5</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Chaos:</span>
+            <span class="param-value" id="paramChaos">0.0</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Morph:</span>
+            <span class="param-value" id="paramMorph">0.0</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Hue:</span>
+            <span class="param-value" id="paramHue">0°</span>
+        </div>
+    </div>
+    
+    <!-- SINGLE HOLOGRAPHIC DISPLAY -->
+    <div class="holographic-display" id="holographicDisplay">
+        <!-- 5-layer holographic system -->
+        <canvas id="background-canvas" style="z-index: 1; opacity: 0.2;"></canvas>
+        <canvas id="shadow-canvas" style="z-index: 3; opacity: 0.6; filter: blur(2px) brightness(0.7); mix-blend-mode: multiply; transform: translate(2px, 2px);"></canvas>
+        <canvas id="content-canvas" style="z-index: 5; opacity: 0.8; mix-blend-mode: normal;"></canvas>
+        <canvas id="highlight-canvas" style="z-index: 7; opacity: 0.4; filter: blur(1px) brightness(1.5); mix-blend-mode: screen; transform: translate(-1px, -1px);"></canvas>
+        <canvas id="accent-canvas" style="z-index: 15; opacity: 0.3; filter: blur(2px); mix-blend-mode: color-dodge; transform: scale(1.01);"></canvas>
+    </div>
+
+    <script>
+        console.log('🌌 Active Holographic Systems - 30 Variations Mega Demo');
+        
+        // COMPLETE HOLOGRAPHIC VISUALIZER WITH FULL REACTIVITY
+        class CompleteHolographicVisualizer {
+            constructor(canvasId, role = 'content', reactivity = 1.0, variant = 0) {
+                this.canvas = document.getElementById(canvasId);
+                this.role = role;
+                this.reactivity = reactivity;
+                this.variant = variant;
+                this.gl = this.canvas.getContext('webgl');
+                
+                if (!this.gl) {
+                    console.error(`WebGL not supported for ${canvasId}`);
+                    return;
+                }
+                
+                // VARIATION-SPECIFIC PARAMETERS
+                this.variantParams = this.generateVariantParams(variant);
+                
+                // EXACT role-specific parameters from tech-layout with variant customization
+                this.roleParams = {
+                    'background': { 
+                        densityMult: 0.4, speedMult: 0.2, colorShift: 0.0, intensity: 0.2,
+                        mouseReactivity: 0.3, clickReactivity: 0.1 
+                    },
+                    'shadow': { 
+                        densityMult: 0.8, speedMult: 0.3, colorShift: 180.0, intensity: 0.4,
+                        mouseReactivity: 0.5, clickReactivity: 0.3 
+                    },
+                    'content': { 
+                        densityMult: this.variantParams.density, speedMult: this.variantParams.speed, 
+                        colorShift: this.variantParams.hue, intensity: this.variantParams.intensity,
+                        mouseReactivity: 1.0, clickReactivity: 0.8 
+                    },
+                    'highlight': { 
+                        densityMult: 1.5 + (this.variantParams.density * 0.3), speedMult: 0.8 + (this.variantParams.speed * 0.2), 
+                        colorShift: this.variantParams.hue + 60.0, intensity: 0.6 + (this.variantParams.intensity * 0.2),
+                        mouseReactivity: 1.2, clickReactivity: 1.0 
+                    },
+                    'accent': { 
+                        densityMult: 2.5 + (this.variantParams.density * 0.5), speedMult: 0.4 + (this.variantParams.speed * 0.1), 
+                        colorShift: this.variantParams.hue + 300.0, intensity: 0.3 + (this.variantParams.intensity * 0.1),
+                        mouseReactivity: 1.5, clickReactivity: 1.2 
+                    }
+                }[role] || { densityMult: 1.0, speedMult: 0.5, colorShift: 0.0, intensity: 0.5, mouseReactivity: 1.0, clickReactivity: 0.5 };
+                
+                // EXACT state system from tech-layout
+                this.currentState = 1; // TECH
+                this.targetState = 1;
+                this.transitionProgress = 1.0;
+                this.chaosIntensity = 0.0;
+                
+                // ENHANCED INTERACTION SYSTEM - Mouse, Touch, and Scroll
+                this.mouseX = 0.5;
+                this.mouseY = 0.5;
+                this.mouseIntensity = 0.0;
+                this.clickIntensity = 0.0;
+                this.clickDecay = 0.95;
+                
+                // Touch interaction system
+                this.touchX = 0.5;
+                this.touchY = 0.5;
+                this.touchActive = false;
+                this.touchMorph = 0.0; // X-axis controls morph
+                this.touchChaos = 0.0; // Y-axis controls chaos
+                
+                // Scroll parallax system
+                this.scrollPosition = 0.0;
+                this.scrollVelocity = 0.0;
+                this.scrollDecay = 0.92;
+                this.parallaxDepth = 0.0;
+                this.gridDensityShift = 0.0;
+                this.colorScrollShift = 0.0;
+                
+                // EXACT density system with variations
+                this.baseDensity = 6.0 + Math.random() * 4.0;
+                this.densityVariation = 0.0;
+                this.densityTarget = 0.0;
+                
+                // Audio reactivity system
+                this.audioData = { bass: 0, mid: 0, high: 0 };
+                this.audioDensityBoost = 0.0;
+                this.audioMorphBoost = 0.0;
+                this.audioSpeedBoost = 0.0;
+                this.audioChaosBoost = 0.0;
+                this.audioColorShift = 0.0;
+                
+                this.startTime = Date.now();
+                this.initShaders();
+                this.initBuffers();
+                this.resize();
+            }
+            
+            generateVariantParams(variant) {
+                // VIB3 8-GEOMETRY SYSTEM: 30 variations from 8 base geometries
+                const vib3Geometries = [
+                    'TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS', 
+                    'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'
+                ];
+                
+                // SEQUENTIAL: 0-3 Tetrahedron, 4-7 Hypercube, etc.
+                const geometryMap = [
+                    0, 0, 0, 0,  // 0-3: TETRAHEDRON variations
+                    1, 1, 1, 1,  // 4-7: HYPERCUBE variations
+                    2, 2, 2, 2,  // 8-11: SPHERE variations
+                    3, 3, 3, 3,  // 12-15: TORUS variations
+                    4, 4, 4, 4,  // 16-19: KLEIN BOTTLE variations
+                    5, 5, 5,     // 20-22: FRACTAL variations
+                    6, 6, 6,     // 23-25: WAVE variations
+                    7, 7, 7, 7   // 26-29: CRYSTAL variations
+                ];
+                
+                const baseGeometry = geometryMap[variant] || 0;
+                const variationLevel = variant % 4; // Which variation of that geometry
+                const geometryName = vib3Geometries[baseGeometry];
+                
+                // Variation suffixes for sub-types
+                const suffixes = [' LATTICE', ' FIELD', ' MATRIX', ' RESONANCE'];
+                const finalName = geometryName + suffixes[variationLevel];
+                
+                // Base parameters for each geometry type
+                const geometryConfigs = {
+                    0: { // TETRAHEDRON
+                        density: 0.8 + variationLevel * 0.2,
+                        speed: 0.3 + variationLevel * 0.1,
+                        chaos: variationLevel * 0.1,
+                        morph: 0.0 + variationLevel * 0.2
+                    },
+                    1: { // HYPERCUBE  
+                        density: 1.0 + variationLevel * 0.3,
+                        speed: 0.5 + variationLevel * 0.1,
+                        chaos: variationLevel * 0.15,
+                        morph: variationLevel * 0.2
+                    },
+                    2: { // SPHERE
+                        density: 1.2 + variationLevel * 0.4,
+                        speed: 0.4 + variationLevel * 0.2,
+                        chaos: 0.1 + variationLevel * 0.1,
+                        morph: 0.3 + variationLevel * 0.2
+                    },
+                    3: { // TORUS
+                        density: 0.9 + variationLevel * 0.3,
+                        speed: 0.6 + variationLevel * 0.2,
+                        chaos: 0.2 + variationLevel * 0.2,
+                        morph: 0.5 + variationLevel * 0.1
+                    },
+                    4: { // KLEIN BOTTLE
+                        density: 1.4 + variationLevel * 0.5,
+                        speed: 0.7 + variationLevel * 0.1,
+                        chaos: 0.3 + variationLevel * 0.2,
+                        morph: 0.7 + variationLevel * 0.1
+                    },
+                    5: { // FRACTAL
+                        density: 1.8 + variationLevel * 0.3,
+                        speed: 0.5 + variationLevel * 0.3,
+                        chaos: 0.5 + variationLevel * 0.2,
+                        morph: 0.8 + variationLevel * 0.05
+                    },
+                    6: { // WAVE
+                        density: 0.6 + variationLevel * 0.4,
+                        speed: 0.8 + variationLevel * 0.4,
+                        chaos: 0.4 + variationLevel * 0.3,
+                        morph: 0.6 + variationLevel * 0.2
+                    },
+                    7: { // CRYSTAL
+                        density: 1.6 + variationLevel * 0.2,
+                        speed: 0.2 + variationLevel * 0.1,
+                        chaos: 0.1 + variationLevel * 0.1,
+                        morph: 0.2 + variationLevel * 0.2
+                    }
+                };
+                
+                const config = geometryConfigs[baseGeometry];
+                
+                return {
+                    geometryType: baseGeometry,
+                    name: finalName,
+                    density: config.density,
+                    speed: config.speed,
+                    hue: (variant * 12.27) % 360,
+                    intensity: 0.5 + (variationLevel * 0.1),
+                    chaos: config.chaos,
+                    morph: config.morph
+                };
+            }
+            
+            initShaders() {
+                const vertexShaderSource = `
+                    attribute vec2 a_position;
+                    void main() {
+                        gl_Position = vec4(a_position, 0.0, 1.0);
+                    }
+                `;
+                
+                const fragmentShaderSource = `
+                    precision highp float;
+                    
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+                    uniform vec2 u_mouse;
+                    uniform float u_geometry;
+                    uniform float u_density;
+                    uniform float u_speed;
+                    uniform vec3 u_color;
+                    uniform float u_intensity;
+                    uniform float u_roleDensity;
+                    uniform float u_roleSpeed;
+                    uniform float u_colorShift;
+                    uniform float u_chaosIntensity;
+                    uniform float u_mouseIntensity;
+                    uniform float u_clickIntensity;
+                    uniform float u_densityVariation;
+                    uniform float u_geometryType;
+                    uniform float u_chaos;
+                    uniform float u_morph;
+                    uniform float u_touchMorph;
+                    uniform float u_touchChaos;
+                    uniform float u_scrollParallax;
+                    uniform float u_gridDensityShift;
+                    uniform float u_colorScrollShift;
+                    
+                    // Audio reactivity uniforms
+                    uniform float u_audioDensityBoost;
+                    uniform float u_audioMorphBoost;
+                    uniform float u_audioSpeedBoost;
+                    uniform float u_audioChaosBoost;
+                    uniform float u_audioColorShift;
+                    
+                    // EXACT 4D rotation matrices from tech-layout
+                    mat4 rotateXW(float theta) {
+                        float c = cos(theta);
+                        float s = sin(theta);
+                        return mat4(c, 0, 0, -s, 0, 1, 0, 0, 0, 0, 1, 0, s, 0, 0, c);
+                    }
+                    
+                    mat4 rotateYW(float theta) {
+                        float c = cos(theta);
+                        float s = sin(theta);
+                        return mat4(1, 0, 0, 0, 0, c, 0, -s, 0, 0, 1, 0, 0, s, 0, c);
+                    }
+                    
+                    mat4 rotateZW(float theta) {
+                        float c = cos(theta);
+                        float s = sin(theta);
+                        return mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, c, -s, 0, 0, s, c);
+                    }
+                    
+                    // EXACT 4D to 3D projection from tech-layout
+                    vec3 project4Dto3D(vec4 p) {
+                        float w = 2.5 / (2.5 + p.w);
+                        return vec3(p.x * w, p.y * w, p.z * w);
+                    }
+                    
+                    // EXACT tetrahedron lattice from tech-layout
+                    float tetrahedronLattice(vec3 p, float gridSize) {
+                        vec3 q = fract(p * gridSize) - 0.5;
+                        
+                        // Tetrahedron vertices
+                        float d1 = length(q);
+                        float d2 = length(q - vec3(0.4, 0.0, 0.0));
+                        float d3 = length(q - vec3(0.0, 0.4, 0.0));
+                        float d4 = length(q - vec3(0.0, 0.0, 0.4));
+                        
+                        float vertices = 1.0 - smoothstep(0.0, 0.04, min(min(d1, d2), min(d3, d4)));
+                        
+                        // Edge connections
+                        float edges = 0.0;
+                        edges = max(edges, 1.0 - smoothstep(0.0, 0.02, abs(length(q.xy) - 0.2)));
+                        edges = max(edges, 1.0 - smoothstep(0.0, 0.02, abs(length(q.yz) - 0.2)));
+                        edges = max(edges, 1.0 - smoothstep(0.0, 0.02, abs(length(q.xz) - 0.2)));
+                        
+                        return max(vertices, edges * 0.5);
+                    }
+                    
+                    // VIB3 GEOMETRY LIBRARY - REAL MATHEMATICAL FOUNDATIONS
+                    
+                    // HYPERCUBE LATTICE - Grid-based edges and vertices
+                    float hypercubeLattice(vec3 p, float gridSize) {
+                        vec3 grid = fract(p * gridSize);
+                        vec3 edges = 1.0 - smoothstep(0.0, 0.03, abs(grid - 0.5));
+                        return max(max(edges.x, edges.y), edges.z);
+                    }
+                    
+                    // SPHERE LATTICE - Radial distance fields
+                    float sphereLattice(vec3 p, float gridSize) {
+                        vec3 q = fract(p * gridSize) - 0.5;
+                        float r = length(q);
+                        return 1.0 - smoothstep(0.2, 0.5, r);
+                    }
+                    
+                    // TORUS LATTICE - Double-radius torus mathematics
+                    float torusLattice(vec3 p, float gridSize) {
+                        vec3 q = fract(p * gridSize) - 0.5;
+                        float r1 = sqrt(q.x*q.x + q.y*q.y);
+                        float r2 = sqrt((r1 - 0.3)*(r1 - 0.3) + q.z*q.z);
+                        return 1.0 - smoothstep(0.0, 0.1, r2);
+                    }
+                    
+                    // KLEIN BOTTLE - Non-orientable surface with parametric equations
+                    float kleinLattice(vec3 p, float gridSize) {
+                        vec3 q = fract(p * gridSize);
+                        float u = q.x * 2.0 * 3.14159;
+                        float v = q.y * 2.0 * 3.14159;
+                        float x = cos(u) * (3.0 + cos(u/2.0) * sin(v) - sin(u/2.0) * sin(2.0*v));
+                        float klein = length(vec2(x, q.z)) - 0.1;
+                        return 1.0 - smoothstep(0.0, 0.05, abs(klein));
+                    }
+                    
+                    // FRACTAL LATTICE - Recursive self-similar scaling
+                    float fractalLattice(vec3 p, float gridSize) {
+                        vec3 q = p * gridSize;
+                        float scale = 1.0;
+                        float fractal = 0.0;
+                        for(int i = 0; i < 4; i++) {
+                          q = fract(q) - 0.5;
+                          fractal += abs(length(q)) / scale;
+                          scale *= 2.0;
+                          q *= 2.0;
+                        }
+                        return 1.0 - smoothstep(0.0, 1.0, fractal);
+                    }
+                    
+                    // WAVE LATTICE - Sine wave interference patterns
+                    float waveLattice(vec3 p, float gridSize) {
+                        vec3 q = p * gridSize;
+                        float wave = sin(q.x * 2.0) * sin(q.y * 2.0) * sin(q.z * 2.0 + u_time);
+                        return smoothstep(-0.5, 0.5, wave);
+                    }
+                    
+                    // CRYSTAL LATTICE - Cubic/box distance fields
+                    float crystalLattice(vec3 p, float gridSize) {
+                        vec3 q = fract(p * gridSize) - 0.5;
+                        float d = max(max(abs(q.x), abs(q.y)), abs(q.z));
+                        return 1.0 - smoothstep(0.3, 0.5, d);
+                    }
+                    
+                    // DYNAMIC GEOMETRY SELECTOR - Based on VIB3 8-geometry system
+                    float getDynamicGeometry(vec3 p, float gridSize, float geometryType) {
+                        // Create 30 variations from 8 base geometries (3-4 variations each)
+                        int baseGeom = int(mod(geometryType, 8.0));
+                        float variation = floor(geometryType / 8.0) / 4.0; // 0.0, 0.25, 0.5, 0.75
+                        
+                        // Apply variation to grid size
+                        float variedGridSize = gridSize * (0.5 + variation * 1.5);
+                        
+                        if (baseGeom == 0) return tetrahedronLattice(p, variedGridSize);
+                        else if (baseGeom == 1) return hypercubeLattice(p, variedGridSize);
+                        else if (baseGeom == 2) return sphereLattice(p, variedGridSize);
+                        else if (baseGeom == 3) return torusLattice(p, variedGridSize);
+                        else if (baseGeom == 4) return kleinLattice(p, variedGridSize);
+                        else if (baseGeom == 5) return fractalLattice(p, variedGridSize);
+                        else if (baseGeom == 6) return waveLattice(p, variedGridSize);
+                        else return crystalLattice(p, variedGridSize);
+                    }
+                    
+                    vec3 hsv2rgb(vec3 c) {
+                        vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+                        vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+                        return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+                    }
+                    
+                    // EXACT holographic effects from tech-layout
+                    vec3 rgbGlitch(vec3 color, vec2 uv, float intensity) {
+                        vec2 offset = vec2(intensity * 0.005, 0.0);
+                        float r = color.r + sin(uv.y * 30.0 + u_time * 0.001) * intensity * 0.06;
+                        float g = color.g + sin(uv.y * 28.0 + u_time * 0.0012) * intensity * 0.06;
+                        float b = color.b + sin(uv.y * 32.0 + u_time * 0.0008) * intensity * 0.06;
+                        return vec3(r, g, b);
+                    }
+                    
+                    float moirePattern(vec2 uv, float intensity) {
+                        float freq1 = 12.0 + intensity * 6.0 + u_densityVariation * 3.0;
+                        float freq2 = 14.0 + intensity * 8.0 + u_densityVariation * 4.0;
+                        float pattern1 = sin(uv.x * freq1) * sin(uv.y * freq1);
+                        float pattern2 = sin(uv.x * freq2) * sin(uv.y * freq2);
+                        return (pattern1 * pattern2) * intensity * 0.15;
+                    }
+                    
+                    float gridOverlay(vec2 uv, float intensity) {
+                        vec2 grid = fract(uv * (8.0 + u_densityVariation * 4.0));
+                        float lines = 0.0;
+                        lines = max(lines, 1.0 - smoothstep(0.0, 0.02, abs(grid.x - 0.5)));
+                        lines = max(lines, 1.0 - smoothstep(0.0, 0.02, abs(grid.y - 0.5)));
+                        return lines * intensity * 0.1;
+                    }
+                    
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                        float aspectRatio = u_resolution.x / u_resolution.y;
+                        uv.x *= aspectRatio;
+                        uv -= 0.5;
+                        
+                        // ENHANCED 4D space with mouse, touch, and scroll reactivity
+                        float time = u_time * 0.0004 * u_speed * u_roleSpeed;
+                        
+                        // Mouse influence on rotation
+                        float mouseInfluence = u_mouseIntensity * 0.5;
+                        vec2 mouseOffset = (u_mouse - 0.5) * mouseInfluence;
+                        
+                        // Scroll parallax influence on depth
+                        float parallaxOffset = u_scrollParallax * 0.2;
+                        vec2 scrollOffset = vec2(parallaxOffset * 0.1, parallaxOffset * 0.05);
+                        
+                        // Touch morph influence on 4D position
+                        float morphOffset = u_touchMorph * 0.3;
+                        
+                        vec4 p4d = vec4(uv + mouseOffset * 0.1 + scrollOffset, 
+                                       sin(time * 0.1 + morphOffset) * 0.15, 
+                                       cos(time * 0.08 + morphOffset * 0.5) * 0.15);
+                        
+                        // ENHANCED 4D rotations with mouse, touch, and scroll reactivity
+                        float scrollRotation = u_scrollParallax * 0.1;
+                        float touchRotation = u_touchMorph * 0.2;
+                        
+                        p4d = rotateXW(time * 0.2 + mouseOffset.y * 0.5 + scrollRotation) * p4d;
+                        p4d = rotateYW(time * 0.15 + mouseOffset.x * 0.5 + touchRotation) * p4d;
+                        p4d = rotateZW(time * 0.25 + u_clickIntensity * 0.3 + u_touchChaos * 0.4) * p4d;
+                        
+                        vec3 p = project4Dto3D(p4d);
+                        
+                        // ENHANCED dynamic density with scroll, touch, and audio variations
+                        float scrollDensityMod = 1.0 + u_gridDensityShift * 0.3;
+                        float audioDensityMod = 1.0 + u_audioDensityBoost * 0.5;
+                        float roleDensity = ((u_density + u_densityVariation) * u_roleDensity) * scrollDensityMod * audioDensityMod;
+                        
+                        // Get dynamic geometry with touch and audio morph influence
+                        float morphedGeometry = u_geometryType + u_touchMorph * 2.0 + u_audioMorphBoost * 1.5;
+                        float lattice = getDynamicGeometry(p, roleDensity, morphedGeometry);
+                        
+                        // ENHANCED coloring with mouse, touch, scroll, and audio reactivity
+                        float hue = atan(u_color.r, u_color.g) + u_colorShift * 0.017453 + u_mouseIntensity * 0.2 + u_colorScrollShift + u_audioColorShift * 0.5;
+                        float saturation = 0.8 + lattice * 0.2 + u_clickIntensity * 0.1 + u_touchChaos * 0.15 + u_audioChaosBoost * 0.2;
+                        float brightness = 0.2 + lattice * 0.8 + u_intensity * 0.2 + u_mouseIntensity * 0.15 + u_touchMorph * 0.1 + u_audioMorphBoost * 0.1;
+                        
+                        vec3 color = hsv2rgb(vec3(hue, saturation, brightness));
+                        
+                        // Add ENHANCED holographic effects with touch, scroll, and audio
+                        float enhancedChaos = u_chaosIntensity + u_touchChaos * 0.3 + u_audioChaosBoost * 0.4;
+                        color += vec3(moirePattern(uv + scrollOffset, enhancedChaos));
+                        color += vec3(gridOverlay(uv, u_mouseIntensity + u_scrollParallax * 0.1));
+                        color = rgbGlitch(color, uv, enhancedChaos);
+                        
+                        // EXACT mouse interaction glow from tech-layout
+                        float mouseDist = length(uv - (u_mouse - 0.5) * vec2(aspectRatio, 1.0));
+                        float mouseGlow = exp(-mouseDist * 1.5) * u_mouseIntensity * 0.2;
+                        color += vec3(mouseGlow) * u_color * 0.6;
+                        
+                        // EXACT click pulse effect from tech-layout
+                        float clickPulse = u_clickIntensity * exp(-mouseDist * 2.0) * 0.3;
+                        color += vec3(clickPulse, clickPulse * 0.5, clickPulse * 1.5);
+                        
+                        gl_FragColor = vec4(color, 0.95);
+                    }
+                `;
+                
+                this.program = this.createProgram(vertexShaderSource, fragmentShaderSource);
+                this.uniforms = {
+                    resolution: this.gl.getUniformLocation(this.program, 'u_resolution'),
+                    time: this.gl.getUniformLocation(this.program, 'u_time'),
+                    mouse: this.gl.getUniformLocation(this.program, 'u_mouse'),
+                    geometry: this.gl.getUniformLocation(this.program, 'u_geometry'),
+                    density: this.gl.getUniformLocation(this.program, 'u_density'),
+                    speed: this.gl.getUniformLocation(this.program, 'u_speed'),
+                    color: this.gl.getUniformLocation(this.program, 'u_color'),
+                    intensity: this.gl.getUniformLocation(this.program, 'u_intensity'),
+                    roleDensity: this.gl.getUniformLocation(this.program, 'u_roleDensity'),
+                    roleSpeed: this.gl.getUniformLocation(this.program, 'u_roleSpeed'),
+                    colorShift: this.gl.getUniformLocation(this.program, 'u_colorShift'),
+                    chaosIntensity: this.gl.getUniformLocation(this.program, 'u_chaosIntensity'),
+                    mouseIntensity: this.gl.getUniformLocation(this.program, 'u_mouseIntensity'),
+                    clickIntensity: this.gl.getUniformLocation(this.program, 'u_clickIntensity'),
+                    densityVariation: this.gl.getUniformLocation(this.program, 'u_densityVariation'),
+                    geometryType: this.gl.getUniformLocation(this.program, 'u_geometryType'),
+                    chaos: this.gl.getUniformLocation(this.program, 'u_chaos'),
+                    morph: this.gl.getUniformLocation(this.program, 'u_morph'),
+                    touchMorph: this.gl.getUniformLocation(this.program, 'u_touchMorph'),
+                    touchChaos: this.gl.getUniformLocation(this.program, 'u_touchChaos'),
+                    scrollParallax: this.gl.getUniformLocation(this.program, 'u_scrollParallax'),
+                    gridDensityShift: this.gl.getUniformLocation(this.program, 'u_gridDensityShift'),
+                    colorScrollShift: this.gl.getUniformLocation(this.program, 'u_colorScrollShift'),
+                    
+                    // Audio reactivity uniforms
+                    audioDensityBoost: this.gl.getUniformLocation(this.program, 'u_audioDensityBoost'),
+                    audioMorphBoost: this.gl.getUniformLocation(this.program, 'u_audioMorphBoost'),
+                    audioSpeedBoost: this.gl.getUniformLocation(this.program, 'u_audioSpeedBoost'),
+                    audioChaosBoost: this.gl.getUniformLocation(this.program, 'u_audioChaosBoost'),
+                    audioColorShift: this.gl.getUniformLocation(this.program, 'u_audioColorShift')
+                };
+            }
+            
+            createProgram(vertexSource, fragmentSource) {
+                const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexSource);
+                const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentSource);
+                
+                const program = this.gl.createProgram();
+                this.gl.attachShader(program, vertexShader);
+                this.gl.attachShader(program, fragmentShader);
+                this.gl.linkProgram(program);
+                
+                if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
+                    console.error('Program linking failed:', this.gl.getProgramInfoLog(program));
+                    return null;
+                }
+                
+                return program;
+            }
+            
+            createShader(type, source) {
+                const shader = this.gl.createShader(type);
+                this.gl.shaderSource(shader, source);
+                this.gl.compileShader(shader);
+                
+                if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+                    console.error('Shader compilation failed:', this.gl.getShaderInfoLog(shader));
+                    return null;
+                }
+                
+                return shader;
+            }
+            
+            initBuffers() {
+                const positions = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+                
+                this.buffer = this.gl.createBuffer();
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
+                
+                const positionLocation = this.gl.getAttribLocation(this.program, 'a_position');
+                this.gl.enableVertexAttribArray(positionLocation);
+                this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
+            }
+            
+            resize() {
+                this.canvas.width = this.canvas.clientWidth;
+                this.canvas.height = this.canvas.clientHeight;
+                this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+            }
+            
+            updateInteraction(mouseX, mouseY, intensity) {
+                this.mouseX = mouseX;
+                this.mouseY = mouseY;
+                this.mouseIntensity = intensity * this.roleParams.mouseReactivity * this.reactivity;
+            }
+            
+            triggerClick(x, y) {
+                this.clickIntensity = Math.min(1.0, this.clickIntensity + this.roleParams.clickReactivity * this.reactivity);
+            }
+            
+            updateDensity(variation) {
+                this.densityTarget = variation;
+            }
+            
+            // NEW TOUCH INTERACTION METHODS
+            updateTouch(touchX, touchY, active) {
+                this.touchX = touchX;
+                this.touchY = touchY;
+                this.touchActive = active;
+                
+                // X-axis controls morph (horizontal swipe)
+                this.touchMorph = (touchX - 0.5) * 2.0; // -1 to 1 range
+                
+                // Y-axis controls chaos (vertical swipe)
+                this.touchChaos = Math.abs(touchY - 0.5) * 2.0; // 0 to 1 range
+            }
+            
+            // NEW SCROLL INTERACTION METHODS
+            updateScroll(deltaY) {
+                // Accumulate scroll for continuous parallax
+                this.scrollVelocity += deltaY * 0.001; // Scale scroll input
+                this.scrollVelocity = Math.max(-2.0, Math.min(2.0, this.scrollVelocity)); // Clamp velocity
+            }
+            
+            // AUDIO REACTIVITY METHOD
+            updateAudio(audioData) {
+                if (!audioData) return;
+                
+                // Store audio data for use in render loop
+                this.audioData = audioData;
+                
+                // Bass affects density and click intensity
+                this.audioDensityBoost = audioData.bass * 2.0;
+                this.clickIntensity = Math.max(this.clickIntensity, audioData.bass * 0.8);
+                
+                // Mid frequencies affect morph and speed
+                this.audioMorphBoost = audioData.mid * 1.5;
+                this.audioSpeedBoost = audioData.mid * 0.5;
+                
+                // High frequencies affect chaos and color shift
+                this.audioChaosBoost = audioData.high * 1.2;
+                this.audioColorShift = audioData.high * Math.PI;
+            }
+            
+            updateScrollPhysics() {
+                // Apply scroll velocity to position
+                this.scrollPosition += this.scrollVelocity;
+                
+                // Apply decay to velocity
+                this.scrollVelocity *= this.scrollDecay;
+                
+                // Update parallax depth based on scroll position
+                this.parallaxDepth = Math.sin(this.scrollPosition * 0.1) * 0.5;
+                
+                // Update grid density shift (subtle)
+                this.gridDensityShift = Math.sin(this.scrollPosition * 0.05) * 0.3;
+                
+                // Update color scroll shift (gradual hue rotation)
+                this.colorScrollShift = (this.scrollPosition * 0.02) % (Math.PI * 2);
+            }
+            
+            render() {
+                if (!this.program) return;
+                
+                this.resize();
+                this.gl.useProgram(this.program);
+                
+                this.densityVariation += (this.densityTarget - this.densityVariation) * 0.05;
+                this.clickIntensity *= this.clickDecay;
+                
+                // Update scroll physics
+                this.updateScrollPhysics();
+                
+                const time = Date.now() - this.startTime;
+                
+                // Set uniforms
+                this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
+                this.gl.uniform1f(this.uniforms.time, time);
+                this.gl.uniform2f(this.uniforms.mouse, this.mouseX, this.mouseY);
+                this.gl.uniform1f(this.uniforms.geometry, 1.0);
+                this.gl.uniform1f(this.uniforms.density, 4.2);
+                this.gl.uniform1f(this.uniforms.speed, 0.3 + (this.audioSpeedBoost || 0.0));
+                this.gl.uniform3fv(this.uniforms.color, new Float32Array([0.0, 1.0, 1.0]));
+                this.gl.uniform1f(this.uniforms.intensity, this.roleParams.intensity);
+                this.gl.uniform1f(this.uniforms.roleDensity, this.roleParams.densityMult);
+                this.gl.uniform1f(this.uniforms.roleSpeed, this.roleParams.speedMult);
+                this.gl.uniform1f(this.uniforms.colorShift, this.roleParams.colorShift);
+                this.gl.uniform1f(this.uniforms.chaosIntensity, this.variantParams.chaos || 0.0);
+                this.gl.uniform1f(this.uniforms.mouseIntensity, this.mouseIntensity);
+                this.gl.uniform1f(this.uniforms.clickIntensity, this.clickIntensity);
+                this.gl.uniform1f(this.uniforms.densityVariation, this.densityVariation);
+                this.gl.uniform1f(this.uniforms.geometryType, this.variant);
+                this.gl.uniform1f(this.uniforms.chaos, this.variantParams.chaos || 0.0);
+                this.gl.uniform1f(this.uniforms.morph, this.variantParams.morph || 0.0);
+                
+                // Set touch and scroll uniforms
+                this.gl.uniform1f(this.uniforms.touchMorph, this.touchMorph);
+                this.gl.uniform1f(this.uniforms.touchChaos, this.touchChaos);
+                this.gl.uniform1f(this.uniforms.scrollParallax, this.parallaxDepth);
+                this.gl.uniform1f(this.uniforms.gridDensityShift, this.gridDensityShift);
+                this.gl.uniform1f(this.uniforms.colorScrollShift, this.colorScrollShift);
+                
+                // Set audio reactivity uniforms
+                this.gl.uniform1f(this.uniforms.audioDensityBoost, this.audioDensityBoost || 0.0);
+                this.gl.uniform1f(this.uniforms.audioMorphBoost, this.audioMorphBoost || 0.0);
+                this.gl.uniform1f(this.uniforms.audioSpeedBoost, this.audioSpeedBoost || 0.0);
+                this.gl.uniform1f(this.uniforms.audioChaosBoost, this.audioChaosBoost || 0.0);
+                this.gl.uniform1f(this.uniforms.audioColorShift, this.audioColorShift || 0.0);
+                
+                this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+            }
+        }
+        
+        // HOLOGRAPHIC CYCLING SYSTEM
+        class HolographicCyclingSystem {
+            constructor() {
+                this.visualizers = [];
+                this.currentVariant = 0;
+                this.baseVariants = 30; // Original 30 variations
+                this.customVariants = []; // Store custom variations
+                this.totalVariants = 30; // Will update dynamically
+                this.maxVariants = 50; // Maximum allowed variations
+                this.autoCycleActive = false;
+                this.autoCycleInterval = null;
+                this.mouseX = 0.5;
+                this.mouseY = 0.5;
+                this.mouseIntensity = 0.0;
+                
+                // Audio reactivity system
+                this.audioEnabled = false;
+                this.audioContext = null;
+                this.analyser = null;
+                this.frequencyData = null;
+                this.audioData = { bass: 0, mid: 0, high: 0 };
+                
+                // Variant names for display - SEQUENTIAL ORDER
+                this.variantNames = [
+                    // 0-3: TETRAHEDRON variations
+                    'TETRAHEDRON LATTICE', 'TETRAHEDRON FIELD', 'TETRAHEDRON MATRIX', 'TETRAHEDRON RESONANCE',
+                    // 4-7: HYPERCUBE variations
+                    'HYPERCUBE LATTICE', 'HYPERCUBE FIELD', 'HYPERCUBE MATRIX', 'HYPERCUBE QUANTUM',
+                    // 8-11: SPHERE variations
+                    'SPHERE LATTICE', 'SPHERE FIELD', 'SPHERE MATRIX', 'SPHERE RESONANCE',
+                    // 12-15: TORUS variations
+                    'TORUS LATTICE', 'TORUS FIELD', 'TORUS MATRIX', 'TORUS QUANTUM',
+                    // 16-19: KLEIN BOTTLE variations
+                    'KLEIN BOTTLE LATTICE', 'KLEIN BOTTLE FIELD', 'KLEIN BOTTLE MATRIX', 'KLEIN BOTTLE QUANTUM',
+                    // 20-22: FRACTAL variations
+                    'FRACTAL LATTICE', 'FRACTAL FIELD', 'FRACTAL QUANTUM',
+                    // 23-25: WAVE variations
+                    'WAVE LATTICE', 'WAVE FIELD', 'WAVE QUANTUM',
+                    // 26-29: CRYSTAL variations
+                    'CRYSTAL LATTICE', 'CRYSTAL FIELD', 'CRYSTAL MATRIX', 'CRYSTAL QUANTUM'
+                ];
+                
+                // Load any saved custom variations from session
+                this.loadSavedVariations();
+                
+                this.initialize();
+            }
+            
+            loadSavedVariations() {
+                try {
+                    const saved = localStorage.getItem('customHolographicVariations');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        this.customVariants = data.variations || [];
+                        this.totalVariants = this.baseVariants + this.customVariants.length;
+                        
+                        // Restore variant names
+                        this.customVariants.forEach(cv => {
+                            this.variantNames[cv.id] = cv.name;
+                        });
+                        
+                        console.log(`💾 Loaded ${this.customVariants.length} saved custom variations from persistent storage`);
+                    }
+                } catch (e) {
+                    console.error('Failed to load saved variations:', e);
+                }
+            }
+            
+            saveVariations() {
+                try {
+                    localStorage.setItem('customHolographicVariations', JSON.stringify({
+                        variations: this.customVariants,
+                        timestamp: Date.now()
+                    }));
+                    console.log(`💾 Saved ${this.customVariants.length} custom variations to persistent storage`);
+                } catch (e) {
+                    console.error('Failed to save variations:', e);
+                }
+            }
+            
+            initialize() {
+                console.log('🎨 Initializing Holographic Cycling System...');
+                
+                this.createVisualizers();
+                this.setupInteractions();
+                this.updateVariantDisplay();
+                this.startRenderLoop();
+            }
+            
+            createVisualizers() {
+                // Create the 5 visualizers using EXACT tech-layout configuration
+                const layers = [
+                    { id: 'background-canvas', role: 'background', reactivity: 0.5 },
+                    { id: 'shadow-canvas', role: 'shadow', reactivity: 0.7 },
+                    { id: 'content-canvas', role: 'content', reactivity: 0.9 }, // EXACT workspace card content
+                    { id: 'highlight-canvas', role: 'highlight', reactivity: 1.1 }, // EXACT workspace card highlight
+                    { id: 'accent-canvas', role: 'accent', reactivity: 1.5 } // ESSENTIAL translucent overlay
+                ];
+                
+                layers.forEach(layer => {
+                    // Use the COMPLETE holographic visualizer from our extracted system
+                    const visualizer = new CompleteHolographicVisualizer(layer.id, layer.role, layer.reactivity, this.currentVariant);
+                    this.visualizers.push(visualizer);
+                });
+                
+                console.log(`✅ Created 5-layer COMPLETE holographic system with tech-layout extraction ready for 30 variations`);
+            }
+            
+            updateVariant(newVariant) {
+                if (newVariant < 0) newVariant = this.totalVariants - 1;
+                if (newVariant >= this.totalVariants) newVariant = 0;
+                
+                this.currentVariant = newVariant;
+                
+                // Check if this is a custom variation
+                this.isCustomVariation = newVariant >= this.baseVariants;
+                
+                // Update all visualizers with new variant parameters
+                this.visualizers.forEach(visualizer => {
+                    visualizer.variant = this.currentVariant;
+                    
+                    // For custom variations, use stored parameters
+                    if (this.isCustomVariation) {
+                        const customIndex = this.currentVariant - this.baseVariants;
+                        const customData = this.customVariants[customIndex];
+                        if (customData) {
+                            visualizer.variantParams = {
+                                geometry: customData.params.geometry,
+                                density: customData.params.density,
+                                speed: customData.params.speed,
+                                chaos: customData.params.chaos,
+                                morph: customData.params.morph,
+                                hue: customData.params.hue,
+                                saturation: customData.params.saturation,
+                                intensity: customData.params.intensity,
+                                name: customData.name
+                            };
+                        }
+                    } else {
+                        visualizer.variantParams = visualizer.generateVariantParams(this.currentVariant);
+                    }
+                    
+                    // Completely regenerate role parameters with new variant values
+                    const role = visualizer.role;
+                    const vp = visualizer.variantParams;
+                    
+                    visualizer.roleParams = {
+                        'background': { 
+                            densityMult: 0.4, speedMult: 0.2, colorShift: 0.0, intensity: 0.2,
+                            mouseReactivity: 0.3, clickReactivity: 0.1 
+                        },
+                        'shadow': { 
+                            densityMult: 0.8, speedMult: 0.3, colorShift: 180.0, intensity: 0.4,
+                            mouseReactivity: 0.5, clickReactivity: 0.3 
+                        },
+                        'content': { 
+                            densityMult: vp.density, speedMult: vp.speed, 
+                            colorShift: vp.hue, intensity: vp.intensity,
+                            mouseReactivity: 1.0, clickReactivity: 0.8 
+                        },
+                        'highlight': { 
+                            densityMult: 1.5 + (vp.density * 0.3), speedMult: 0.8 + (vp.speed * 0.2), 
+                            colorShift: vp.hue + 60.0, intensity: 0.6 + (vp.intensity * 0.2),
+                            mouseReactivity: 1.2, clickReactivity: 1.0 
+                        },
+                        'accent': { 
+                            densityMult: 2.5 + (vp.density * 0.5), speedMult: 0.4 + (vp.speed * 0.1), 
+                            colorShift: vp.hue + 300.0, intensity: 0.3 + (vp.intensity * 0.1),
+                            mouseReactivity: 1.5, clickReactivity: 1.2 
+                        }
+                    }[role] || { densityMult: 1.0, speedMult: 0.5, colorShift: 0.0, intensity: 0.5, mouseReactivity: 1.0, clickReactivity: 0.5 };
+                });
+                
+                this.updateVariantDisplay();
+                console.log(`🔄 Switched to variant ${this.currentVariant + 1}: ${this.variantNames[this.currentVariant]}`);
+                console.log(`📊 Variant params:`, this.visualizers[2].variantParams); // Log content layer params
+            }
+            
+            updateVariantDisplay() {
+                const variantNumber = document.getElementById('variantNumber');
+                const variantName = document.getElementById('variantName');
+                
+                variantNumber.textContent = String(this.currentVariant + 1).padStart(2, '0');
+                
+                // Get the geometry name from the variant parameters
+                const geometryName = this.isCustomVariation ? 
+                    (this.customVariants[this.currentVariant - this.baseVariants]?.name || 'CUSTOM') : 
+                    (this.visualizers[0]?.variantParams?.name || this.variantNames[this.currentVariant]);
+                variantName.textContent = geometryName;
+                
+                // Update parameter display
+                this.updateParameterDisplay();
+            }
+            
+            updateParameterDisplay() {
+                const vp = this.visualizers[2]?.variantParams; // Get from content layer
+                if (!vp) return;
+                
+                // Update parameter values regardless of variation type
+                document.getElementById('paramGeometry').textContent = this.getGeometryName(vp.geometry);
+                document.getElementById('paramDensity').textContent = vp.density.toFixed(2);
+                document.getElementById('paramSpeed').textContent = vp.speed.toFixed(2);
+                document.getElementById('paramChaos').textContent = vp.chaos.toFixed(2);
+                document.getElementById('paramMorph').textContent = vp.morph.toFixed(2);
+                document.getElementById('paramHue').textContent = Math.round(vp.hue) + '°';
+                
+                // Show parameter display for custom variations by default
+                const paramDisplay = document.getElementById('paramDisplay');
+                if (this.isCustomVariation && !this.hideParams) {
+                    paramDisplay.classList.add('active');
+                }
+            }
+            
+            nextVariant() {
+                this.updateVariant(this.currentVariant + 1);
+            }
+            
+            previousVariant() {
+                this.updateVariant(this.currentVariant - 1);
+            }
+            
+            randomVariant() {
+                const randomIndex = Math.floor(Math.random() * this.totalVariants);
+                this.updateVariant(randomIndex);
+            }
+            
+            toggleAutoCycle() {
+                this.autoCycleActive = !this.autoCycleActive;
+                const btn = document.getElementById('autoCycleBtn');
+                const status = document.getElementById('autoCycleStatus');
+                
+                if (this.autoCycleActive) {
+                    btn.textContent = '⏸ AUTO';
+                    status.textContent = 'Auto-cycle: ON (3s)';
+                    this.autoCycleInterval = setInterval(() => {
+                        this.nextVariant();
+                    }, 3000);
+                } else {
+                    btn.textContent = '▶ AUTO';
+                    status.textContent = 'Auto-cycle: OFF';
+                    if (this.autoCycleInterval) {
+                        clearInterval(this.autoCycleInterval);
+                        this.autoCycleInterval = null;
+                    }
+                }
+            }
+
+            async initAudio() {
+                try {
+                    // Create AudioContext with user gesture (required for mobile)
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    
+                    // Resume context if suspended (iOS/Android requirement)
+                    if (this.audioContext.state === 'suspended') {
+                        await this.audioContext.resume();
+                    }
+                    
+                    this.analyser = this.audioContext.createAnalyser();
+                    this.analyser.fftSize = 256;
+                    this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+                    
+                    // Mobile Chrome compatible constraints
+                    const constraints = {
+                        audio: {
+                            echoCancellation: false,
+                            noiseSuppression: false,
+                            autoGainControl: false,
+                            sampleRate: 44100
+                        }
+                    };
+                    
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    const source = this.audioContext.createMediaStreamSource(stream);
+                    source.connect(this.analyser);
+                    
+                    this.audioEnabled = true;
+                    document.getElementById('audioBtn').textContent = '🎵 ON';
+                    document.getElementById('audioBtn').style.background = 'rgba(0,255,77,0.3)';
+                    document.getElementById('audioBtn').style.borderColor = '#00ff4d';
+                    document.getElementById('audioBtn').style.color = '#00ff4d';
+                    
+                    console.log('🎵 Audio reactivity enabled for Active Holographic Systems');
+                } catch (error) {
+                    console.error('Audio initialization failed:', error.name, error.message);
+                    
+                    // Try fallback with minimal constraints
+                    try {
+                        const fallbackStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        const source = this.audioContext.createMediaStreamSource(fallbackStream);
+                        source.connect(this.analyser);
+                        
+                        this.audioEnabled = true;
+                        document.getElementById('audioBtn').textContent = '🎵 ON';
+                        document.getElementById('audioBtn').style.background = 'rgba(0,255,77,0.3)';
+                        document.getElementById('audioBtn').style.borderColor = '#00ff4d';
+                        document.getElementById('audioBtn').style.color = '#00ff4d';
+                        
+                        console.log('🎵 Audio reactivity enabled (fallback mode)');
+                    } catch (fallbackError) {
+                        console.error('Fallback audio failed:', fallbackError);
+                        alert(`Audio access failed: ${error.name}. Please check microphone permissions in Chrome settings.`);
+                    }
+                }
+            }
+
+            updateAudio() {
+                if (!this.audioEnabled || !this.analyser) return;
+                
+                this.analyser.getByteFrequencyData(this.frequencyData);
+                
+                const bassEnd = Math.floor(this.frequencyData.length * 0.1);
+                const midEnd = Math.floor(this.frequencyData.length * 0.4);
+                
+                let bass = 0, mid = 0, high = 0;
+                
+                for (let i = 0; i < bassEnd; i++) {
+                    bass += this.frequencyData[i];
+                }
+                bass /= (bassEnd * 255);
+                
+                for (let i = bassEnd; i < midEnd; i++) {
+                    mid += this.frequencyData[i];
+                }
+                mid /= ((midEnd - bassEnd) * 255);
+                
+                for (let i = midEnd; i < this.frequencyData.length; i++) {
+                    high += this.frequencyData[i];
+                }
+                high /= ((this.frequencyData.length - midEnd) * 255);
+                
+                this.audioData = { bass, mid, high };
+                
+                // Apply audio reactivity to all visualizers
+                if (this.audioEnabled) {
+                    this.visualizers.forEach(visualizer => {
+                        visualizer.updateAudio(this.audioData);
+                    });
+                }
+            }
+
+            toggleAudio() {
+                if (!this.audioEnabled) {
+                    this.initAudio();
+                } else {
+                    this.audioEnabled = false;
+                    document.getElementById('audioBtn').textContent = '🎵 AUDIO';
+                    document.getElementById('audioBtn').style.background = 'rgba(255,0,77,0.3)';
+                    document.getElementById('audioBtn').style.borderColor = '#ff004d';
+                    document.getElementById('audioBtn').style.color = '#ff004d';
+                    console.log('🎵 Audio reactivity disabled');
+                }
+            }
+            
+            setupInteractions() {
+                // Mouse tracking system
+                document.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX / window.innerWidth;
+                    this.mouseY = 1.0 - (e.clientY / window.innerHeight);
+                    this.mouseIntensity = Math.min(1.0, Math.sqrt(e.movementX*e.movementX + e.movementY*e.movementY) / 40);
+                    
+                    // Update all visualizers
+                    this.visualizers.forEach(visualizer => {
+                        visualizer.updateInteraction(this.mouseX, this.mouseY, this.mouseIntensity);
+                    });
+                    
+                    // Grid overlay activation
+                    const gridOverlay = document.getElementById('gridOverlay');
+                    if (this.mouseIntensity > 0.3) {
+                        gridOverlay.classList.add('active');
+                    } else {
+                        gridOverlay.classList.remove('active');
+                    }
+                    
+                    // Density variation
+                    const densityVar = Math.sin(this.mouseX * Math.PI) * Math.sin(this.mouseY * Math.PI) * 2.0;
+                    this.visualizers.forEach(visualizer => {
+                        visualizer.updateDensity(densityVar);
+                    });
+                });
+                
+                // Click interactions
+                document.addEventListener('click', (e) => {
+                    const rect = document.body.getBoundingClientRect();
+                    const clickX = (e.clientX - rect.left) / rect.width;
+                    const clickY = 1.0 - ((e.clientY - rect.top) / rect.height);
+                    
+                    // Trigger click effect on all visualizers
+                    this.visualizers.forEach(visualizer => {
+                        visualizer.triggerClick(clickX, clickY);
+                    });
+                    
+                    // Create ripple effect
+                    this.createRipple(e.clientX, e.clientY);
+                });
+                
+                // ENHANCED TOUCH INTERACTION SYSTEM
+                let currentTouch = null;
+                let touchStartTime = 0;
+                
+                // Only apply touch effects to the holographic display area, not UI controls
+                const holographicDisplay = document.getElementById('holographicDisplay');
+                
+                const isOverHolographicArea = (e) => {
+                    const touch = e.touches[0] || e.changedTouches[0];
+                    if (!touch) return false;
+                    
+                    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (!element) return false;
+                    
+                    // More robust detection - check if it's canvas, holographic display, or grid overlay
+                    return element.tagName === 'CANVAS' || 
+                           element.id === 'holographicDisplay' ||
+                           element.id === 'gridOverlay' ||
+                           holographicDisplay.contains(element);
+                };
+                
+                const isOverUIControl = (e) => {
+                    const touch = e.touches[0] || e.changedTouches[0];
+                    if (!touch) return false;
+                    
+                    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (!element) return false;
+                    
+                    // Check if touching UI controls
+                    return element.closest('.control-panel') || 
+                           element.closest('.control-btn') ||
+                           element.classList.contains('control-btn') ||
+                           element.classList.contains('control-panel');
+                };
+                
+                document.addEventListener('touchstart', (e) => {
+                    // Always allow UI controls to work normally
+                    if (isOverUIControl(e)) {
+                        return; // Let the UI handle this normally
+                    }
+                    
+                    if (isOverHolographicArea(e) && e.touches.length > 0) {
+                        e.preventDefault(); // Only prevent default for holographic area
+                        currentTouch = e.touches[0];
+                        touchStartTime = Date.now();
+                        const touchX = currentTouch.clientX / window.innerWidth;
+                        const touchY = 1.0 - (currentTouch.clientY / window.innerHeight);
+                        
+                        // IMMEDIATE TOUCH FEEDBACK - Trigger click effect instantly
+                        this.visualizers.forEach(visualizer => {
+                            visualizer.triggerClick(touchX, touchY);
+                            visualizer.updateTouch(touchX, touchY, true);
+                        });
+                        
+                        // Create immediate ripple effect
+                        this.createRipple(currentTouch.clientX, currentTouch.clientY);
+                    }
+                }, { passive: false });
+                
+                document.addEventListener('touchmove', (e) => {
+                    // Always allow UI controls to work normally
+                    if (isOverUIControl(e)) {
+                        return;
+                    }
+                    
+                    if (isOverHolographicArea(e) && e.touches.length > 0 && currentTouch) {
+                        e.preventDefault(); // Only prevent default for holographic area
+                        const touch = e.touches[0];
+                        const touchX = touch.clientX / window.innerWidth;
+                        const touchY = 1.0 - (touch.clientY / window.innerHeight);
+                        
+                        // Update touch morphing during move
+                        this.visualizers.forEach(visualizer => {
+                            visualizer.updateTouch(touchX, touchY, true);
+                        });
+                        
+                        currentTouch = touch;
+                    }
+                }, { passive: false });
+                
+                document.addEventListener('touchend', (e) => {
+                    if (currentTouch) {
+                        const touchDuration = Date.now() - touchStartTime;
+                        
+                        // Quick touch (< 150ms) gets extra click intensity
+                        if (touchDuration < 150) {
+                            this.visualizers.forEach(visualizer => {
+                                visualizer.clickIntensity = Math.min(1.0, visualizer.clickIntensity + 0.3);
+                            });
+                        }
+                        
+                        // Reset touch state
+                        this.visualizers.forEach(visualizer => {
+                            visualizer.updateTouch(0.5, 0.5, false);
+                        });
+                        currentTouch = null;
+                    }
+                }, { passive: false });
+                
+                // SELECTIVE SCROLL PARALLAX SYSTEM
+                document.addEventListener('wheel', (e) => {
+                    // Check if scroll is over UI controls first
+                    const element = document.elementFromPoint(e.clientX, e.clientY);
+                    const isOverUI = element && (element.closest('.control-panel') || element.closest('.control-btn'));
+                    
+                    // Only capture scroll when over the holographic display area
+                    const isOverHolographic = !isOverUI && (element && (
+                        element.tagName === 'CANVAS' ||
+                        element.id === 'holographicDisplay' ||
+                        element.id === 'gridOverlay' ||
+                        holographicDisplay.contains(element)
+                    ));
+                    
+                    if (isOverHolographic) {
+                        e.preventDefault(); // Only prevent default for holographic area
+                        
+                        // Update scroll on all visualizers
+                        this.visualizers.forEach(visualizer => {
+                            visualizer.updateScroll(e.deltaY);
+                        });
+                        
+                        // Subtle grid overlay response to scroll
+                        const gridOverlay = document.getElementById('gridOverlay');
+                        gridOverlay.style.transform = `translateY(${e.deltaY * 0.1}px)`;
+                        setTimeout(() => {
+                            gridOverlay.style.transform = 'translateY(0px)';
+                        }, 100);
+                    }
+                    // Allow normal scrolling behavior for UI controls
+                }, { passive: false });
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            this.previousVariant();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowRight':
+                            this.nextVariant();
+                            e.preventDefault();
+                            break;
+                        case ' ':
+                            this.randomVariant();
+                            e.preventDefault();
+                            break;
+                        case 'Enter':
+                            this.toggleAutoCycle();
+                            e.preventDefault();
+                            break;
+                    }
+                });
+            }
+            
+            createRipple(x, y) {
+                const ripple = document.createElement('div');
+                ripple.className = 'interaction-ripple';
+                ripple.style.left = (x - 50) + 'px';
+                ripple.style.top = (y - 50) + 'px';
+                document.body.appendChild(ripple);
+                
+                setTimeout(() => {
+                    document.body.removeChild(ripple);
+                }, 600);
+            }
+            
+            startRenderLoop() {
+                const render = () => {
+                    // Update audio reactivity
+                    this.updateAudio();
+                    
+                    // Render all visualizers
+                    this.visualizers.forEach(visualizer => {
+                        visualizer.render();
+                    });
+                    
+                    requestAnimationFrame(render);
+                };
+                
+                render();
+                console.log('🎬 Holographic cycling render loop started');
+            }
+            
+            loadCustomVariation(customParams) {
+                console.log('🎛️ Loading custom variation with parameters:', customParams);
+                
+                // Convert string parameters to appropriate types
+                const params = {
+                    geometry: parseInt(customParams.geometry) || 0,
+                    density: parseFloat(customParams.density) || 1.0,
+                    speed: parseFloat(customParams.speed) || 0.5,
+                    chaos: parseFloat(customParams.chaos) || 0.0,
+                    morph: parseFloat(customParams.morph) || 0.0,
+                    hue: parseFloat(customParams.hue) || 0,
+                    saturation: parseFloat(customParams.saturation) || 0.8,
+                    intensity: parseFloat(customParams.intensity) || 0.5,
+                    bassResponse: parseFloat(customParams.bassResponse) || 1.0,
+                    midResponse: parseFloat(customParams.midResponse) || 1.0,
+                    highResponse: parseFloat(customParams.highResponse) || 1.0
+                };
+                
+                // Check if this exact variation already exists
+                const existingIndex = this.customVariants.findIndex(cv => 
+                    cv.params.geometry === params.geometry &&
+                    cv.params.density === params.density &&
+                    cv.params.speed === params.speed &&
+                    cv.params.chaos === params.chaos &&
+                    cv.params.morph === params.morph &&
+                    Math.abs(cv.params.hue - params.hue) < 0.01
+                );
+                
+                if (existingIndex !== -1) {
+                    // Variation already exists, just switch to it
+                    const existingId = this.customVariants[existingIndex].id;
+                    console.log(`♻️ Variation already exists at #${existingId}, switching to it`);
+                    this.updateVariant(existingId);
+                    return;
+                }
+                
+                // Add as a new variation if under the limit
+                if (this.totalVariants < this.maxVariants) {
+                    const newVariantId = this.totalVariants;
+                    this.customVariants.push({
+                        id: newVariantId,
+                        params: params,
+                        name: this.getGeometryName(params.geometry) + ' CUSTOM ' + (this.customVariants.length + 1)
+                    });
+                    this.totalVariants++;
+                    this.currentVariant = newVariantId;
+                    this.isCustomVariation = true;
+                    this.customVariationName = this.customVariants[this.customVariants.length - 1].name;
+                    
+                    // Add to variant names array
+                    this.variantNames[newVariantId] = this.customVariationName;
+                    
+                    // Save variations to session storage
+                    this.saveVariations();
+                    
+                    console.log(`✅ Added custom variation #${newVariantId}: ${this.customVariationName}`);
+                } else {
+                    console.warn('⚠️ Maximum variations limit reached (50)');
+                    alert('Maximum 50 variations allowed. Please export your current set.');
+                    return;
+                }
+                
+                // Update all visualizers with custom parameters
+                this.visualizers.forEach(visualizer => {
+                    visualizer.variant = this.currentVariant;
+                    
+                    // Create custom variant parameters based on parametric engine settings
+                    visualizer.variantParams = {
+                        geometry: params.geometry,
+                        density: params.density,
+                        speed: params.speed,
+                        chaos: params.chaos,
+                        morphing: params.morph,
+                        hue: params.hue,
+                        saturation: params.saturation,
+                        intensity: params.intensity,
+                        name: this.getGeometryName(params.geometry) + ' CUSTOM'
+                    };
+                    
+                    // Apply role-specific parameters
+                    const role = visualizer.role;
+                    const vp = visualizer.variantParams;
+                    
+                    visualizer.roleParams = {
+                        'background': { 
+                            densityMult: 0.4, speedMult: 0.2, colorShift: 0.0, intensity: 0.2,
+                            mouseReactivity: 0.3, clickReactivity: 0.1 
+                        },
+                        'shadow': { 
+                            densityMult: 0.8, speedMult: 0.3, colorShift: 180.0, intensity: 0.4,
+                            mouseReactivity: 0.5, clickReactivity: 0.3 
+                        },
+                        'content': { 
+                            densityMult: vp.density, speedMult: vp.speed, 
+                            colorShift: vp.hue, intensity: vp.intensity,
+                            mouseReactivity: 0.8, clickReactivity: 0.6 
+                        },
+                        'highlight': { 
+                            densityMult: vp.density * 1.2, speedMult: vp.speed * 1.5, 
+                            colorShift: vp.hue + 60, intensity: vp.intensity * 1.2,
+                            mouseReactivity: 1.0, clickReactivity: 0.8 
+                        },
+                        'accent': { 
+                            densityMult: vp.density * 0.6, speedMult: vp.speed * 2.0, 
+                            colorShift: vp.hue + 120, intensity: vp.intensity * 0.8,
+                            mouseReactivity: 1.2, clickReactivity: 1.0 
+                        }
+                    }[role] || { 
+                        densityMult: 1.0, speedMult: 0.5, colorShift: 0.0, intensity: 0.5, 
+                        mouseReactivity: 1.0, clickReactivity: 0.5 
+                    };
+                    
+                    // Update audio response multipliers
+                    visualizer.audioResponse = {
+                        bass: params.bassResponse,
+                        mid: params.midResponse,
+                        high: params.highResponse
+                    };
+                });
+                
+                this.updateVariantDisplay();
+                console.log('✅ Custom variation loaded successfully');
+            }
+            
+            getGeometryName(geometryId) {
+                const geometryNames = [
+                    'TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS',
+                    'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'
+                ];
+                return geometryNames[geometryId] || 'UNKNOWN';
+            }
+        }
+        
+        // Global control functions with mobile debugging
+        function nextVariant() {
+            console.log('🔄 Next variant clicked');
+            if (window.holographicSystem) {
+                window.holographicSystem.nextVariant();
+            } else {
+                console.error('❌ holographicSystem not found');
+            }
+        }
+        
+        function previousVariant() {
+            console.log('🔄 Previous variant clicked');
+            if (window.holographicSystem) {
+                window.holographicSystem.previousVariant();
+            } else {
+                console.error('❌ holographicSystem not found');
+            }
+        }
+        
+        function randomVariant() {
+            console.log('🎲 Random variant clicked');
+            if (window.holographicSystem) {
+                window.holographicSystem.randomVariant();
+            } else {
+                console.error('❌ holographicSystem not found');
+            }
+        }
+        
+        function toggleAutoCycle() {
+            console.log('⏸ Auto cycle toggled');
+            if (window.holographicSystem) {
+                window.holographicSystem.toggleAutoCycle();
+            } else {
+                console.error('❌ holographicSystem not found');
+            }
+        }
+        
+        function toggleAudio() {
+            console.log('🎵 Audio toggle clicked');
+            if (window.holographicSystem) {
+                window.holographicSystem.toggleAudio();
+            } else {
+                console.error('❌ holographicSystem not found');
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            console.log('🚀 Initializing Active Holographic Systems - Cycling Demo...');
+            const system = new HolographicCyclingSystem();
+            window.holographicSystem = system;
+            
+            // Check for URL parameters (for portfolio integration)
+            const urlParams = new URLSearchParams(window.location.search);
+            const variantParam = urlParams.get('variant');
+            const autoplayParam = urlParams.get('autoplay');
+            
+            // Check for custom parametric engine parameters
+            const customParams = {
+                geometry: urlParams.get('geometry'),
+                density: urlParams.get('density'),
+                speed: urlParams.get('speed'),
+                chaos: urlParams.get('chaos'),
+                morph: urlParams.get('morph'),
+                hue: urlParams.get('hue'),
+                saturation: urlParams.get('saturation'),
+                intensity: urlParams.get('intensity'),
+                bassResponse: urlParams.get('bassResponse'),
+                midResponse: urlParams.get('midResponse'),
+                highResponse: urlParams.get('highResponse')
+            };
+            
+            // Debug logging
+            console.log('🔍 URL params:', window.location.search);
+            console.log('📊 Parsed custom params:', customParams);
+            
+            // Check if custom parameters are provided
+            const hasCustomParams = Object.values(customParams).some(param => param !== null);
+            
+            if (hasCustomParams) {
+                console.log('🎛️ Loading custom parametric variation...');
+                console.log('✅ Has custom params:', hasCustomParams);
+                system.loadCustomVariation(customParams);
+            } else if (variantParam !== null) {
+                const variantId = parseInt(variantParam);
+                if (variantId >= 0 && variantId < system.totalVariants) {
+                    system.updateVariant(variantId);
+                    console.log(`🎯 Launched with variant ${variantId + 1}`);
+                }
+            }
+            
+            if (autoplayParam === 'true') {
+                // Auto-enable audio for portfolio launches
+                setTimeout(() => {
+                    system.toggleAudio();
+                }, 1000);
+            }
+            
+            // Add explicit button event listeners for mobile compatibility
+            console.log('📱 Setting up mobile button handlers...');
+            
+            // Find all control buttons and add multiple event types
+            const buttons = document.querySelectorAll('.control-btn');
+            buttons.forEach((button, index) => {
+                const buttonText = button.textContent.trim();
+                console.log(`🔘 Setting up button: ${buttonText}`);
+                
+                // Add both click and touchend events
+                const handleButtonPress = (e) => {
+                    e.stopPropagation();
+                    console.log(`🔥 Button pressed: ${buttonText}`);
+                    
+                    if (buttonText.includes('PREV')) {
+                        previousVariant();
+                    } else if (buttonText.includes('NEXT')) {
+                        nextVariant();
+                    } else if (buttonText.includes('RANDOM')) {
+                        randomVariant();
+                    } else if (buttonText.includes('AUTO')) {
+                        toggleAutoCycle();
+                    }
+                };
+                
+                // Add multiple event types for maximum compatibility
+                button.addEventListener('click', handleButtonPress, false);
+                button.addEventListener('touchend', handleButtonPress, false);
+                button.addEventListener('pointerup', handleButtonPress, false);
+            });
+            
+            console.log('✅ Mobile button handlers setup complete');
+        });
+        
+    </script>
+</body>
+</html>

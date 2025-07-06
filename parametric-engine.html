@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametric Engine - Holographic System Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 70%);
+        }
+        
+        /* HEADER */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #00ffff;
+            padding: 15px 30px;
+        }
+        
+        .header h1 {
+            color: #00ffff;
+            font-size: 1.3rem;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .btn.active {
+            background: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+        
+        /* MAIN LAYOUT */
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            height: 100vh;
+            margin-top: 80px;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        /* LEFT PANEL - PARAMETER CONTROLS */
+        .control-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+        
+        .control-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #00ffff;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .parameter-control {
+            margin-bottom: 20px;
+        }
+        
+        .param-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .param-value {
+            color: #00ffff;
+            font-weight: bold;
+        }
+        
+        .param-slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        
+        .param-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #00ffff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .param-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #00ffff;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .geometry-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .geometry-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .geometry-btn.active {
+            background: rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
+            color: #00ffff;
+        }
+        
+        /* CENTER PANEL - LIVE PREVIEW */
+        .preview-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preview-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .preview-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .current-variant {
+            color: #00ffff;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .variant-stats {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* RIGHT PANEL - GENERATION TOOLS */
+        .generation-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+        
+        .generation-section {
+            margin-bottom: 25px;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border: none;
+            color: #000;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .generation-queue {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .queue-item {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .queue-item.generating {
+            background: rgba(255, 255, 0, 0.2);
+            border: 1px solid rgba(255, 255, 0, 0.5);
+        }
+        
+        .queue-item.complete {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.5);
+        }
+        
+        .preset-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .preset-item {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preset-item:hover {
+            background: rgba(0, 255, 255, 0.2);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 300px 1fr 250px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 400px auto;
+            }
+            
+            .control-panel, .generation-panel {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⚙️ Parametric Engine - Holographic System Generator</h1>
+        <div class="header-controls">
+            <button class="btn" onclick="exportVariation()">📤 EXPORT</button>
+            <button class="btn" onclick="importVariation()">📥 IMPORT</button>
+            <button class="btn" onclick="savePreset()">💾 SAVE PRESET</button>
+            <button class="btn" onclick="shareURL()">🔗 SHARE URL</button>
+            <button class="btn" onclick="launchFullscreen()">🚀 LAUNCH</button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- LEFT PANEL - PARAMETER CONTROLS -->
+        <div class="control-panel">
+            <!-- GEOMETRY SELECTION -->
+            <div class="control-section">
+                <div class="section-title">Base Geometry</div>
+                <div class="geometry-selector">
+                    <div class="geometry-btn active" data-geometry="0">TETRAHEDRON</div>
+                    <div class="geometry-btn" data-geometry="1">HYPERCUBE</div>
+                    <div class="geometry-btn" data-geometry="2">SPHERE</div>
+                    <div class="geometry-btn" data-geometry="3">TORUS</div>
+                    <div class="geometry-btn" data-geometry="4">KLEIN</div>
+                    <div class="geometry-btn" data-geometry="5">FRACTAL</div>
+                    <div class="geometry-btn" data-geometry="6">WAVE</div>
+                    <div class="geometry-btn" data-geometry="7">CRYSTAL</div>
+                </div>
+            </div>
+            
+            <!-- CORE PARAMETERS -->
+            <div class="control-section">
+                <div class="section-title">Core Parameters</div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Density</span>
+                        <span class="param-value" id="densityValue">1.0</span>
+                    </div>
+                    <input type="range" class="param-slider" id="densitySlider" min="0.1" max="3.0" step="0.1" value="1.0">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Speed</span>
+                        <span class="param-value" id="speedValue">0.5</span>
+                    </div>
+                    <input type="range" class="param-slider" id="speedSlider" min="0.1" max="2.0" step="0.1" value="0.5">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Chaos</span>
+                        <span class="param-value" id="chaosValue">0.0</span>
+                    </div>
+                    <input type="range" class="param-slider" id="chaosSlider" min="0.0" max="1.0" step="0.05" value="0.0">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Morphing</span>
+                        <span class="param-value" id="morphValue">0.0</span>
+                    </div>
+                    <input type="range" class="param-slider" id="morphSlider" min="0.0" max="1.0" step="0.05" value="0.0">
+                </div>
+            </div>
+            
+            <!-- COLOR SYSTEM -->
+            <div class="control-section">
+                <div class="section-title">Color System</div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Hue Shift</span>
+                        <span class="param-value" id="hueValue">0°</span>
+                    </div>
+                    <input type="range" class="param-slider" id="hueSlider" min="0" max="360" step="15" value="0">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Saturation</span>
+                        <span class="param-value" id="saturationValue">0.8</span>
+                    </div>
+                    <input type="range" class="param-slider" id="saturationSlider" min="0.0" max="1.0" step="0.05" value="0.8">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Intensity</span>
+                        <span class="param-value" id="intensityValue">0.5</span>
+                    </div>
+                    <input type="range" class="param-slider" id="intensitySlider" min="0.1" max="1.0" step="0.05" value="0.5">
+                </div>
+            </div>
+            
+            <!-- AUDIO REACTIVITY -->
+            <div class="control-section">
+                <div class="section-title">Audio Reactivity</div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Bass Response</span>
+                        <span class="param-value" id="bassValue">1.0</span>
+                    </div>
+                    <input type="range" class="param-slider" id="bassSlider" min="0.0" max="2.0" step="0.1" value="1.0">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>Mid Response</span>
+                        <span class="param-value" id="midValue">1.0</span>
+                    </div>
+                    <input type="range" class="param-slider" id="midSlider" min="0.0" max="2.0" step="0.1" value="1.0">
+                </div>
+                
+                <div class="parameter-control">
+                    <div class="param-label">
+                        <span>High Response</span>
+                        <span class="param-value" id="highValue">1.0</span>
+                    </div>
+                    <input type="range" class="param-slider" id="highSlider" min="0.0" max="2.0" step="0.1" value="1.0">
+                </div>
+            </div>
+        </div>
+        
+        <!-- CENTER PANEL - LIVE PREVIEW -->
+        <div class="preview-panel">
+            <canvas class="preview-canvas" id="previewCanvas"></canvas>
+            <div class="preview-overlay">
+                <div class="current-variant" id="currentVariant">CUSTOM VARIATION</div>
+                <div class="variant-stats" id="variantStats">
+                    Geometry: TETRAHEDRON • Complexity: ★★☆☆☆
+                </div>
+            </div>
+        </div>
+        
+        <!-- RIGHT PANEL - GENERATION TOOLS -->
+        <div class="generation-panel">
+            <!-- SYSTEMATIC GENERATION -->
+            <div class="generation-section">
+                <div class="section-title">Systematic Generation</div>
+                <button class="generate-btn" onclick="generateDensitySeries()">DENSITY SERIES (5x)</button>
+                <button class="generate-btn" onclick="generateSpeedSeries()">SPEED SERIES (5x)</button>
+                <button class="generate-btn" onclick="generateChaosSeries()">CHAOS SERIES (5x)</button>
+                <button class="generate-btn" onclick="generateColorSeries()">COLOR SERIES (6x)</button>
+                <button class="generate-btn" onclick="generateHybridSeries()">HYBRID SERIES (4x)</button>
+                <button class="generate-btn" onclick="generateRandomSet()">RANDOM SET (10x)</button>
+            </div>
+            
+            <!-- BATCH OPERATIONS -->
+            <div class="generation-section">
+                <div class="section-title">Batch Operations</div>
+                <button class="generate-btn" onclick="engine.generateBatch()" style="background: linear-gradient(45deg, #00ff00, #00ffff);">📦 EXPORT BATCH</button>
+                <button class="generate-btn" onclick="engine.generatePortfolioUpdate()" style="background: linear-gradient(45deg, #ff00ff, #00ffff);">🎨 PORTFOLIO UPDATE</button>
+                <button class="generate-btn" onclick="engine.clearQueue()" style="background: linear-gradient(45deg, #ff4757, #ff6b9d);">🗑️ CLEAR QUEUE</button>
+            
+            <!-- GENERATION QUEUE -->
+            <div class="generation-section">
+                <div class="section-title">Generation Queue</div>
+                <div class="generation-queue" id="generationQueue">
+                    <div class="queue-item">Ready to generate variations...</div>
+                </div>
+            </div>
+            
+            <!-- PRESET MANAGEMENT -->
+            <div class="generation-section">
+                <div class="section-title">Saved Presets</div>
+                <div class="preset-list" id="presetList">
+                    <div class="preset-item" onclick="loadPreset('default')">Default Settings</div>
+                </div>
+            </div>
+            
+            <!-- STATISTICS -->
+            <div class="generation-section">
+                <div class="section-title">Statistics</div>
+                <div class="variant-stats">
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.6); margin-bottom: 5px;">
+                        Generated: <span id="generatedCount">0</span> variations<br>
+                        Current Base: <span id="currentBase">30</span> variations<br>
+                        Total Available: <span id="totalCount">30</span> variations
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PARAMETRIC ENGINE SYSTEM
+        class ParametricEngine {
+            constructor() {
+                this.currentParams = {
+                    geometry: 0,
+                    density: 1.0,
+                    speed: 0.5,
+                    chaos: 0.0,
+                    morph: 0.0,
+                    hue: 0,
+                    saturation: 0.8,
+                    intensity: 0.5,
+                    bassResponse: 1.0,
+                    midResponse: 1.0,
+                    highResponse: 1.0
+                };
+                
+                this.geometryNames = [
+                    'TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS',
+                    'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'
+                ];
+                
+                this.generatedVariations = [];
+                this.presets = this.loadPresets();
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupControls();
+                this.setupPreview();
+                this.updateDisplay();
+                this.startPreviewAnimation();
+            }
+            
+            setupControls() {
+                // Geometry selection
+                document.querySelectorAll('.geometry-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.geometry-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentParams.geometry = parseInt(btn.dataset.geometry);
+                        this.updateDisplay();
+                    });
+                });
+                
+                // Parameter sliders
+                this.setupSlider('density', 'densityValue', 'densitySlider');
+                this.setupSlider('speed', 'speedValue', 'speedSlider');
+                this.setupSlider('chaos', 'chaosValue', 'chaosSlider');
+                this.setupSlider('morph', 'morphValue', 'morphSlider');
+                this.setupSlider('hue', 'hueValue', 'hueSlider', '°');
+                this.setupSlider('saturation', 'saturationValue', 'saturationSlider');
+                this.setupSlider('intensity', 'intensityValue', 'intensitySlider');
+                this.setupSlider('bassResponse', 'bassValue', 'bassSlider');
+                this.setupSlider('midResponse', 'midValue', 'midSlider');
+                this.setupSlider('highResponse', 'highValue', 'highSlider');
+            }
+            
+            setupSlider(param, valueId, sliderId, suffix = '') {
+                const slider = document.getElementById(sliderId);
+                const valueDisplay = document.getElementById(valueId);
+                
+                slider.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    this.currentParams[param] = value;
+                    valueDisplay.textContent = value + suffix;
+                    this.updateDisplay();
+                });
+            }
+            
+            setupPreview() {
+                this.canvas = document.getElementById('previewCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = this.canvas.clientWidth;
+                this.canvas.height = this.canvas.clientHeight;
+            }
+            
+            updateDisplay() {
+                const geometryName = this.geometryNames[this.currentParams.geometry];
+                const complexity = this.calculateComplexity();
+                
+                document.getElementById('currentVariant').textContent = 
+                    `CUSTOM ${geometryName}`;
+                    
+                document.getElementById('variantStats').innerHTML = 
+                    `Geometry: ${geometryName} • Complexity: ${'★'.repeat(complexity)}${'☆'.repeat(5-complexity)}`;
+            }
+            
+            calculateComplexity(variation) {
+                if (!variation) variation = this.currentParams;
+                const { density, speed, chaos, morph } = variation;
+                const complexityScore = (density + speed + chaos * 2 + morph * 2) / 6;
+                return Math.min(5, Math.max(1, Math.round(complexityScore * 5)));
+            }
+            
+            startPreviewAnimation() {
+                const animate = () => {
+                    this.renderPreview();
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+            
+            renderPreview() {
+                const { width, height } = this.canvas;
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const time = Date.now() * 0.001;
+                
+                // Clear canvas
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(0, 0, width, height);
+                
+                // Apply current parameters to visualization
+                this.ctx.save();
+                this.ctx.translate(centerX, centerY);
+                
+                const layers = Math.ceil(this.currentParams.density * 3);
+                const baseRadius = Math.min(width, height) * 0.15;
+                
+                for (let layer = 0; layer < layers; layer++) {
+                    this.ctx.save();
+                    
+                    const layerRotation = time * this.currentParams.speed + layer * 0.5;
+                    this.ctx.rotate(layerRotation);
+                    
+                    const radius = baseRadius + layer * 20 + 
+                                 Math.sin(time * 2 + layer) * this.currentParams.morph * 20;
+                    
+                    const sides = 6 + (this.currentParams.geometry * 2) + 
+                                Math.floor(this.currentParams.chaos * 8);
+                    
+                    // Draw geometry
+                    this.ctx.beginPath();
+                    for (let i = 0; i <= sides; i++) {
+                        const angle = (i / sides) * Math.PI * 2;
+                        const chaosOffset = this.currentParams.chaos * 
+                                          Math.sin(angle * 3 + time + layer) * 15;
+                        const r = radius + chaosOffset;
+                        const x = Math.cos(angle) * r;
+                        const y = Math.sin(angle) * r;
+                        
+                        if (i === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+                    }
+                    
+                    // Apply colors based on parameters
+                    const hue = (this.currentParams.hue + layer * 30) % 360;
+                    const saturation = this.currentParams.saturation * 100;
+                    const lightness = (30 + this.currentParams.intensity * 50 + layer * 10) % 100;
+                    const alpha = 0.3 + this.currentParams.intensity * 0.4;
+                    
+                    this.ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                    this.ctx.lineWidth = 1 + this.currentParams.intensity * 3;
+                    this.ctx.stroke();
+                    
+                    this.ctx.restore();
+                }
+                
+                this.ctx.restore();
+            }
+            
+            // GENERATION METHODS
+            generateDensitySeries() {
+                const baseName = this.geometryNames[this.currentParams.geometry];
+                const densityLevels = [0.3, 0.6, 1.0, 1.5, 2.0];
+                
+                densityLevels.forEach((density, index) => {
+                    const variation = {
+                        ...this.currentParams,
+                        density: density,
+                        name: `${baseName} DENSITY ${index + 1}`,
+                        id: this.generatedVariations.length
+                    };
+                    this.addToQueue(variation);
+                });
+            }
+            
+            generateSpeedSeries() {
+                const baseName = this.geometryNames[this.currentParams.geometry];
+                const speedLevels = [0.2, 0.5, 1.0, 1.5, 2.0];
+                
+                speedLevels.forEach((speed, index) => {
+                    const variation = {
+                        ...this.currentParams,
+                        speed: speed,
+                        name: `${baseName} SPEED ${index + 1}`,
+                        id: this.generatedVariations.length
+                    };
+                    this.addToQueue(variation);
+                });
+            }
+            
+            generateChaosSeries() {
+                const baseName = this.geometryNames[this.currentParams.geometry];
+                const chaosLevels = [0.0, 0.25, 0.5, 0.75, 1.0];
+                
+                chaosLevels.forEach((chaos, index) => {
+                    const variation = {
+                        ...this.currentParams,
+                        chaos: chaos,
+                        name: `${baseName} CHAOS ${index + 1}`,
+                        id: this.generatedVariations.length
+                    };
+                    this.addToQueue(variation);
+                });
+            }
+            
+            generateColorSeries() {
+                const baseName = this.geometryNames[this.currentParams.geometry];
+                const hueShifts = [0, 60, 120, 180, 240, 300];
+                
+                hueShifts.forEach((hue, index) => {
+                    const variation = {
+                        ...this.currentParams,
+                        hue: hue,
+                        name: `${baseName} HUE ${hue}°`,
+                        id: this.generatedVariations.length
+                    };
+                    this.addToQueue(variation);
+                });
+            }
+            
+            generateHybridSeries() {
+                const currentGeom = this.currentParams.geometry;
+                const baseName = this.geometryNames[currentGeom];
+                
+                // Create hybrids with adjacent geometries
+                for (let i = 1; i <= 4; i++) {
+                    const hybridGeom = (currentGeom + i) % 8;
+                    const hybridName = this.geometryNames[hybridGeom];
+                    
+                    const variation = {
+                        ...this.currentParams,
+                        geometry: hybridGeom,
+                        morph: 0.5 + i * 0.1,
+                        name: `${baseName}-${hybridName} HYBRID`,
+                        id: this.generatedVariations.length
+                    };
+                    this.addToQueue(variation);
+                }
+            }
+            
+            addToQueue(variation) {
+                this.generatedVariations.push(variation);
+                const queueItem = document.createElement('div');
+                queueItem.className = 'queue-item';
+                queueItem.innerHTML = `
+                    <span>${variation.name}</span>
+                    <div style="display: flex; gap: 5px;">
+                        <span onclick="previewVariation(${variation.id})" style="cursor: pointer; padding: 2px 6px; background: rgba(0,255,255,0.2); border-radius: 3px;">👁️</span>
+                        <span onclick="exportSingleVariation(${variation.id})" style="cursor: pointer; padding: 2px 6px; background: rgba(0,255,0,0.2); border-radius: 3px;">📤</span>
+                        <span onclick="removeFromQueue(${variation.id})" style="cursor: pointer; padding: 2px 6px; background: rgba(255,0,0,0.2); border-radius: 3px;">🗑️</span>
+                    </div>
+                `;
+                
+                document.getElementById('generationQueue').appendChild(queueItem);
+                this.updateStats();
+            }
+            
+            updateStats() {
+                document.getElementById('generatedCount').textContent = this.generatedVariations.length;
+                document.getElementById('totalCount').textContent = 30 + this.generatedVariations.length;
+            }
+            
+            // PRESET SYSTEM
+            savePreset() {
+                const name = prompt('Enter preset name:');
+                if (name) {
+                    this.presets[name] = {...this.currentParams};
+                    this.savePresetsToStorage();
+                    this.updatePresetList();
+                }
+            }
+            
+            loadPreset(name) {
+                if (this.presets[name]) {
+                    this.currentParams = {...this.presets[name]};
+                    this.syncControlsWithParams();
+                    this.updateDisplay();
+                }
+            }
+            
+            syncControlsWithParams() {
+                // Update all sliders and geometry selection
+                Object.keys(this.currentParams).forEach(param => {
+                    const slider = document.getElementById(param + 'Slider');
+                    if (slider) {
+                        slider.value = this.currentParams[param];
+                        const valueDisplay = document.getElementById(param + 'Value');
+                        if (valueDisplay) {
+                            const suffix = param === 'hue' ? '°' : '';
+                            valueDisplay.textContent = this.currentParams[param] + suffix;
+                        }
+                    }
+                });
+                
+                // Update geometry selection
+                document.querySelectorAll('.geometry-btn').forEach((btn, index) => {
+                    btn.classList.toggle('active', index === this.currentParams.geometry);
+                });
+            }
+            
+            updatePresetList() {
+                const list = document.getElementById('presetList');
+                list.innerHTML = '';
+                
+                Object.keys(this.presets).forEach(name => {
+                    const item = document.createElement('div');
+                    item.className = 'preset-item';
+                    item.textContent = name;
+                    item.onclick = () => this.loadPreset(name);
+                    list.appendChild(item);
+                });
+            }
+            
+            loadPresets() {
+                const saved = localStorage.getItem('holographic-presets');
+                return saved ? JSON.parse(saved) : {
+                    'Default': {...this.currentParams}
+                };
+            }
+            
+            savePresetsToStorage() {
+                localStorage.setItem('holographic-presets', JSON.stringify(this.presets));
+            }
+            
+            // EXPORT/IMPORT
+            exportVariation() {
+                const data = {
+                    version: '1.0',
+                    type: 'holographic-variation',
+                    params: this.currentParams,
+                    generated: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], 
+                                    { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `holographic-variation-${Date.now()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+            
+            importVariation() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const data = JSON.parse(e.target.result);
+                                if (data.type === 'holographic-variation') {
+                                    this.currentParams = {...data.params};
+                                    this.syncControlsWithParams();
+                                    this.updateDisplay();
+                                }
+                            } catch (error) {
+                                alert('Invalid file format');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+            
+            shareURL() {
+                const params = new URLSearchParams();
+                Object.keys(this.currentParams).forEach(key => {
+                    params.set(key, this.currentParams[key]);
+                });
+                
+                const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('URL copied to clipboard!');
+                });
+            }
+            
+            launchFullscreen() {
+                const params = new URLSearchParams();
+                Object.keys(this.currentParams).forEach(key => {
+                    params.set(key, this.currentParams[key]);
+                });
+                
+                // Debug: Log individual parameters
+                console.log('🎛️ Launching with parameters:');
+                Object.entries(this.currentParams).forEach(([key, value]) => {
+                    console.log(`  ${key}: ${value}`);
+                });
+                
+                const url = `index.html?${params.toString()}&autoplay=true`;
+                console.log('🚀 Full URL:', url);
+                console.log('🔗 Param string:', params.toString());
+                
+                // Try both window.open and direct navigation for testing
+                const newWindow = window.open(url, '_blank');
+                if (!newWindow) {
+                    console.log('⚠️ Popup blocked! Trying same window...');
+                    window.location.href = url;
+                } else {
+                    console.log('✅ New window opened successfully');
+                }
+            }
+            
+            // BATCH GENERATION & EXPORT
+            generateBatch() {
+                const queueLength = this.generatedVariations.length;
+                if (queueLength === 0) {
+                    alert('No variations in queue to export!');
+                    return;
+                }
+                
+                const batch = {
+                    timestamp: new Date().toISOString(),
+                    baseCount: 30,
+                    generatedCount: queueLength,
+                    variations: this.generatedVariations.map(v => ({
+                        id: v.id + 30, // Offset to avoid conflicts with base variations
+                        name: v.name,
+                        tags: this.inferTags(v),
+                        complexity: this.calculateComplexity(v),
+                        ...v
+                    }))
+                };
+                
+                const blob = new Blob([JSON.stringify(batch, null, 2)], 
+                                    { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `holographic-batch-${queueLength}variations-${Date.now()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                alert(`Exported ${queueLength} variations! Check your downloads.`);
+            }
+            
+            inferTags(variation) {
+                const tags = [];
+                
+                // Geometry-based tags
+                if (variation.geometry <= 3) tags.push('geometric');
+                else tags.push('organic');
+                
+                // Intensity tags
+                const intensity = (variation.speed + variation.chaos + variation.morph) / 3;
+                if (intensity < 0.4) tags.push('calm');
+                else if (intensity > 0.7) tags.push('intense');
+                
+                // Audio reactivity
+                const avgReactivity = (variation.bassResponse + variation.midResponse + variation.highResponse) / 3;
+                if (variation.bassResponse > avgReactivity) tags.push('bass-heavy');
+                else tags.push('full-spectrum');
+                
+                return tags;
+            }
+            
+            removeFromQueue(id) {
+                const index = this.generatedVariations.findIndex(v => v.id === id);
+                if (index !== -1) {
+                    this.generatedVariations.splice(index, 1);
+                    this.refreshQueue();
+                    this.updateStats();
+                }
+            }
+            
+            refreshQueue() {
+                const queue = document.getElementById('generationQueue');
+                queue.innerHTML = '';
+                
+                if (this.generatedVariations.length === 0) {
+                    queue.innerHTML = '<div class="queue-item">Ready to generate variations...</div>';
+                    return;
+                }
+                
+                this.generatedVariations.forEach(variation => {
+                    const queueItem = document.createElement('div');
+                    queueItem.className = 'queue-item';
+                    queueItem.innerHTML = `
+                        <span>${variation.name}</span>
+                        <div style="display: flex; gap: 5px;">
+                            <span onclick="previewVariation(${variation.id})" style="cursor: pointer; padding: 2px 6px; background: rgba(0,255,255,0.2); border-radius: 3px;">👁️</span>
+                            <span onclick="exportSingleVariation(${variation.id})" style="cursor: pointer; padding: 2px 6px; background: rgba(0,255,0,0.2); border-radius: 3px;">📤</span>
+                            <span onclick="removeFromQueue(${variation.id})" style="cursor: pointer; padding: 2px 6px; background: rgba(255,0,0,0.2); border-radius: 3px;">🗑️</span>
+                        </div>
+                    `;
+                    queue.appendChild(queueItem);
+                });
+            }
+            
+            exportSingleVariation(id) {
+                const variation = this.generatedVariations.find(v => v.id === id);
+                if (!variation) return;
+                
+                const data = {
+                    version: '1.0',
+                    type: 'holographic-variation',
+                    params: variation,
+                    generated: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], 
+                                    { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${variation.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+            
+            clearQueue() {
+                this.generatedVariations = [];
+                this.refreshQueue();
+                this.updateStats();
+            }
+            
+            generatePortfolioUpdate() {
+                if (this.generatedVariations.length === 0) {
+                    alert('No variations to export for portfolio!');
+                    return;
+                }
+                
+                const portfolioAdditions = this.generatedVariations.map(v => ({
+                    id: v.id + 30,
+                    name: v.name,
+                    tags: this.inferTags(v),
+                    complexity: this.calculateComplexity(v),
+                    density: v.density,
+                    speed: v.speed,
+                    chaos: v.chaos,
+                    morph: v.morph,
+                    description: `Generated variation: ${v.name}`
+                }));
+                
+                const updateCode = `
+// ADD TO portfolio.html holographicVariants array:
+${portfolioAdditions.map(v => 
+    `            {
+                id: ${v.id}, name: "${v.name}",
+                tags: [${v.tags.map(t => `"${t}"`).join(', ')}],
+                complexity: ${v.complexity}, density: ${v.density}, speed: ${v.speed}, chaos: ${v.chaos}, morph: ${v.morph},
+                description: "${v.description}"
+            }`
+).join(',\n')}
+
+// Total: ${portfolioAdditions.length} new variations to add after ID 29
+                `;
+                
+                const blob = new Blob([updateCode], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `portfolio-update-${portfolioAdditions.length}variations.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                alert(`Generated portfolio update with ${portfolioAdditions.length} variations!`);
+            }
+        }
+        
+        // GLOBAL FUNCTIONS
+        function exportVariation() { engine.exportVariation(); }
+        function importVariation() { engine.importVariation(); }
+        function savePreset() { engine.savePreset(); }
+        function shareURL() { engine.shareURL(); }
+        function launchFullscreen() { engine.launchFullscreen(); }
+        
+        function generateDensitySeries() { engine.generateDensitySeries(); }
+        function generateSpeedSeries() { engine.generateSpeedSeries(); }
+        function generateChaosSeries() { engine.generateChaosSeries(); }
+        function generateColorSeries() { engine.generateColorSeries(); }
+        function generateHybridSeries() { engine.generateHybridSeries(); }
+        
+        function generateRandomSet() {
+            const baseName = engine.geometryNames[engine.currentParams.geometry];
+            
+            for (let i = 0; i < 10; i++) {
+                const variation = {
+                    ...engine.currentParams,
+                    density: 0.5 + Math.random() * 2.0,
+                    speed: 0.2 + Math.random() * 1.6,
+                    chaos: Math.random(),
+                    morph: Math.random(),
+                    hue: Math.floor(Math.random() * 360),
+                    saturation: 0.5 + Math.random() * 0.5,
+                    intensity: 0.3 + Math.random() * 0.7,
+                    name: `${baseName} RANDOM ${i + 1}`,
+                    id: engine.generatedVariations.length
+                };
+                engine.addToQueue(variation);
+            }
+        }
+        
+        function exportSingleVariation(id) { engine.exportSingleVariation(id); }
+        function removeFromQueue(id) { engine.removeFromQueue(id); }
+        
+        function previewVariation(id) {
+            const variation = engine.generatedVariations[id];
+            if (variation) {
+                engine.currentParams = {...variation};
+                engine.syncControlsWithParams();
+                engine.updateDisplay();
+            }
+        }
+        
+        // Initialize
+        const engine = new ParametricEngine();
+        
+        // Load from URL parameters if present
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            Object.keys(engine.currentParams).forEach(key => {
+                if (urlParams.has(key)) {
+                    const value = urlParams.get(key);
+                    engine.currentParams[key] = isNaN(value) ? value : parseFloat(value);
+                }
+            });
+            
+            engine.syncControlsWithParams();
+            engine.updateDisplay();
+        });
+    </script>
+</body>
+</html>
