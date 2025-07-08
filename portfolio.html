@@ -687,6 +687,7 @@
                     console.warn('Could not load custom variations:', e);
                 }
                 
+                console.log(`📊 Total variations loaded: ${allVariations.length}`);
                 return allVariations;
             }
             
@@ -1032,7 +1033,7 @@
                     `variant=${variant.id}&autoplay=true`;
                 
                 return `
-                <div class="variant-card">
+                <div class="variant-card" onclick="openVariation('https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html?${params}')">
                     <h3>${variant.name}</h3>
                     <div class="variant-preview">
                         <iframe src="https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html?${params}" 
@@ -1043,6 +1044,7 @@
                     <div class="variant-tags">
                         ${variant.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
+                    <div class="click-hint">Click to open fullscreen</div>
                 </div>`;
             }).join('');
             
@@ -1122,6 +1124,17 @@
             margin-bottom: 30px;
             color: rgba(255, 255, 255, 0.7);
         }
+        .click-hint {
+            text-align: center;
+            margin-top: 10px;
+            color: rgba(0, 255, 255, 0.6);
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .variant-card:hover .click-hint {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -1139,6 +1152,12 @@
     <div class="portfolio-grid">
         ${variationCards}
     </div>
+    
+    <script>
+        function openVariation(url) {
+            window.open(url, '_blank');
+        }
+    </script>
 </body>
 </html>`;
         }
