@@ -1,0 +1,191 @@
+{
+  "name": "Community Favorites",
+  "description": "Popular variations shared by the holographic community",
+  "version": "1.0",
+  "type": "holographic-collection",
+  "profileName": "Community",
+  "totalVariations": 12,
+  "created": "2025-07-08T12:00:00.000Z",
+  "variations": [
+    {
+      "id": 0,
+      "name": "COSMIC HYPERCUBE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 1,
+        "density": 1.8,
+        "speed": 0.9,
+        "chaos": 0.4,
+        "morph": 0.7,
+        "hue": 240,
+        "saturation": 0.9,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 1,
+      "name": "CRYSTAL DREAMS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.2,
+        "speed": 0.3,
+        "chaos": 0.1,
+        "morph": 0.9,
+        "hue": 300,
+        "saturation": 0.8,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 2,
+      "name": "FRACTAL STORM",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5,
+        "density": 1.5,
+        "speed": 1.2,
+        "chaos": 0.8,
+        "morph": 0.5,
+        "hue": 60,
+        "saturation": 1.0,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 3,
+      "name": "TORUS MEDITATION",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 3,
+        "density": 0.8,
+        "speed": 0.2,
+        "chaos": 0.0,
+        "morph": 0.3,
+        "hue": 120,
+        "saturation": 0.6,
+        "intensity": 0.4
+      }
+    },
+    {
+      "id": 4,
+      "name": "WAVE SYMPHONY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6,
+        "density": 1.4,
+        "speed": 0.7,
+        "chaos": 0.3,
+        "morph": 0.8,
+        "hue": 180,
+        "saturation": 0.9,
+        "intensity": 0.6
+      }
+    },
+    {
+      "id": 5,
+      "name": "SPHERE HARMONY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2,
+        "density": 1.2,
+        "speed": 0.5,
+        "chaos": 0.2,
+        "morph": 0.6,
+        "hue": 90,
+        "saturation": 0.7,
+        "intensity": 0.5
+      }
+    },
+    {
+      "id": 6,
+      "name": "KLEIN BOTTLE CHAOS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 4,
+        "density": 1.9,
+        "speed": 1.1,
+        "chaos": 0.9,
+        "morph": 0.4,
+        "hue": 0,
+        "saturation": 0.8,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 7,
+      "name": "TETRAHEDRON PULSE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 0,
+        "density": 1.6,
+        "speed": 0.8,
+        "chaos": 0.5,
+        "morph": 0.2,
+        "hue": 30,
+        "saturation": 0.9,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 8,
+      "name": "AURORA CRYSTAL",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 1.1,
+        "speed": 0.4,
+        "chaos": 0.3,
+        "morph": 0.8,
+        "hue": 270,
+        "saturation": 0.6,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 9,
+      "name": "INFINITE FRACTAL",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5,
+        "density": 2.5,
+        "speed": 0.6,
+        "chaos": 0.6,
+        "morph": 1.0,
+        "hue": 45,
+        "saturation": 0.8,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 10,
+      "name": "HYPERCUBE MATRIX",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 1,
+        "density": 2.0,
+        "speed": 1.0,
+        "chaos": 0.7,
+        "morph": 0.5,
+        "hue": 210,
+        "saturation": 1.0,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 11,
+      "name": "WAVE INTERFERENCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6,
+        "density": 1.7,
+        "speed": 1.3,
+        "chaos": 0.4,
+        "morph": 0.6,
+        "hue": 150,
+        "saturation": 0.7,
+        "intensity": 0.6
+      }
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "Active Holographic Systems Custom Pack",
+  "description": "User-created custom holographic variations",
+  "version": "1.0",
+  "type": "holographic-collection",
+  "profileName": "Active Holographic Systems",
+  "totalVariations": 5,
+  "created": "2025-07-08T15:30:00.000Z",
+  "variations": [
+    {
+      "id": 0,
+      "name": "HYPERCUBE CUSTOM 1",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 1,
+        "density": 1.5,
+        "speed": 0.8,
+        "chaos": 0.3,
+        "morph": 0.6,
+        "hue": 240,
+        "saturation": 0.9,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 1,
+      "name": "CRYSTAL CUSTOM 2",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.1,
+        "speed": 0.4,
+        "chaos": 0.2,
+        "morph": 0.8,
+        "hue": 315,
+        "saturation": 0.8,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 2,
+      "name": "FRACTAL CUSTOM 3",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5,
+        "density": 1.8,
+        "speed": 1.0,
+        "chaos": 0.7,
+        "morph": 0.5,
+        "hue": 60,
+        "saturation": 1.0,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 3,
+      "name": "TORUS CUSTOM 4",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 3,
+        "density": 1.3,
+        "speed": 0.6,
+        "chaos": 0.4,
+        "morph": 0.7,
+        "hue": 135,
+        "saturation": 0.7,
+        "intensity": 0.6
+      }
+    },
+    {
+      "id": 4,
+      "name": "WAVE CUSTOM 5",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6,
+        "density": 1.6,
+        "speed": 0.9,
+        "chaos": 0.5,
+        "morph": 0.4,
+        "hue": 180,
+        "saturation": 0.8,
+        "intensity": 0.7
+      }
+    }
+  ]
+}

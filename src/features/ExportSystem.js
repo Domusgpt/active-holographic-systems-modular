@@ -1,12 +1,15 @@
 /**
  * Export System - Safe HTML gallery generation
  * Clean implementation without nested JavaScript execution
- * Version: 2025-07-08-v2 (Cache-busted)
+ * Version: 2025-07-08-v3 (Collection Manager Integration)
  */
+import { CollectionManager } from './CollectionManager.js';
+
 export class ExportSystem {
     constructor(holographicSystem) {
         this.system = holographicSystem;
         this.profileName = 'Active Holographic Systems';
+        this.collectionManager = new CollectionManager();
     }
     
     /**
@@ -119,21 +122,24 @@ export class ExportSystem {
     }
     
     /**
-     * Export variations as JSON data
+     * Export variations as JSON data (auto-discovery compatible)
      */
     exportJSON() {
-        const data = {
-            version: '1.0',
-            type: 'holographic-collection',
-            profileName: this.profileName,
-            totalVariations: this.system.totalVariants,
-            baseVariations: this.system.baseVariants,
-            customVariations: this.system.customVariants,
-            exported: new Date().toISOString()
-        };
+        // Create collection from current custom variations
+        const collection = this.collectionManager.createCustomCollection(
+            this.system.customVariants,
+            `${this.profileName} Custom Pack`
+        );
         
-        const jsonString = JSON.stringify(data, null, 2);
-        this.downloadFile(jsonString, `${this.profileName.toLowerCase().replace(/\s+/g, '-')}.json`);
+        // Generate filename with date
+        const dateStr = new Date().toISOString().split('T')[0];
+        const filename = `user-custom-${dateStr}.json`;
+        
+        // Save using collection manager
+        this.collectionManager.saveCollection(collection, filename);
+        
+        console.log(`📁 Collection exported: ${filename}`);
+        console.log(`📂 To use: Move ${filename} to collections/ folder and refresh portfolio`);
     }
     
     /**
