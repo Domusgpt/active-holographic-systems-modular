@@ -1,6 +1,7 @@
 /**
  * Export System - Safe HTML gallery generation
  * Clean implementation without nested JavaScript execution
+ * Version: 2025-07-08-v2 (Cache-busted)
  */
 export class ExportSystem {
     constructor(holographicSystem) {
