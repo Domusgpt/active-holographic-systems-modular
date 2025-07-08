@@ -171,20 +171,26 @@ export class ExportSystem {
         
         // Add base variations (0-29)
         for (let i = 0; i < this.system.baseVariants; i++) {
-            const variant = this.system.getVariantParameters(i);
+            // Get variant name from system
+            const variantName = this.system.variantNames[i] || `Base Variant ${i + 1}`;
+            
+            // Create base variant with standard parameters
+            const geometryType = Math.floor(i / 4); // 0-7 for 8 geometries
+            const variation = i % 4; // 0-3 for 4 variations per geometry
+            
             variations.push({
                 id: i,
-                name: variant.name,
+                name: variantName,
                 isCustom: false,
                 parameters: {
-                    geometryType: variant.geometry,
-                    density: variant.density,
-                    speed: variant.speed,
-                    chaos: variant.chaos,
-                    morph: variant.morph,
-                    hue: variant.hue,
-                    saturation: variant.saturation,
-                    intensity: variant.intensity
+                    geometryType: geometryType,
+                    density: 1.0 + variation * 0.3,
+                    speed: 0.5 + variation * 0.2,
+                    chaos: variation * 0.25,
+                    morph: variation * 0.3,
+                    hue: (geometryType * 45) % 360,
+                    saturation: 0.8,
+                    intensity: 0.5 + variation * 0.1
                 }
             });
         }

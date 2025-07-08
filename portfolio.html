@@ -34,12 +34,38 @@
             color: #00ffff;
             font-size: 1.5rem;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            flex: 1;
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 150, 0, 0.2);
+            border: 1px solid #ff9600;
+            color: #ff9600;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 150, 0, 0.4);
+            box-shadow: 0 0 15px rgba(255, 150, 0, 0.6);
+            transform: translateY(-2px);
         }
         
         .header-controls {
             display: flex;
             gap: 15px;
-            margin-top: 10px;
             flex-wrap: wrap;
         }
         
@@ -388,7 +414,12 @@
 <body>
     <!-- HEADER -->
     <div class="header">
-        <h1>🌌 Holographic Systems Portfolio</h1>
+        <div class="header-top">
+            <h1>🌌 Holographic Systems Portfolio</h1>
+            <div class="header-nav">
+                <button class="nav-btn" onclick="openParametricEngine()">⚙️ PARAMETRIC ENGINE</button>
+            </div>
+        </div>
         <div class="header-controls">
             <input type="text" class="search-box" placeholder="Search variations..." id="searchBox">
             
