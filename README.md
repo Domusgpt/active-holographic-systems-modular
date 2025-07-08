@@ -2,16 +2,23 @@
 
 ## 🌌 Overview
 
-This is the **modular refactored version** of the Active Holographic Systems project, designed for safer feature development and better maintainability.
+This is the **modular production-ready version** of the Active Holographic Systems project with **working export functionality** and clean architecture.
 
-**⚠️ Important**: The original working version is preserved at `/mnt/c/Users/millz/active-holographic-systems/`
+## 🚀 Live Demo
+
+**[📍 Open Demo](https://domusgpt.github.io/active-holographic-systems-modular/)**
+
+### Direct Links:
+- **[🌌 Main Demo](https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html)** - Full holographic system
+- **[📁 Gallery](https://domusgpt.github.io/active-holographic-systems-modular/portfolio.html)** - Browse all 30 variations  
+- **[🎛️ Parametric Engine](https://domusgpt.github.io/active-holographic-systems-modular/parametric-engine.html)** - Create custom variations
 
 ## 🎯 Quick Start
 
 ### For Development
 ```bash
 # Clone and setup
-git clone <this-repo>
+git clone https://github.com/Domusgpt/active-holographic-systems-modular.git
 cd active-holographic-systems-modular
 
 # Start development server
