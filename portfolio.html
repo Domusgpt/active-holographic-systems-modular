@@ -1036,6 +1036,15 @@
 
     <script>
         function generatePersonalGalleryExport(personalGallery) {
+            // Helper function for geometry names
+            const getGeometryName = (geometryType) => {
+                const geometryNames = [
+                    'TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS',
+                    'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'
+                ];
+                return geometryNames[geometryType] || 'UNKNOWN';
+            };
+            
             const variationCards = personalGallery.map(variant => {
                 const params = variant.isCustom && variant.customParams ? 
                     new URLSearchParams({
@@ -1055,15 +1064,23 @@
                 <div class="variant-card" onclick="openVariation('https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html?${params}')">
                     <h3>${variant.name}</h3>
                     <div class="variant-preview">
-                        <iframe src="https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html?${params}" 
-                                width="300" height="200" frameborder="0"></iframe>
+                        <div class="preview-placeholder" style="width: 100%; height: 200px; background: radial-gradient(circle, #1a0033 0%, #000 70%); display: flex; align-items: center; justify-content: center; color: #00ffff; font-size: 0.8rem; text-align: center; border-radius: 10px;">
+                            🌌 ${variant.name}<br>
+                            <small style="color: rgba(0,255,255,0.6); margin-top: 5px;">Click to view live</small>
+                        </div>
                     </div>
                     <p><strong>ID:</strong> ${variant.id + 1}</p>
                     <p><strong>Type:</strong> ${variant.isCustom ? 'Custom' : 'Base'}</p>
+                    <p><strong>Parameters:</strong></p>
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin: 5px 0;">
+                        Geometry: ${getGeometryName(variant.isCustom ? variant.customParams?.geometry || 0 : Math.floor(variant.id / 4))}<br>
+                        Density: ${variant.density || 1.0} | Speed: ${variant.speed || 0.5}<br>
+                        Chaos: ${variant.chaos || 0.0} | Morph: ${variant.morph || 0.0}
+                    </div>
                     <div class="variant-tags">
                         ${variant.tags.map(tag => '<span class="tag">' + tag + '</span>').join('')}
                     </div>
-                    <div class="click-hint">Click to open fullscreen</div>
+                    <div class="click-hint">Click to open fullscreen on GitHub Pages</div>
                 </div>`;
             }).join('');
             
