@@ -350,7 +350,7 @@ export class HolographicVisualizer {
                 float audioDensityMod = 1.0 + u_audioDensityBoost * 0.5;
                 float roleDensity = ((u_density + u_densityVariation) * u_roleDensity) * scrollDensityMod * audioDensityMod;
                 
-                float morphedGeometry = u_geometryType + u_touchMorph * 2.0 + u_audioMorphBoost * 1.5;
+                float morphedGeometry = u_geometryType + u_morph * 3.0 + u_touchMorph * 2.0 + u_audioMorphBoost * 1.5;
                 float lattice = getDynamicGeometry(p, roleDensity, morphedGeometry);
                 
                 float hue = atan(u_color.r, u_color.g) + u_colorShift * 0.017453 + u_mouseIntensity * 0.2 + u_colorScrollShift + u_audioColorShift * 0.5;
@@ -359,10 +359,15 @@ export class HolographicVisualizer {
                 
                 vec3 color = hsv2rgb(vec3(hue, saturation, brightness));
                 
-                float enhancedChaos = u_chaosIntensity + u_touchChaos * 0.3 + u_audioChaosBoost * 0.4;
+                float enhancedChaos = u_chaos + u_chaosIntensity + u_touchChaos * 0.3 + u_audioChaosBoost * 0.4;
                 color += vec3(moirePattern(uv + scrollOffset, enhancedChaos));
                 color += vec3(gridOverlay(uv, u_mouseIntensity + u_scrollParallax * 0.1));
                 color = rgbGlitch(color, uv, enhancedChaos);
+                
+                // Apply morph distortion to position
+                vec2 morphDistortion = vec2(sin(uv.y * 10.0 + u_time * 0.001) * u_morph * 0.1, 
+                                           cos(uv.x * 10.0 + u_time * 0.001) * u_morph * 0.1);
+                color = mix(color, color * (1.0 + length(morphDistortion)), u_morph * 0.5);
                 
                 float mouseDist = length(uv - (u_mouse - 0.5) * vec2(aspectRatio, 1.0));
                 float mouseGlow = exp(-mouseDist * 1.5) * u_mouseIntensity * 0.2;

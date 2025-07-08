@@ -386,47 +386,56 @@
         }
         
         // Preview management - create on hover, destroy on leave
-        let previewTimeout = null;
+        let previewTimeouts = new Map(); // Track timeouts per card
         
         window.startPreview = function(card, params) {
-            // Clear any pending timeout
-            if (previewTimeout) {
-                clearTimeout(previewTimeout);
-                previewTimeout = null;
+            const cardId = card.getAttribute('data-card-id') || Math.random().toString(36);
+            card.setAttribute('data-card-id', cardId);
+            
+            // Clear any pending destroy timeout for this card
+            if (previewTimeouts.has(cardId)) {
+                clearTimeout(previewTimeouts.get(cardId));
+                previewTimeouts.delete(cardId);
             }
             
-            // Small delay to avoid accidental hovers
-            previewTimeout = setTimeout(() => {
-                const container = card.querySelector('[data-preview-container]');
-                if (container && !container.querySelector('iframe')) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = `./demo-modular.html?${params}&hideui=true`;
-                    iframe.style.width = '100%';
-                    iframe.style.height = '100%';
-                    iframe.style.border = 'none';
-                    container.innerHTML = '';
-                    container.appendChild(iframe);
-                }
-            }, 200); // 200ms delay
+            // Only create if not already exists
+            const container = card.querySelector('[data-preview-container]');
+            if (container && !container.querySelector('iframe')) {
+                const iframe = document.createElement('iframe');
+                iframe.src = `./demo-modular.html?${params}&hideui=true`;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                container.innerHTML = '';
+                container.appendChild(iframe);
+            }
         };
         
         window.stopPreview = function(card) {
-            // Clear timeout if hovering out quickly
-            if (previewTimeout) {
-                clearTimeout(previewTimeout);
-                previewTimeout = null;
+            const cardId = card.getAttribute('data-card-id');
+            if (!cardId) return;
+            
+            // Clear any existing timeout
+            if (previewTimeouts.has(cardId)) {
+                clearTimeout(previewTimeouts.get(cardId));
             }
             
-            // Destroy iframe to free WebGL context
-            const container = card.querySelector('[data-preview-container]');
-            if (container && container.querySelector('iframe')) {
-                container.innerHTML = `
-                    <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
-                        Hover to preview
-                    </div>
-                `;
-            }
+            // Set 1 second delay before destroying
+            const destroyTimeout = setTimeout(() => {
+                const container = card.querySelector('[data-preview-container]');
+                if (container && container.querySelector('iframe')) {
+                    // Destroy iframe to free WebGL context
+                    container.innerHTML = `
+                        <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
+                            Hover to preview
+                        </div>
+                    `;
+                }
+                previewTimeouts.delete(cardId);
+            }, 1000); // 1 second delay
+            
+            previewTimeouts.set(cardId, destroyTimeout);
         };
         
         // Global functions
