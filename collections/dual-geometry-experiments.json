@@ -1,0 +1,311 @@
+{
+  "name": "Dual Geometry Experiments",
+  "description": "20 special variations using two geometries in different layers with random parameters",
+  "version": "1.0",
+  "type": "holographic-collection",
+  "profileName": "Experimental Lab",
+  "totalVariations": 20,
+  "created": "2025-07-08T20:00:00.000Z",
+  "variations": [
+    {
+      "id": 0,
+      "name": "TETRAHEDRON-HYPERCUBE FUSION",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 0.8,
+        "density": 2.3,
+        "speed": 1.4,
+        "chaos": 0.7,
+        "morph": 0.85,
+        "hue": 320,
+        "saturation": 0.95,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 1,
+      "name": "SPHERE-TORUS BLEND",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2.6,
+        "density": 1.7,
+        "speed": 0.3,
+        "chaos": 0.15,
+        "morph": 0.6,
+        "hue": 45,
+        "saturation": 0.7,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 2,
+      "name": "FRACTAL-WAVE INTERFERENCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5.3,
+        "density": 3.1,
+        "speed": 2.2,
+        "chaos": 0.9,
+        "morph": 0.4,
+        "hue": 180,
+        "saturation": 1.0,
+        "intensity": 0.6
+      }
+    },
+    {
+      "id": 3,
+      "name": "KLEIN-CRYSTAL MATRIX",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 4.7,
+        "density": 1.2,
+        "speed": 0.8,
+        "chaos": 0.25,
+        "morph": 0.95,
+        "hue": 270,
+        "saturation": 0.85,
+        "intensity": 0.75
+      }
+    },
+    {
+      "id": 4,
+      "name": "HYPERCUBE-SPHERE STORM",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 1.4,
+        "density": 2.8,
+        "speed": 1.9,
+        "chaos": 0.8,
+        "morph": 0.3,
+        "hue": 95,
+        "saturation": 0.9,
+        "intensity": 1.0
+      }
+    },
+    {
+      "id": 5,
+      "name": "TORUS-FRACTAL DANCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 3.8,
+        "density": 1.9,
+        "speed": 0.6,
+        "chaos": 0.45,
+        "morph": 0.7,
+        "hue": 210,
+        "saturation": 0.75,
+        "intensity": 0.65
+      }
+    },
+    {
+      "id": 6,
+      "name": "WAVE-TETRAHEDRON PULSE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6.2,
+        "density": 2.5,
+        "speed": 1.1,
+        "chaos": 0.6,
+        "morph": 0.2,
+        "hue": 30,
+        "saturation": 0.8,
+        "intensity": 0.85
+      }
+    },
+    {
+      "id": 7,
+      "name": "CRYSTAL-KLEIN LATTICE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7.3,
+        "density": 1.6,
+        "speed": 0.4,
+        "chaos": 0.1,
+        "morph": 0.8,
+        "hue": 150,
+        "saturation": 0.65,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 8,
+      "name": "SPHERE-WAVE HARMONY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2.9,
+        "density": 2.1,
+        "speed": 1.7,
+        "chaos": 0.35,
+        "morph": 0.55,
+        "hue": 60,
+        "saturation": 0.9,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 9,
+      "name": "FRACTAL-HYPERCUBE CHAOS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5.7,
+        "density": 3.4,
+        "speed": 2.5,
+        "chaos": 1.0,
+        "morph": 0.1,
+        "hue": 300,
+        "saturation": 1.0,
+        "intensity": 0.95
+      }
+    },
+    {
+      "id": 10,
+      "name": "TETRAHEDRON-CRYSTAL FLOW",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 0.5,
+        "density": 1.8,
+        "speed": 0.9,
+        "chaos": 0.2,
+        "morph": 0.75,
+        "hue": 240,
+        "saturation": 0.7,
+        "intensity": 0.6
+      }
+    },
+    {
+      "id": 11,
+      "name": "KLEIN-WAVE VORTEX",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 4.2,
+        "density": 2.7,
+        "speed": 1.6,
+        "chaos": 0.65,
+        "morph": 0.9,
+        "hue": 120,
+        "saturation": 0.85,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 12,
+      "name": "TORUS-TETRAHEDRON SPIRAL",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 3.1,
+        "density": 1.4,
+        "speed": 0.7,
+        "chaos": 0.4,
+        "morph": 0.65,
+        "hue": 15,
+        "saturation": 0.8,
+        "intensity": 0.75
+      }
+    },
+    {
+      "id": 13,
+      "name": "CRYSTAL-SPHERE RESONANCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7.6,
+        "density": 2.2,
+        "speed": 1.3,
+        "chaos": 0.55,
+        "morph": 0.4,
+        "hue": 190,
+        "saturation": 0.95,
+        "intensity": 0.85
+      }
+    },
+    {
+      "id": 14,
+      "name": "HYPERCUBE-FRACTAL STORM",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 1.9,
+        "density": 3.0,
+        "speed": 2.1,
+        "chaos": 0.85,
+        "morph": 0.25,
+        "hue": 75,
+        "saturation": 1.0,
+        "intensity": 1.0
+      }
+    },
+    {
+      "id": 15,
+      "name": "WAVE-CRYSTAL MEDITATION",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6.8,
+        "density": 1.1,
+        "speed": 0.2,
+        "chaos": 0.05,
+        "morph": 0.8,
+        "hue": 330,
+        "saturation": 0.6,
+        "intensity": 0.5
+      }
+    },
+    {
+      "id": 16,
+      "name": "SPHERE-KLEIN TUNNEL",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2.3,
+        "density": 2.6,
+        "speed": 1.8,
+        "chaos": 0.7,
+        "morph": 0.6,
+        "hue": 255,
+        "saturation": 0.9,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 17,
+      "name": "FRACTAL-TORUS INFINITY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5.4,
+        "density": 1.5,
+        "speed": 1.0,
+        "chaos": 0.5,
+        "morph": 1.0,
+        "hue": 105,
+        "saturation": 0.8,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 18,
+      "name": "TETRAHEDRON-WAVE ECHO",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 0.7,
+        "density": 2.4,
+        "speed": 1.5,
+        "chaos": 0.3,
+        "morph": 0.5,
+        "hue": 170,
+        "saturation": 0.75,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 19,
+      "name": "CRYSTAL-HYPERCUBE NEXUS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7.1,
+        "density": 2.9,
+        "speed": 0.5,
+        "chaos": 0.9,
+        "morph": 0.35,
+        "hue": 285,
+        "saturation": 1.0,
+        "intensity": 0.95
+      }
+    }
+  ]
+}
