@@ -848,6 +848,10 @@
             updateStats() {
                 document.getElementById('visibleCount').textContent = this.filteredVariants.length;
                 document.getElementById('totalCount').textContent = this.variants.length;
+                
+                // Debug logging
+                console.log(`📊 Portfolio Stats: ${this.filteredVariants.length} visible / ${this.variants.length} total`);
+                console.log(`📦 Base variants: 30, Custom variants: ${this.variants.length - 30}`);
             }
             
             openVariant(id) {
@@ -1171,6 +1175,11 @@
     <script>
         function openVariation(url) {
             window.open(url, '_blank');
+        }
+        
+        // Placeholder functions for any missing references
+        function frameLoaded() {
+            console.log('Frame loaded');
         }
     </script>
 </body>
