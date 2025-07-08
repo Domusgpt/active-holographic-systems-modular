@@ -786,7 +786,10 @@
                         </div>
                         <div class="card-actions">
                             <button class="action-btn" onclick="event.stopPropagation(); addToPersonalGallery(${variant.id})" title="Add to Personal Gallery">
-                                💾 Save to Gallery
+                                💾 Save
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); shareVariation(${variant.id})" title="Share Variation">
+                                🔗 Share
                             </button>
                         </div>
                     </div>
@@ -1013,6 +1016,38 @@
             }
         }
         
+        function shareVariation(variantId) {
+            const variant = portfolio.variants.find(v => v.id === variantId);
+            if (!variant) return;
+            
+            let shareUrl;
+            if (variant.isCustom && variant.customParams) {
+                // For custom variations, create shareable URL with parameters
+                const params = new URLSearchParams({
+                    geometry: variant.customParams.geometry || 0,
+                    density: variant.customParams.density || 1.0,
+                    speed: variant.customParams.speed || 0.5,
+                    chaos: variant.customParams.chaos || 0.0,
+                    morph: variant.customParams.morph || 0.0,
+                    hue: variant.customParams.hue || 0,
+                    saturation: variant.customParams.saturation || 0.8,
+                    intensity: variant.customParams.intensity || 0.5,
+                    name: encodeURIComponent(variant.name)
+                });
+                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?${params.toString()}`;
+            } else {
+                // For base variations, use variant ID
+                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?variant=${variant.id}&name=${encodeURIComponent(variant.name)}`;
+            }
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert(`🔗 Share link copied to clipboard!\n\n"${variant.name}"\n\nAnyone can view this variation by opening the link.`);
+            }).catch(() => {
+                // Fallback for browsers without clipboard API
+                prompt('🔗 Copy this shareable link:', shareUrl);
+            });
+        }
         
         function exportGallery() {
             // Export personal gallery instead of all variations
