@@ -326,10 +326,11 @@
             const customBadge = variation.isCustom ? '<div class="custom-badge">CUSTOM</div>' : '';
             
             return `
-                <div class="variation-card" onclick="openVariation(${variation.id})" onmouseenter="loadPreview(this)" data-params="${parametersQuery}">
+                <div class="variation-card" onclick="openVariation(${variation.id})" onmouseenter="startPreview(this, '${parametersQuery}')" onmouseleave="stopPreview(this)">
                     ${customBadge}
                     <div class="card-preview" data-preview-container>
                         <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
                             Hover to preview
                         </div>
                     </div>
@@ -384,16 +385,47 @@
             document.getElementById('collectionsContainer').style.display = 'block';
         }
         
-        // Load preview on hover
-        window.loadPreview = function(card) {
+        // Preview management - create on hover, destroy on leave
+        let previewTimeout = null;
+        
+        window.startPreview = function(card, params) {
+            // Clear any pending timeout
+            if (previewTimeout) {
+                clearTimeout(previewTimeout);
+                previewTimeout = null;
+            }
+            
+            // Small delay to avoid accidental hovers
+            previewTimeout = setTimeout(() => {
+                const container = card.querySelector('[data-preview-container]');
+                if (container && !container.querySelector('iframe')) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `./demo-modular.html?${params}&hideui=true`;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = 'none';
+                    container.innerHTML = '';
+                    container.appendChild(iframe);
+                }
+            }, 200); // 200ms delay
+        };
+        
+        window.stopPreview = function(card) {
+            // Clear timeout if hovering out quickly
+            if (previewTimeout) {
+                clearTimeout(previewTimeout);
+                previewTimeout = null;
+            }
+            
+            // Destroy iframe to free WebGL context
             const container = card.querySelector('[data-preview-container]');
-            if (container && !container.querySelector('iframe')) {
-                const params = card.getAttribute('data-params');
-                const iframe = document.createElement('iframe');
-                iframe.src = `./demo-modular.html?${params}&preview=true&noaudio=true&hideui=true`;
-                iframe.loading = 'lazy';
-                container.innerHTML = '';
-                container.appendChild(iframe);
+            if (container && container.querySelector('iframe')) {
+                container.innerHTML = `
+                    <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
+                        Hover to preview
+                    </div>
+                `;
             }
         };
         

@@ -379,6 +379,11 @@
                 }, 1000);
             }
             
+            // Don't log in preview mode to reduce console spam
+            if (hideUI) {
+                console.log = () => {}; // Disable logging in preview mode
+            }
+            
             // Set up button handlers
             const buttons = document.querySelectorAll('.control-btn');
             buttons.forEach((button) => {
