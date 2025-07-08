@@ -349,6 +349,7 @@
             <div class="filter-tag" data-filter="intense">INTENSE</div>
             <div class="filter-tag" data-filter="bass-heavy">BASS</div>
             <div class="filter-tag" data-filter="full-spectrum">SPECTRUM</div>
+            <div class="filter-tag" data-filter="custom">CUSTOM</div>
             
             <div class="stats">
                 <span id="visibleCount">30</span> / <span id="totalCount">30</span> variations
@@ -564,9 +565,45 @@
         // PORTFOLIO INTERFACE
         class HolographicPortfolio {
             constructor() {
-                this.variants = holographicVariants;
+                this.variants = this.loadAllVariations();
                 this.filteredVariants = [...this.variants];
                 this.init();
+            }
+            
+            loadAllVariations() {
+                // Start with base 30 variations
+                const allVariations = [...holographicVariants];
+                
+                // Load custom variations from localStorage
+                try {
+                    const customVariationsData = localStorage.getItem('holographicCustomVariations');
+                    if (customVariationsData) {
+                        const customVariations = JSON.parse(customVariationsData);
+                        
+                        // Add custom variations starting from ID 30
+                        customVariations.forEach((cv, index) => {
+                            allVariations.push({
+                                id: 30 + index,
+                                name: cv.name || `Custom Variation ${index + 1}`,
+                                tags: ["custom", "generated"],
+                                complexity: 3,
+                                density: cv.params.density || 1.0,
+                                speed: cv.params.speed || 0.5,
+                                chaos: cv.params.chaos || 0.0,
+                                morph: cv.params.morph || 0.0,
+                                description: `Custom variation with ${cv.params.geometry || 0} geometry`,
+                                isCustom: true,
+                                customParams: cv.params
+                            });
+                        });
+                        
+                        console.log(`📁 Loaded ${customVariations.length} custom variations`);
+                    }
+                } catch (e) {
+                    console.warn('Could not load custom variations:', e);
+                }
+                
+                return allVariations;
             }
             
             init() {
@@ -599,7 +636,7 @@
                     <div class="variant-info">
                         <div class="variant-title">${variant.name}</div>
                         <div class="variant-meta">
-                            <span class="variant-id">#${String(variant.id).padStart(3, '0')}</span>
+                            <span class="variant-id">#${String(variant.id + 1).padStart(3, '0')}</span>
                             <div class="complexity-rating">
                                 ${[1,2,3,4,5].map(i => 
                                     `<div class="complexity-dot ${i <= variant.complexity ? 'active' : ''}"></div>`
@@ -724,8 +761,29 @@
                 const modal = document.getElementById('modal');
                 const iframe = document.getElementById('modalIframe');
                 
-                // Create URL with variant parameter pointing to actual demo
-                const url = `demo-modular.html?variant=${id}&autoplay=true`;
+                // Find the variant data
+                const variant = this.variants.find(v => v.id === id);
+                
+                let url;
+                if (variant && variant.isCustom && variant.customParams) {
+                    // For custom variations, pass the actual parameters
+                    const params = new URLSearchParams({
+                        geometry: variant.customParams.geometry || 0,
+                        density: variant.customParams.density || 1.0,
+                        speed: variant.customParams.speed || 0.5,
+                        chaos: variant.customParams.chaos || 0.0,
+                        morph: variant.customParams.morph || 0.0,
+                        hue: variant.customParams.hue || 0,
+                        saturation: variant.customParams.saturation || 0.8,
+                        intensity: variant.customParams.intensity || 0.5,
+                        autoplay: 'true'
+                    });
+                    url = `demo-modular.html?${params.toString()}`;
+                } else {
+                    // For base variations, use variant ID
+                    url = `demo-modular.html?variant=${id}&autoplay=true`;
+                }
+                
                 iframe.src = url;
                 modal.classList.add('active');
             }
