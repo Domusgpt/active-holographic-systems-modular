@@ -70,6 +70,25 @@
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
+        .engine-button, .export-button {
+            background: rgba(255, 0, 150, 0.2);
+            border: 1px solid #ff0096;
+            color: #ff0096;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+        }
+        
+        .engine-button:hover, .export-button:hover {
+            background: rgba(255, 0, 150, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 150, 0.6);
+            transform: translateY(-2px);
+        }
+        
         .stats {
             margin-left: auto;
             color: rgba(255, 255, 255, 0.7);
@@ -350,6 +369,9 @@
             <div class="filter-tag" data-filter="bass-heavy">BASS</div>
             <div class="filter-tag" data-filter="full-spectrum">SPECTRUM</div>
             <div class="filter-tag" data-filter="custom">CUSTOM</div>
+            
+            <button class="engine-button" onclick="openParametricEngine()">🔧 CREATE CUSTOM</button>
+            <button class="export-button" onclick="exportGallery()">💾 EXPORT GALLERY</button>
             
             <div class="stats">
                 <span id="visibleCount">30</span> / <span id="totalCount">30</span> variations
@@ -805,6 +827,154 @@
         
         // Initialize portfolio
         const portfolio = new HolographicPortfolio();
+        
+        // Navigation functions
+        function openParametricEngine() {
+            window.open('parametric-engine.html', '_blank');
+        }
+        
+        function exportGallery() {
+            // Create a simple HTML gallery export
+            const allVariations = portfolio.variants;
+            let galleryHTML = generatePortfolioExport(allVariations);
+            
+            // Download the file
+            const blob = new Blob([galleryHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'holographic-portfolio-export.html';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            console.log(`📁 Exported portfolio with ${allVariations.length} variations`);
+            alert(`✅ Exported ${allVariations.length} variations to HTML file!`);
+        }
+        
+        function generatePortfolioExport(variations) {
+            const variationCards = variations.map(variant => {
+                const params = variant.isCustom && variant.customParams ? 
+                    new URLSearchParams({
+                        geometry: variant.customParams.geometry || 0,
+                        density: variant.customParams.density || 1.0,
+                        speed: variant.customParams.speed || 0.5,
+                        chaos: variant.customParams.chaos || 0.0,
+                        morph: variant.customParams.morph || 0.0,
+                        hue: variant.customParams.hue || 0,
+                        saturation: variant.customParams.saturation || 0.8,
+                        intensity: variant.customParams.intensity || 0.5,
+                        autoplay: 'true'
+                    }).toString() :
+                    `variant=${variant.id}&autoplay=true`;
+                
+                return `
+                <div class="variant-card">
+                    <h3>${variant.name}</h3>
+                    <div class="variant-preview">
+                        <iframe src="https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html?${params}" 
+                                width="300" height="200" frameborder="0"></iframe>
+                    </div>
+                    <p><strong>ID:</strong> ${variant.id + 1}</p>
+                    <p><strong>Type:</strong> ${variant.isCustom ? 'Custom' : 'Base'}</p>
+                    <div class="variant-tags">
+                        ${variant.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+            
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holographic Systems Portfolio Export</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            line-height: 1.6;
+            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 70%);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #00ffff;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .variant-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .variant-card:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+        .variant-card h3 {
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .variant-preview {
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .variant-preview iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+        }
+        .variant-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .tag {
+            background: rgba(0, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+        }
+        .export-info {
+            text-align: center;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <h1>🌌 Holographic Systems Portfolio</h1>
+    <div class="export-info">
+        <p>Exported: ${new Date().toLocaleString()}</p>
+        <p>Total Variations: ${variations.length}</p>
+        <p><a href="https://domusgpt.github.io/active-holographic-systems-modular/" style="color: #00ffff;">Visit Live Portfolio</a></p>
+    </div>
+    <div class="portfolio-grid">
+        ${variationCards}
+    </div>
+</body>
+</html>`;
+        }
         
         // Animate previews
         function animatePreviews() {
