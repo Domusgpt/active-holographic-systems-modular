@@ -96,10 +96,30 @@
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         
-        .engine-button, .export-button {
-            background: rgba(255, 0, 150, 0.2);
-            border: 1px solid #ff0096;
-            color: #ff0096;
+        .export-button-main {
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        
+        .export-button-main:hover {
+            background: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+            transform: translateY(-2px) scale(1.05);
+        }
+        
+        .engine-button-pro {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #ffd700;
+            color: #ffd700;
             padding: 8px 15px;
             border-radius: 15px;
             font-size: 0.7rem;
@@ -107,12 +127,27 @@
             transition: all 0.3s ease;
             font-family: 'Orbitron', monospace;
             font-weight: bold;
+            position: relative;
         }
         
-        .engine-button:hover, .export-button:hover {
-            background: rgba(255, 0, 150, 0.4);
-            box-shadow: 0 0 15px rgba(255, 0, 150, 0.6);
+        .engine-button-pro:hover {
+            background: rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
             transform: translateY(-2px);
+        }
+        
+        .engine-button-pro::after {
+            content: "⭐";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.8rem;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.7; }
         }
         
         .stats {
@@ -432,8 +467,8 @@
             <div class="filter-tag" data-filter="full-spectrum">SPECTRUM</div>
             <div class="filter-tag" data-filter="custom">CUSTOM</div>
             
-            <button class="engine-button" onclick="openParametricEngine()">🔧 CREATE CUSTOM</button>
-            <button class="export-button" onclick="exportGallery()">💾 EXPORT MY GALLERY</button>
+            <button class="export-button-main" onclick="exportGallery()">📁 DOWNLOAD MY GALLERY (FREE)</button>
+            <button class="engine-button-pro" onclick="openParametricEngine()">⚙️ PARAMETRIC ENGINE (PRO)</button>
             
             <div class="stats">
                 <span id="visibleCount">30</span> / <span id="totalCount">30</span> variations
@@ -751,10 +786,7 @@
                         </div>
                         <div class="card-actions">
                             <button class="action-btn" onclick="event.stopPropagation(); addToPersonalGallery(${variant.id})" title="Add to Personal Gallery">
-                                💾 Save
-                            </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); shareVariation(${variant.id})" title="Share Variation">
-                                🔗 Share
+                                💾 Save to Gallery
                             </button>
                         </div>
                     </div>
@@ -930,7 +962,11 @@
         
         // Navigation functions
         function openParametricEngine() {
-            window.open('parametric-engine.html', '_blank');
+            const proceed = confirm('🌟 PARAMETRIC ENGINE PRO\n\nCreate unlimited custom holographic variations with:\n\n⚙️ Real-time parameter controls\n🎨 Advanced geometry options\n💾 Save & share custom creations\n📤 Individual variation exports\n🔗 Direct sharing links\n\n✨ This is a PRO feature.\n\nClick OK to explore the demo, or Cancel to stay in the free gallery.');
+            
+            if (proceed) {
+                window.open('parametric-engine.html', '_blank');
+            }
         }
         
         function addToPersonalGallery(variantId) {
@@ -977,38 +1013,6 @@
             }
         }
         
-        function shareVariation(variantId) {
-            const variant = portfolio.variants.find(v => v.id === variantId);
-            if (!variant) return;
-            
-            let shareUrl;
-            if (variant.isCustom && variant.customParams) {
-                // For custom variations, create shareable URL with parameters
-                const params = new URLSearchParams({
-                    geometry: variant.customParams.geometry || 0,
-                    density: variant.customParams.density || 1.0,
-                    speed: variant.customParams.speed || 0.5,
-                    chaos: variant.customParams.chaos || 0.0,
-                    morph: variant.customParams.morph || 0.0,
-                    hue: variant.customParams.hue || 0,
-                    saturation: variant.customParams.saturation || 0.8,
-                    intensity: variant.customParams.intensity || 0.5,
-                    name: encodeURIComponent(variant.name)
-                });
-                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?${params.toString()}`;
-            } else {
-                // For base variations, use variant ID
-                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?variant=${variant.id}&name=${encodeURIComponent(variant.name)}`;
-            }
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                alert(`🔗 Share link copied to clipboard!\n\n"${variant.name}"\n\nAnyone can view this variation by opening the link.`);
-            }).catch(() => {
-                // Fallback for browsers without clipboard API
-                prompt('🔗 Copy this shareable link:', shareUrl);
-            });
-        }
         
         function exportGallery() {
             // Export personal gallery instead of all variations
@@ -1023,7 +1027,7 @@
             }
             
             if (personalGallery.length === 0) {
-                alert('📁 Your personal gallery is empty!\n\nHover over variations and click "💾 Save" to add them to your gallery first.');
+                alert('📁 Your personal gallery is empty!\n\nHover over variations and click "💾 Save to Gallery" to add them to your collection first.\n\n✨ This is a FREE feature - build and share your curated holographic collection!');
                 return;
             }
             
@@ -1042,7 +1046,7 @@
             URL.revokeObjectURL(url);
             
             console.log(`📁 Exported personal gallery with ${personalGallery.length} variations`);
-            alert(`✅ Exported your personal gallery!\n\n${personalGallery.length} variations saved to HTML file.\n\nShare this file with others to show them your collection!`);
+            alert(`✅ FREE Gallery Export Complete!\n\n${personalGallery.length} variations saved to shareable HTML file.\n\n📤 Send this file to anyone to share your curated holographic collection!\n\n⚙️ Want to create custom variations? Upgrade to Parametric Engine PRO!`);
         }
     </script>
 
