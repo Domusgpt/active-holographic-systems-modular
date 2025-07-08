@@ -353,11 +353,14 @@ export class HolographicVisualizer {
                 float morphedGeometry = u_geometryType + u_morph * 3.0 + u_touchMorph * 2.0 + u_audioMorphBoost * 1.5;
                 float lattice = getDynamicGeometry(p, roleDensity, morphedGeometry);
                 
-                float hue = atan(u_color.r, u_color.g) + u_colorShift * 0.017453 + u_mouseIntensity * 0.2 + u_colorScrollShift + u_audioColorShift * 0.5;
-                float saturation = 0.8 + lattice * 0.2 + u_clickIntensity * 0.1 + u_touchChaos * 0.15 + u_audioChaosBoost * 0.2;
-                float brightness = 0.2 + lattice * 0.8 + u_intensity * 0.2 + u_mouseIntensity * 0.15 + u_touchMorph * 0.1 + u_audioMorphBoost * 0.1;
+                // Use the passed RGB as base color and modulate with lattice patterns
+                vec3 baseColor = u_color;
+                float latticeIntensity = lattice * u_intensity;
                 
-                vec3 color = hsv2rgb(vec3(hue, saturation, brightness));
+                vec3 color = baseColor * (0.3 + latticeIntensity * 0.7);
+                
+                // Add lattice-based brightness variations
+                color += vec3(lattice * 0.4) * baseColor;
                 
                 float enhancedChaos = u_chaos + u_chaosIntensity + u_touchChaos * 0.3 + u_audioChaosBoost * 0.4;
                 color += vec3(moirePattern(uv + scrollOffset, enhancedChaos));
@@ -371,7 +374,7 @@ export class HolographicVisualizer {
                 
                 float mouseDist = length(uv - (u_mouse - 0.5) * vec2(aspectRatio, 1.0));
                 float mouseGlow = exp(-mouseDist * 1.5) * u_mouseIntensity * 0.2;
-                color += vec3(mouseGlow) * u_color * 0.6;
+                color += vec3(mouseGlow) * baseColor * 0.6;
                 
                 float clickPulse = u_clickIntensity * exp(-mouseDist * 2.0) * 0.3;
                 color += vec3(clickPulse, clickPulse * 0.5, clickPulse * 1.5);
