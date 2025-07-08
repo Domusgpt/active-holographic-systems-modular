@@ -532,11 +532,21 @@ export class ExportSystem {
     }
     
     /**
-     * Generate single variation HTML (legacy standalone version)
+     * Generate single variation HTML using working modular system
      */
     generateSingleVariationHTML(variation) {
-        const cssStyles = this.generateSingleVariationCSS();
-        const parametersQuery = this.buildParametersQuery(variation.parameters);
+        // Build URL parameters for the variation
+        const params = new URLSearchParams({
+            geometry: variation.parameters.geometryType || 0,
+            density: variation.parameters.density || 1.0,
+            speed: variation.parameters.speed || 0.5,
+            chaos: variation.parameters.chaos || 0.0,
+            morph: variation.parameters.morph || 0.0,
+            hue: variation.parameters.hue || 0,
+            saturation: variation.parameters.saturation || 0.8,
+            intensity: variation.parameters.intensity || 0.5,
+            autoplay: 'true'
+        });
         
         return `<!DOCTYPE html>
 <html lang="en">
@@ -544,57 +554,227 @@ export class ExportSystem {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${this.escapeHtml(variation.name)} - Holographic Visualization</title>
-    <style>${cssStyles}</style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Orbitron', 'Courier New', monospace;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .info-overlay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            z-index: 1000;
+            backdrop-filter: blur(25px);
+            max-width: 300px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .info-overlay h1 {
+            color: #00ffff;
+            font-size: 1.2rem;
+            margin: 0 0 15px 0;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.8rem;
+        }
+        
+        .param-label {
+            color: rgba(0, 255, 255, 0.7);
+        }
+        
+        .param-value {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .controls button {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+        }
+        
+        .controls button:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .holographic-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
-    <div class="fullscreen-container">
-        <div class="info-panel">
-            <h1>${this.escapeHtml(variation.name)}</h1>
-            <div class="parameters">
-                <div class="param-row">
-                    <span>Geometry:</span>
-                    <span>${this.getGeometryName(variation.parameters.geometryType)}</span>
-                </div>
-                <div class="param-row">
-                    <span>Density:</span>
-                    <span>${variation.parameters.density.toFixed(2)}</span>
-                </div>
-                <div class="param-row">
-                    <span>Speed:</span>
-                    <span>${variation.parameters.speed.toFixed(2)}</span>
-                </div>
-                <div class="param-row">
-                    <span>Chaos:</span>
-                    <span>${variation.parameters.chaos.toFixed(2)}</span>
-                </div>
+    <div class="info-overlay" id="infoPanel">
+        <h1>${this.escapeHtml(variation.name)}</h1>
+        <div class="parameters">
+            <div class="param-row">
+                <span class="param-label">Geometry:</span>
+                <span class="param-value">${this.getGeometryName(variation.parameters.geometryType)}</span>
             </div>
-            <div class="controls">
-                <button onclick="toggleInfo()">Hide Info</button>
+            <div class="param-row">
+                <span class="param-label">Density:</span>
+                <span class="param-value">${variation.parameters.density.toFixed(2)}</span>
+            </div>
+            <div class="param-row">
+                <span class="param-label">Speed:</span>
+                <span class="param-value">${variation.parameters.speed.toFixed(2)}</span>
+            </div>
+            <div class="param-row">
+                <span class="param-label">Chaos:</span>
+                <span class="param-value">${variation.parameters.chaos.toFixed(2)}</span>
+            </div>
+            <div class="param-row">
+                <span class="param-label">Morph:</span>
+                <span class="param-value">${variation.parameters.morph.toFixed(2)}</span>
+            </div>
+            <div class="param-row">
+                <span class="param-label">Hue:</span>
+                <span class="param-value">${variation.parameters.hue.toFixed(0)}°</span>
             </div>
         </div>
-        
-        <!-- Direct holographic display instead of iframe -->
-        <div class="holographic-display">
-            <canvas id="background-canvas"></canvas>
-            <canvas id="shadow-canvas"></canvas>
-            <canvas id="content-canvas"></canvas>
-            <canvas id="highlight-canvas"></canvas>
-            <canvas id="accent-canvas"></canvas>
+        <div class="controls">
+            <button onclick="toggleInfo()">Hide Info</button>
+            <button onclick="location.reload()">Reload</button>
         </div>
     </div>
     
+    <div class="loading-message" id="loadingMsg">
+        🌌 Loading Holographic System...
+    </div>
+    
+    <!-- Use the working modular system as embedded iframe -->
+    <iframe 
+        class="holographic-frame" 
+        id="holographicFrame"
+        onload="frameLoaded()"
+        style="display: none;">
+    </iframe>
+    
     <script>
-        // Embedded minimal holographic renderer for standalone export
-        class StandaloneHolographicRenderer {
-            constructor(canvasId, role, params) {
-                this.canvas = document.getElementById(canvasId);
-                this.role = role;
-                this.params = params;
-                this.gl = this.canvas.getContext('webgl');
-                
-                if (!this.gl) {
-                    console.error(\`WebGL not supported for \${canvasId}\`);
-                    return;
+        // Load the working modular system with specific parameters
+        function frameLoaded() {
+            document.getElementById('loadingMsg').style.display = 'none';
+            document.getElementById('holographicFrame').style.display = 'block';
+            console.log('✅ Holographic system loaded successfully');
+        }
+        
+        function toggleInfo() {
+            const panel = document.getElementById('infoPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Auto-hide info panel after 8 seconds
+        setTimeout(() => {
+            const panel = document.getElementById('infoPanel');
+            panel.style.opacity = '0.3';
+        }, 8000);
+        
+        // Initialize the iframe with proper parameters
+        window.addEventListener('load', () => {
+            const iframe = document.getElementById('holographicFrame');
+            const demoUrl = './demo-modular.html?${params.toString()}';
+            
+            console.log('🎯 Loading variation with URL:', demoUrl);
+            iframe.src = demoUrl;
+        });
+    </script>
+</body>
+</html>`;
+    }
+    
+    /**
+     * Generate single variation CSS styles (removed - using iframe approach)
+     */
+    generateSingleVariationCSS() {
+        // This method is no longer used with the iframe approach
+        return '';
+    }
+    
+    /**
+     * Build parameters query string for URL
+     */
+    buildParametersQuery(parameters) {
+        const params = new URLSearchParams({
+            geometry: parameters.geometryType || 0,
+            density: parameters.density || 1.0,
+            speed: parameters.speed || 0.5,
+            chaos: parameters.chaos || 0.0,
+            morph: parameters.morph || 0.0,
+            hue: parameters.hue || 0,
+            saturation: parameters.saturation || 0.8,
+            intensity: parameters.intensity || 0.5
+        });
+        return params.toString();
+    }
+    
+    /**
+     * Build demo URL with parameters
+     */
+    buildDemoURL(parameters, baseUrl = './demo-modular.html') {
+        const urlParams = new URLSearchParams({
+            geometry: parameters.geometryType || 0,
+            density: parameters.density || 1.0,
+            speed: parameters.speed || 0.5,
+            chaos: parameters.chaos || 0.0,
+            morph: parameters.morph || 0.0,
+            hue: parameters.hue || 0,
+            saturation: parameters.saturation || 0.8,
+            intensity: parameters.intensity || 0.5,
+            autoplay: 'true'
+        });
+        return `${baseUrl}?${urlParams.toString()}`;
+    }
+    
+    /**
+     * Generate gallery CSS styles
+     */
+    generateGalleryCSS() {
                 }
                 
                 this.mouseX = 0.5;
