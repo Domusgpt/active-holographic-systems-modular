@@ -337,6 +337,9 @@
             const urlParams = new URLSearchParams(window.location.search);
             const variantParam = urlParams.get('variant');
             const autoplayParam = urlParams.get('autoplay');
+            const previewMode = urlParams.get('preview') === 'true';
+            const noAudio = urlParams.get('noaudio') === 'true';
+            const hideUI = urlParams.get('hideui') === 'true';
             
             // Check for custom parametric engine parameters
             const customParams = {
@@ -364,7 +367,13 @@
                 }
             }
             
-            if (autoplayParam === 'true') {
+            // Handle preview mode settings
+            if (hideUI) {
+                document.querySelector('.control-panel').style.display = 'none';
+                document.querySelector('.param-display').style.display = 'none';
+            }
+            
+            if (autoplayParam === 'true' && !noAudio && !previewMode) {
                 setTimeout(() => {
                     holographicSystem.toggleAudio();
                 }, 1000);

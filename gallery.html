@@ -221,6 +221,11 @@
             <div class="stat-item">Variations: <span id="variationCount">0</span></div>
             <div class="stat-item">Status: <span id="statusText">Loading...</span></div>
         </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <a href="parametric-engine.html" class="card-btn" style="background: rgba(255, 150, 0, 0.3); border-color: #ff9600; color: #ff9600; text-decoration: none; display: inline-block; padding: 8px 16px;">
+                🎛️ Open Parametric Engine
+            </a>
+        </div>
     </div>
     
     <div class="loading" id="loadingMsg">
@@ -321,10 +326,12 @@
             const customBadge = variation.isCustom ? '<div class="custom-badge">CUSTOM</div>' : '';
             
             return `
-                <div class="variation-card" onclick="openVariation(${variation.id})">
+                <div class="variation-card" onclick="openVariation(${variation.id})" onmouseenter="loadPreview(this)" data-params="${parametersQuery}">
                     ${customBadge}
-                    <div class="card-preview">
-                        <iframe src="./demo-modular.html?${parametersQuery}&autoplay=true" loading="lazy"></iframe>
+                    <div class="card-preview" data-preview-container>
+                        <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
+                            Hover to preview
+                        </div>
                     </div>
                     <div class="card-info">
                         <h3>${escapeHtml(variation.name)}</h3>
@@ -376,6 +383,19 @@
             `;
             document.getElementById('collectionsContainer').style.display = 'block';
         }
+        
+        // Load preview on hover
+        window.loadPreview = function(card) {
+            const container = card.querySelector('[data-preview-container]');
+            if (container && !container.querySelector('iframe')) {
+                const params = card.getAttribute('data-params');
+                const iframe = document.createElement('iframe');
+                iframe.src = `./demo-modular.html?${params}&preview=true&noaudio=true&hideui=true`;
+                iframe.loading = 'lazy';
+                container.innerHTML = '';
+                container.appendChild(iframe);
+            }
+        };
         
         // Global functions
         window.openVariation = function(id) {

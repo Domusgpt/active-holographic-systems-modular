@@ -12,7 +12,7 @@ export class HolographicSystem {
         this.baseVariants = 30; // Original 30 variations
         this.customVariants = []; // Store custom variations
         this.totalVariants = 30; // Will update dynamically
-        this.maxVariants = 50; // Maximum allowed variations
+        this.maxVariants = 10000; // Maximum allowed variations
         this.autoCycleActive = false;
         this.autoCycleInterval = null;
         this.mouseX = 0.5;
@@ -633,8 +633,8 @@ export class HolographicSystem {
             
             console.log(`✅ Added custom variation #${newVariantId}`);
         } else {
-            console.warn('⚠️ Maximum variations limit reached (50)');
-            if (confirm('Maximum 50 variations allowed. Would you like to clear saved variations and start fresh?')) {
+            console.warn('⚠️ Maximum variations limit reached (10000)');
+            if (confirm('Maximum 10000 variations allowed. Would you like to clear saved variations and start fresh?')) {
                 this.clearSavedVariations();
                 this.loadCustomVariation(customParams);
             }
