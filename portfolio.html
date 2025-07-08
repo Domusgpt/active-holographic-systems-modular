@@ -660,9 +660,11 @@
                 
                 // Load custom variations from localStorage
                 try {
-                    const customVariationsData = localStorage.getItem('holographicCustomVariations');
+                    const customVariationsData = localStorage.getItem('customHolographicVariations');
                     if (customVariationsData) {
-                        const customVariations = JSON.parse(customVariationsData);
+                        const savedData = JSON.parse(customVariationsData);
+                        // Handle the format from HolographicSystem: {variations: array, timestamp: number}
+                        const customVariations = savedData.variations || savedData;
                         
                         // Add custom variations starting from ID 30
                         customVariations.forEach((cv, index) => {
@@ -681,7 +683,7 @@
                             });
                         });
                         
-                        console.log(`📁 Loaded ${customVariations.length} custom variations`);
+                        console.log(`📁 Loaded ${customVariations.length} custom variations from 'customHolographicVariations'`);
                     }
                 } catch (e) {
                     console.warn('Could not load custom variations:', e);
