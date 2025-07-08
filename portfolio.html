@@ -899,6 +899,19 @@
         // Initialize portfolio
         const portfolio = new HolographicPortfolio();
         
+        // Animate previews
+        function animatePreviews() {
+            document.querySelectorAll('.preview-canvas').forEach((canvas, index) => {
+                const variant = holographicVariants[index];
+                if (variant) {
+                    portfolio.generatePreview(canvas, variant);
+                }
+            });
+            requestAnimationFrame(animatePreviews);
+        }
+        
+        animatePreviews();
+        
         // Navigation functions
         function openParametricEngine() {
             window.open('parametric-engine.html', '_blank');
@@ -1161,19 +1174,6 @@
 </body>
 </html>`;
         }
-        
-        // Animate previews
-        function animatePreviews() {
-            document.querySelectorAll('.preview-canvas').forEach((canvas, index) => {
-                const variant = holographicVariants[index];
-                if (variant) {
-                    portfolio.generatePreview(canvas, variant);
-                }
-            });
-            requestAnimationFrame(animatePreviews);
-        }
-        
-        animatePreviews();
     </script>
 </body>
 </html>
