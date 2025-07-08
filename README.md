@@ -9,9 +9,9 @@ This is the **modular production-ready version** of the Active Holographic Syste
 **[📍 Open Demo](https://domusgpt.github.io/active-holographic-systems-modular/)**
 
 ### Direct Links:
-- **[🌌 Main Demo](https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html)** - Full holographic system
-- **[📁 Gallery](https://domusgpt.github.io/active-holographic-systems-modular/portfolio.html)** - Browse all 30 variations  
+- **[📁 Gallery/Portfolio](https://domusgpt.github.io/active-holographic-systems-modular/portfolio.html)** - Browse and launch all 30 variations
 - **[🎛️ Parametric Engine](https://domusgpt.github.io/active-holographic-systems-modular/parametric-engine.html)** - Create custom variations
+- **[🌌 Demo System](https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html)** - Direct access to holographic system
 
 ## 🎯 Quick Start
 

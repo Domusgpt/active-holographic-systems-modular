@@ -724,8 +724,8 @@
                 const modal = document.getElementById('modal');
                 const iframe = document.getElementById('modalIframe');
                 
-                // Create URL with variant parameter
-                const url = `index.html?variant=${id}&autoplay=true`;
+                // Create URL with variant parameter pointing to actual demo
+                const url = `demo-modular.html?variant=${id}&autoplay=true`;
                 iframe.src = url;
                 modal.classList.add('active');
             }
