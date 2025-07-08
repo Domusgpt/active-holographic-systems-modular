@@ -1055,7 +1055,7 @@
                     <p><strong>ID:</strong> ${variant.id + 1}</p>
                     <p><strong>Type:</strong> ${variant.isCustom ? 'Custom' : 'Base'}</p>
                     <div class="variant-tags">
-                        ${variant.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        ${variant.tags.map(tag => '<span class="tag">' + tag + '</span>').join('')}
                     </div>
                     <div class="click-hint">Click to open fullscreen</div>
                 </div>`;
