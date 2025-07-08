@@ -1028,7 +1028,9 @@
             console.log(`📁 Exported personal gallery with ${personalGallery.length} variations`);
             alert(`✅ Exported your personal gallery!\n\n${personalGallery.length} variations saved to HTML file.\n\nShare this file with others to show them your collection!`);
         }
-        
+    </script>
+
+    <script>
         function generatePersonalGalleryExport(personalGallery) {
             const variationCards = personalGallery.map(variant => {
                 const params = variant.isCustom && variant.customParams ? 
