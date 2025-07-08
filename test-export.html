@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Test - Active Holographic Systems</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-button {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .test-button:hover {
+            background: rgba(0, 255, 255, 0.4);
+        }
+        
+        .test-result {
+            background: rgba(0, 100, 0, 0.3);
+            border: 1px solid #00ff00;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .test-error {
+            background: rgba(100, 0, 0, 0.3);
+            border: 1px solid #ff0000;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Export System Test</h1>
+        
+        <div class="test-result" id="initResult"></div>
+        <div class="test-error" id="initError"></div>
+        
+        <div class="test-controls">
+            <button class="test-button" onclick="testExportGallery()">Test Export Gallery</button>
+            <button class="test-button" onclick="testExportSingle()">Test Export Single</button>
+            <button class="test-button" onclick="testExportJSON()">Test Export JSON</button>
+        </div>
+        
+        <div class="test-result" id="testResult"></div>
+        <div class="test-error" id="testError"></div>
+        
+        <!-- Hidden canvases for testing -->
+        <div style="display: none;">
+            <canvas id="background-canvas" width="100" height="100"></canvas>
+            <canvas id="shadow-canvas" width="100" height="100"></canvas>
+            <canvas id="content-canvas" width="100" height="100"></canvas>
+            <canvas id="highlight-canvas" width="100" height="100"></canvas>
+            <canvas id="accent-canvas" width="100" height="100"></canvas>
+        </div>
+    </div>
+
+    <script type="module">
+        import { HolographicSystem } from './src/core/HolographicSystem.js';
+        
+        let holographicSystem = null;
+        
+        // Test initialization
+        try {
+            holographicSystem = new HolographicSystem();
+            document.getElementById('initResult').innerHTML = '✅ System initialized successfully';
+            document.getElementById('initResult').style.display = 'block';
+        } catch (error) {
+            document.getElementById('initError').innerHTML = '❌ Initialization failed: ' + error.message;
+            document.getElementById('initError').style.display = 'block';
+        }
+        
+        // Test functions
+        window.testExportGallery = function() {
+            try {
+                const variations = holographicSystem.exportSystem.getAllVariations();
+                document.getElementById('testResult').innerHTML = 
+                    `✅ Export Gallery: Ready to export ${variations.length} variations`;
+                document.getElementById('testResult').style.display = 'block';
+                document.getElementById('testError').style.display = 'none';
+                
+                // Actually trigger export
+                holographicSystem.exportSystem.exportHTMLGallery();
+                
+            } catch (error) {
+                document.getElementById('testError').innerHTML = '❌ Export Gallery failed: ' + error.message;
+                document.getElementById('testError').style.display = 'block';
+                document.getElementById('testResult').style.display = 'none';
+            }
+        };
+        
+        window.testExportSingle = function() {
+            try {
+                const variation = holographicSystem.exportSystem.getVariationById(5);
+                if (variation) {
+                    document.getElementById('testResult').innerHTML = 
+                        `✅ Export Single: Ready to export "${variation.name}"`;
+                    document.getElementById('testResult').style.display = 'block';
+                    document.getElementById('testError').style.display = 'none';
+                    
+                    // Actually trigger export
+                    holographicSystem.exportSystem.exportSingleVariation(5);
+                    
+                } else {
+                    throw new Error('Variation not found');
+                }
+            } catch (error) {
+                document.getElementById('testError').innerHTML = '❌ Export Single failed: ' + error.message;
+                document.getElementById('testError').style.display = 'block';
+                document.getElementById('testResult').style.display = 'none';
+            }
+        };
+        
+        window.testExportJSON = function() {
+            try {
+                const data = {
+                    version: '1.0',
+                    type: 'holographic-collection',
+                    totalVariations: holographicSystem.totalVariants,
+                    customVariations: holographicSystem.customVariants
+                };
+                
+                document.getElementById('testResult').innerHTML = 
+                    `✅ Export JSON: Ready to export ${data.totalVariations} variations`;
+                document.getElementById('testResult').style.display = 'block';
+                document.getElementById('testError').style.display = 'none';
+                
+                // Actually trigger export
+                holographicSystem.exportSystem.exportJSON();
+                
+            } catch (error) {
+                document.getElementById('testError').innerHTML = '❌ Export JSON failed: ' + error.message;
+                document.getElementById('testError').style.display = 'block';
+                document.getElementById('testResult').style.display = 'none';
+            }
+        };
+        
+        console.log('🧪 Export test system ready');
+    </script>
+</body>
+</html>

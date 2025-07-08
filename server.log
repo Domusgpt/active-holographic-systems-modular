@@ -1,0 +1,68 @@
+127.0.0.1 - - [08/Jul/2025 11:36:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:36:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:36:38] "GET /test-export.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:36:38] "GET /src/core/HolographicSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:36:38] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:36:38] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:36:38] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 11:36:38] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 11:36:46] "GET /demo-modular.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:37:51] "GET /demo.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:38:01] "GET /parametric-engine.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:38:03] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 11:38:03] "GET /index.html?geometry=0&density=1&speed=0.5&chaos=0&morph=0&hue=0&saturation=0.8&intensity=0.5&bassResponse=1&midResponse=1&highResponse=1&autoplay=true HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 11:38:13] "GET /portfolio.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:38:14] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 11:38:14] "GET /index.html?variant=2&autoplay=true HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 11:38:16] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 11:38:16] "GET /index.html?variant=3&autoplay=true HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 11:57:40] "GET /demo-modular.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:57:40] "GET /src/core/HolographicSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 11:57:41] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 11:57:41] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:01:56] "GET /test-export.html HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:01:56] "GET /src/core/HolographicSystem.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:01:57] "GET /src/features/ExportSystem.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:02:16] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 12:02:16] "GET /index.html?geometry=0&density=1&speed=0.5&chaos=0&morph=0&hue=0&saturation=0.8&intensity=0.5&bassResponse=1&midResponse=1&highResponse=1&autoplay=true HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 12:02:36] "GET /demo-modular.html HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:04:03] "HEAD /demo-modular.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:06:01] "GET /parametric-engine.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:28:36] "GET /parametric-engine.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:42:56] "GET /test-simple.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:42:58] "GET /demo-modular.html?geometry=2&density=1.5&speed=0.8 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:42:58] "GET /src/core/HolographicSystem.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:42:58] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:42:58] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:45:16] "GET /demo-modular.html HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:45:16] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:47:23] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:47:27] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 12:47:27] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 12:50:10] "GET /demo-modular.html?geometry=2&density=1.5&speed=0.8 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:50:10] "GET /src/core/HolographicSystem.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:50:10] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:54:05] "GET /demo-modular.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 12:54:06] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 12:54:06] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 13:01:10] "GET /demo-modular.html HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 13:01:11] "GET /src/core/HolographicSystem.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 13:01:11] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:03:51] "GET /demo-modular.html?geometry=2&density=1.5&speed=0.8 HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:03:51] "GET /src/core/HolographicSystem.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 14:03:51] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 304 -
+127.0.0.1 - - [08/Jul/2025 14:03:51] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:22] "GET /demo-modular.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:22] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 14:04:22] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 14:04:22] "GET /src/core/HolographicSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:23] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:23] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:50] "GET /demo-modular.html HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:51] "GET /src/core/HolographicSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:51] "GET /src/core/HolographicVisualizer.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:04:51] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 14:04:51] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [08/Jul/2025 14:04:51] "GET /src/features/ExportSystem.js HTTP/1.1" 200 -
+127.0.0.1 - - [08/Jul/2025 14:06:09] code 404, message File not found
+127.0.0.1 - - [08/Jul/2025 14:06:09] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -

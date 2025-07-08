@@ -900,18 +900,31 @@
                     console.log(`  ${key}: ${value}`);
                 });
                 
-                const url = `index.html?${params.toString()}&autoplay=true`;
+                const url = `demo-modular.html?${params.toString()}&autoplay=true`;
                 console.log('🚀 Full URL:', url);
                 console.log('🔗 Param string:', params.toString());
                 
-                // Try both window.open and direct navigation for testing
-                const newWindow = window.open(url, '_blank');
-                if (!newWindow) {
-                    console.log('⚠️ Popup blocked! Trying same window...');
-                    window.location.href = url;
-                } else {
-                    console.log('✅ New window opened successfully');
-                }
+                // First test if the URL is accessible
+                fetch(url, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('✅ URL is accessible, opening...');
+                            const newWindow = window.open(url, '_blank');
+                            if (!newWindow) {
+                                console.log('⚠️ Popup blocked! Trying same window...');
+                                window.location.href = url;
+                            } else {
+                                console.log('✅ New window opened successfully');
+                            }
+                        } else {
+                            console.error(`❌ URL not accessible: ${response.status}`);
+                            alert(`Launch failed: demo-modular.html not found (${response.status})`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ Launch error:', error);
+                        alert(`Launch failed: ${error.message}`);
+                    });
             }
             
             // BATCH GENERATION & EXPORT

@@ -298,6 +298,11 @@
             <button class="control-btn" onclick="toggleAutoCycle()" id="autoCycleBtn">⏸ AUTO</button>
             <button class="control-btn" onclick="toggleAudio()" id="audioBtn" style="background: rgba(255,0,77,0.3); border-color: #ff004d; color: #ff004d;">🎵 AUDIO</button>
         </div>
+        <div class="control-buttons">
+            <button class="control-btn" onclick="exportGallery()" style="background: rgba(0,255,77,0.3); border-color: #00ff4d; color: #00ff4d;">📁 GALLERY</button>
+            <button class="control-btn" onclick="exportSingle()" style="background: rgba(255,200,0,0.3); border-color: #ffc800; color: #ffc800;">📄 SINGLE</button>
+            <button class="control-btn" onclick="exportJSON()" style="background: rgba(255,100,255,0.3); border-color: #ff64ff; color: #ff64ff;">💾 JSON</button>
+        </div>
         <div class="auto-cycle" id="autoCycleStatus">Auto-cycle: OFF</div>
     </div>
     
@@ -339,11 +344,13 @@
         <canvas id="accent-canvas" style="z-index: 15; opacity: 0.3; filter: blur(2px); mix-blend-mode: color-dodge; transform: scale(1.01);"></canvas>
     </div>
 
-    <script>
-        console.log('🌌 Active Holographic Systems - 30 Variations Mega Demo');
+    <script type="module">
+        import { HolographicSystem } from './src/core/HolographicSystem.js';
         
-        // COMPLETE HOLOGRAPHIC VISUALIZER WITH FULL REACTIVITY
-        class CompleteHolographicVisualizer {
+        console.log('🌌 Active Holographic Systems - Modular Demo');
+        
+        // Global system instance
+        let holographicSystem = null;
             constructor(canvasId, role = 'content', reactivity = 1.0, variant = 0) {
                 this.canvas = document.getElementById(canvasId);
                 this.role = role;
@@ -967,8 +974,8 @@
                 this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
                 this.gl.uniform1f(this.uniforms.time, time);
                 this.gl.uniform2f(this.uniforms.mouse, this.mouseX, this.mouseY);
-                this.gl.uniform1f(this.uniforms.geometry, 1.0);
-                this.gl.uniform1f(this.uniforms.density, 4.2);
+                this.gl.uniform1f(this.uniforms.geometry, this.variantParams.geometryType || 0);
+                this.gl.uniform1f(this.uniforms.density, this.variantParams.density || 1.0);
                 this.gl.uniform1f(this.uniforms.speed, 0.3 + (this.audioSpeedBoost || 0.0));
                 this.gl.uniform3fv(this.uniforms.color, new Float32Array([0.0, 1.0, 1.0]));
                 this.gl.uniform1f(this.uniforms.intensity, this.roleParams.intensity);
@@ -979,7 +986,7 @@
                 this.gl.uniform1f(this.uniforms.mouseIntensity, this.mouseIntensity);
                 this.gl.uniform1f(this.uniforms.clickIntensity, this.clickIntensity);
                 this.gl.uniform1f(this.uniforms.densityVariation, this.densityVariation);
-                this.gl.uniform1f(this.uniforms.geometryType, this.variant);
+                this.gl.uniform1f(this.uniforms.geometryType, this.variantParams.geometryType !== undefined ? this.variantParams.geometryType : this.variant || 0);
                 this.gl.uniform1f(this.uniforms.chaos, this.variantParams.chaos || 0.0);
                 this.gl.uniform1f(this.uniforms.morph, this.variantParams.morph || 0.0);
                 
@@ -1128,7 +1135,7 @@
                         const customData = this.customVariants[customIndex];
                         if (customData) {
                             visualizer.variantParams = {
-                                geometry: customData.params.geometry,
+                                geometryType: customData.params.geometry,
                                 density: customData.params.density,
                                 speed: customData.params.speed,
                                 chaos: customData.params.chaos,
@@ -1835,10 +1842,8 @@
                     }
                 };
                 
-                // Add multiple event types for maximum compatibility
+                // Single event listener to prevent multiple calls
                 button.addEventListener('click', handleButtonPress, false);
-                button.addEventListener('touchend', handleButtonPress, false);
-                button.addEventListener('pointerup', handleButtonPress, false);
             });
             
             console.log('✅ Mobile button handlers setup complete');

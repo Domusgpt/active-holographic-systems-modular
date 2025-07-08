@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Holographic Systems - Modular Demo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Orbitron', 'Courier New', monospace;
+            height: 100vh;
+            cursor: crosshair;
+            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 70%);
+            user-select: none;
+        }
+        
+        .holographic-display {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            z-index: 10;
+            touch-action: none;
+            overscroll-behavior: none;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 8px 16px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 2px rgba(0, 0, 0, 0.1),
+                0 0 0 2px rgba(0, 255, 255, 0.3),
+                0 0 30px rgba(0, 255, 255, 0.2);
+        }
+        
+        .holographic-display:hover {
+            transform: scale(1.02) translateZ(10px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 12px 24px rgba(0, 0, 0, 0.4),
+                inset 0 3px 6px rgba(255, 255, 255, 0.15),
+                inset 0 -3px 3px rgba(0, 0, 0, 0.15),
+                0 0 0 3px rgba(0, 255, 255, 0.5),
+                0 0 50px rgba(0, 255, 255, 0.3);
+        }
+        
+        .control-panel {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg,
+                rgba(0, 0, 0, 0.9) 0%,
+                rgba(25, 0, 50, 0.8) 100%
+            );
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #00ffff;
+            font-family: 'Orbitron', monospace;
+            z-index: 2500;
+            backdrop-filter: blur(25px);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                0 0 0 1px rgba(0, 255, 255, 0.2);
+            touch-action: manipulation;
+            pointer-events: auto;
+        }
+        
+        .param-display {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: #0ff;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .param-display.active {
+            display: block;
+        }
+        
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            min-width: 200px;
+        }
+        
+        .param-label {
+            color: rgba(0, 255, 255, 0.7);
+        }
+        
+        .param-value {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .variant-display {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #00ffff;
+            font-size: 0.9rem;
+        }
+        
+        .variant-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            touch-action: manipulation;
+            pointer-events: auto;
+            min-height: 44px;
+            min-width: 44px;
+            position: relative;
+            z-index: 3000;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0);
+        }
+        
+        .auto-cycle {
+            margin-top: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            overscroll-behavior: none;
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0, 255, 255, 0.1) 20px, rgba(0, 255, 255, 0.1) 21px),
+                repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0, 255, 255, 0.1) 20px, rgba(0, 255, 255, 0.1) 21px);
+        }
+        
+        .grid-overlay.active {
+            opacity: 0.3;
+        }
+        
+        .interaction-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.6) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 30;
+            animation: rippleExpand 0.6s ease-out forwards;
+        }
+        
+        @keyframes rippleExpand {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 100px; height: 100px; opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay" id="gridOverlay"></div>
+    
+    <div class="control-panel">
+        <div class="variant-display">
+            <div>HOLOGRAPHIC VARIANT</div>
+            <div class="variant-number" id="variantNumber">01</div>
+            <div id="variantName">HYPERCUBE LATTICE</div>
+        </div>
+        <div class="control-buttons">
+            <button class="control-btn">◀ PREV</button>
+            <button class="control-btn">NEXT ▶</button>
+        </div>
+        <div class="control-buttons">
+            <button class="control-btn">🎲 RANDOM</button>
+            <button class="control-btn" id="autoCycleBtn">⏸ AUTO</button>
+            <button class="control-btn" id="audioBtn" style="background: rgba(255,0,77,0.3); border-color: #ff004d; color: #ff004d;">🎵 AUDIO</button>
+        </div>
+        <div class="control-buttons">
+            <button class="control-btn" style="background: rgba(0,255,77,0.3); border-color: #00ff4d; color: #00ff4d;">📁 GALLERY</button>
+            <button class="control-btn" style="background: rgba(255,200,0,0.3); border-color: #ffc800; color: #ffc800;">📄 SINGLE</button>
+            <button class="control-btn" style="background: rgba(255,100,255,0.3); border-color: #ff64ff; color: #ff64ff;">💾 JSON</button>
+        </div>
+        <div class="auto-cycle" id="autoCycleStatus">Auto-cycle: OFF</div>
+    </div>
+    
+    <div class="param-display" id="paramDisplay">
+        <div class="param-row">
+            <span class="param-label">Geometry:</span>
+            <span class="param-value" id="paramGeometry">HYPERCUBE</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Density:</span>
+            <span class="param-value" id="paramDensity">1.0</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Speed:</span>
+            <span class="param-value" id="paramSpeed">0.5</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Chaos:</span>
+            <span class="param-value" id="paramChaos">0.0</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Morph:</span>
+            <span class="param-value" id="paramMorph">0.0</span>
+        </div>
+        <div class="param-row">
+            <span class="param-label">Hue:</span>
+            <span class="param-value" id="paramHue">0°</span>
+        </div>
+    </div>
+    
+    <div class="holographic-display" id="holographicDisplay">
+        <canvas id="background-canvas" style="z-index: 1; opacity: 0.2;"></canvas>
+        <canvas id="shadow-canvas" style="z-index: 3; opacity: 0.6; filter: blur(2px) brightness(0.7); mix-blend-mode: multiply; transform: translate(2px, 2px);"></canvas>
+        <canvas id="content-canvas" style="z-index: 5; opacity: 0.8; mix-blend-mode: normal;"></canvas>
+        <canvas id="highlight-canvas" style="z-index: 7; opacity: 0.4; filter: blur(1px) brightness(1.5); mix-blend-mode: screen; transform: translate(-1px, -1px);"></canvas>
+        <canvas id="accent-canvas" style="z-index: 15; opacity: 0.3; filter: blur(2px); mix-blend-mode: color-dodge; transform: scale(1.01);"></canvas>
+    </div>
+
+    <script type="module">
+        import { HolographicSystem } from './src/core/HolographicSystem.js';
+        
+        console.log('🌌 Active Holographic Systems - Modular Demo');
+        
+        // Global system instance
+        let holographicSystem = null;
+        
+        // Global control functions
+        window.nextVariant = () => {
+            if (holographicSystem) {
+                holographicSystem.nextVariant();
+            }
+        };
+        
+        window.previousVariant = () => {
+            if (holographicSystem) {
+                holographicSystem.previousVariant();
+            }
+        };
+        
+        window.randomVariant = () => {
+            if (holographicSystem) {
+                holographicSystem.randomVariant();
+            }
+        };
+        
+        window.toggleAutoCycle = () => {
+            if (holographicSystem) {
+                holographicSystem.toggleAutoCycle();
+            }
+        };
+        
+        window.toggleAudio = () => {
+            if (holographicSystem) {
+                holographicSystem.toggleAudio();
+            }
+        };
+        
+        // Export functions
+        window.exportGallery = () => {
+            if (holographicSystem) {
+                // Open portfolio instead of creating gallery
+                window.open('portfolio.html', '_blank');
+            }
+        };
+        
+        window.exportSingle = () => {
+            if (holographicSystem) {
+                // Use the working standalone export instead
+                holographicSystem.exportSystem.exportSingleVariation(holographicSystem.currentVariant);
+            }
+        };
+        
+        window.exportJSON = () => {
+            if (holographicSystem) {
+                holographicSystem.exportSystem.exportJSON();
+            }
+        };
+        
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            console.log('🚀 Initializing Active Holographic Systems - Modular Demo...');
+            holographicSystem = new HolographicSystem();
+            
+            // Check for URL parameters (for portfolio integration)
+            const urlParams = new URLSearchParams(window.location.search);
+            const variantParam = urlParams.get('variant');
+            const autoplayParam = urlParams.get('autoplay');
+            
+            // Check for custom parametric engine parameters
+            const customParams = {
+                geometry: urlParams.get('geometry'),
+                density: urlParams.get('density'),
+                speed: urlParams.get('speed'),
+                chaos: urlParams.get('chaos'),
+                morph: urlParams.get('morph'),
+                hue: urlParams.get('hue'),
+                saturation: urlParams.get('saturation'),
+                intensity: urlParams.get('intensity')
+            };
+            
+            // Check if custom parameters are provided
+            const hasCustomParams = Object.values(customParams).some(param => param !== null);
+            
+            if (hasCustomParams) {
+                console.log('🎛️ Loading custom parametric variation...');
+                holographicSystem.loadCustomVariation(customParams);
+            } else if (variantParam !== null) {
+                const variantId = parseInt(variantParam);
+                if (variantId >= 0 && variantId < holographicSystem.totalVariants) {
+                    holographicSystem.updateVariant(variantId);
+                    console.log(`🎯 Launched with variant ${variantId + 1}`);
+                }
+            }
+            
+            if (autoplayParam === 'true') {
+                setTimeout(() => {
+                    holographicSystem.toggleAudio();
+                }, 1000);
+            }
+            
+            // Set up button handlers
+            const buttons = document.querySelectorAll('.control-btn');
+            buttons.forEach((button) => {
+                const buttonText = button.textContent.trim();
+                
+                const handleButtonPress = (e) => {
+                    e.stopPropagation();
+                    
+                    if (buttonText.includes('PREV')) {
+                        previousVariant();
+                    } else if (buttonText.includes('NEXT')) {
+                        nextVariant();
+                    } else if (buttonText.includes('RANDOM')) {
+                        randomVariant();
+                    } else if (buttonText.includes('AUTO')) {
+                        toggleAutoCycle();
+                    } else if (buttonText.includes('AUDIO')) {
+                        toggleAudio();
+                    } else if (buttonText.includes('GALLERY')) {
+                        exportGallery();
+                    } else if (buttonText.includes('SINGLE')) {
+                        exportSingle();
+                    } else if (buttonText.includes('JSON')) {
+                        exportJSON();
+                    }
+                };
+                
+                button.addEventListener('click', handleButtonPress, false);
+            });
+            
+            console.log('✅ Modular system initialized successfully');
+        });
+        
+    </script>
+</body>
+</html>
