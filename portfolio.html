@@ -257,6 +257,37 @@
             justify-content: space-between;
         }
         
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .variant-card:hover .card-actions {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #00ffff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            flex: 1;
+        }
+        
+        .action-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+            transform: translateY(-1px);
+        }
+        
         /* MODAL SYSTEM */
         .modal {
             position: fixed;
@@ -371,7 +402,7 @@
             <div class="filter-tag" data-filter="custom">CUSTOM</div>
             
             <button class="engine-button" onclick="openParametricEngine()">🔧 CREATE CUSTOM</button>
-            <button class="export-button" onclick="exportGallery()">💾 EXPORT GALLERY</button>
+            <button class="export-button" onclick="exportGallery()">💾 EXPORT MY GALLERY</button>
             
             <div class="stats">
                 <span id="visibleCount">30</span> / <span id="totalCount">30</span> variations
@@ -674,6 +705,14 @@
                             <div class="param"><span>Chaos:</span><span>${variant.chaos}</span></div>
                             <div class="param"><span>Morph:</span><span>${variant.morph}</span></div>
                         </div>
+                        <div class="card-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); addToPersonalGallery(${variant.id})" title="Add to Personal Gallery">
+                                💾 Save
+                            </button>
+                            <button class="action-btn" onclick="event.stopPropagation(); shareVariation(${variant.id})" title="Share Variation">
+                                🔗 Share
+                            </button>
+                        </div>
                     </div>
                 `;
                 
@@ -833,28 +872,120 @@
             window.open('parametric-engine.html', '_blank');
         }
         
+        function addToPersonalGallery(variantId) {
+            const variant = portfolio.variants.find(v => v.id === variantId);
+            if (!variant) return;
+            
+            // Get existing personal gallery
+            let personalGallery = [];
+            try {
+                const saved = localStorage.getItem('holographicPersonalGallery');
+                if (saved) {
+                    personalGallery = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('Could not load personal gallery:', e);
+            }
+            
+            // Check if already saved
+            const exists = personalGallery.some(item => 
+                item.id === variant.id && 
+                JSON.stringify(item.customParams) === JSON.stringify(variant.customParams)
+            );
+            
+            if (exists) {
+                alert('💾 This variation is already in your personal gallery!');
+                return;
+            }
+            
+            // Add to personal gallery
+            personalGallery.push({
+                ...variant,
+                savedDate: new Date().toISOString(),
+                savedFrom: 'portfolio'
+            });
+            
+            // Save to localStorage
+            try {
+                localStorage.setItem('holographicPersonalGallery', JSON.stringify(personalGallery));
+                console.log(`💾 Added "${variant.name}" to personal gallery`);
+                alert(`💾 Added "${variant.name}" to your personal gallery!\n\nTotal saved: ${personalGallery.length} variations`);
+            } catch (e) {
+                console.error('Failed to save to personal gallery:', e);
+                alert('❌ Failed to save to personal gallery. Storage may be full.');
+            }
+        }
+        
+        function shareVariation(variantId) {
+            const variant = portfolio.variants.find(v => v.id === variantId);
+            if (!variant) return;
+            
+            let shareUrl;
+            if (variant.isCustom && variant.customParams) {
+                // For custom variations, create shareable URL with parameters
+                const params = new URLSearchParams({
+                    geometry: variant.customParams.geometry || 0,
+                    density: variant.customParams.density || 1.0,
+                    speed: variant.customParams.speed || 0.5,
+                    chaos: variant.customParams.chaos || 0.0,
+                    morph: variant.customParams.morph || 0.0,
+                    hue: variant.customParams.hue || 0,
+                    saturation: variant.customParams.saturation || 0.8,
+                    intensity: variant.customParams.intensity || 0.5,
+                    name: encodeURIComponent(variant.name)
+                });
+                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?${params.toString()}`;
+            } else {
+                // For base variations, use variant ID
+                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?variant=${variant.id}&name=${encodeURIComponent(variant.name)}`;
+            }
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert(`🔗 Share link copied to clipboard!\n\n"${variant.name}"\n\nAnyone can view this variation by opening the link.`);
+            }).catch(() => {
+                // Fallback for browsers without clipboard API
+                prompt('🔗 Copy this shareable link:', shareUrl);
+            });
+        }
+        
         function exportGallery() {
-            // Create a simple HTML gallery export
-            const allVariations = portfolio.variants;
-            let galleryHTML = generatePortfolioExport(allVariations);
+            // Export personal gallery instead of all variations
+            let personalGallery = [];
+            try {
+                const saved = localStorage.getItem('holographicPersonalGallery');
+                if (saved) {
+                    personalGallery = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('Could not load personal gallery:', e);
+            }
+            
+            if (personalGallery.length === 0) {
+                alert('📁 Your personal gallery is empty!\n\nHover over variations and click "💾 Save" to add them to your gallery first.');
+                return;
+            }
+            
+            // Create shareable gallery HTML
+            let galleryHTML = generatePersonalGalleryExport(personalGallery);
             
             // Download the file
             const blob = new Blob([galleryHTML], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'holographic-portfolio-export.html';
+            link.download = `my-holographic-gallery-${personalGallery.length}variations.html`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
             
-            console.log(`📁 Exported portfolio with ${allVariations.length} variations`);
-            alert(`✅ Exported ${allVariations.length} variations to HTML file!`);
+            console.log(`📁 Exported personal gallery with ${personalGallery.length} variations`);
+            alert(`✅ Exported your personal gallery!\n\n${personalGallery.length} variations saved to HTML file.\n\nShare this file with others to show them your collection!`);
         }
         
-        function generatePortfolioExport(variations) {
-            const variationCards = variations.map(variant => {
+        function generatePersonalGalleryExport(personalGallery) {
+            const variationCards = personalGallery.map(variant => {
                 const params = variant.isCustom && variant.customParams ? 
                     new URLSearchParams({
                         geometry: variant.customParams.geometry || 0,
@@ -965,9 +1096,14 @@
 <body>
     <h1>🌌 Holographic Systems Portfolio</h1>
     <div class="export-info">
+        <p>📁 Personal Holographic Gallery</p>
         <p>Exported: ${new Date().toLocaleString()}</p>
-        <p>Total Variations: ${variations.length}</p>
+        <p>Total Saved: ${personalGallery.length} variations</p>
         <p><a href="https://domusgpt.github.io/active-holographic-systems-modular/" style="color: #00ffff;">Visit Live Portfolio</a></p>
+        <p style="font-size: 0.8rem; margin-top: 10px; color: rgba(255,255,255,0.6);">
+            This is a personal collection saved from the holographic systems portfolio.<br>
+            Each variation can be opened by clicking on it.
+        </p>
     </div>
     <div class="portfolio-grid">
         ${variationCards}
