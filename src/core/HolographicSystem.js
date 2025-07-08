@@ -248,6 +248,13 @@ export class HolographicSystem {
     }
 
     async initAudio() {
+        // Don't initialize audio if in preview/gallery mode
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('hideui') === 'true' || urlParams.get('preview') === 'true') {
+            console.log('🔇 Audio disabled in preview mode');
+            return;
+        }
+        
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             
@@ -335,6 +342,12 @@ export class HolographicSystem {
     }
 
     toggleAudio() {
+        // Don't toggle audio if in preview/gallery mode
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('hideui') === 'true' || urlParams.get('preview') === 'true') {
+            return;
+        }
+        
         if (!this.audioEnabled) {
             this.initAudio();
         } else {
