@@ -358,11 +358,11 @@ export class HolographicSystem {
             this.audioSmoothing = { bass: 0, mid: 0, high: 0 };
         }
         
-        const smoothingFactor = 0.7; // Higher = more smoothing
+        const smoothingFactor = 0.4; // Less smoothing for more reactivity
         this.audioSmoothing[type] = this.audioSmoothing[type] * smoothingFactor + currentValue * (1 - smoothingFactor);
         
-        // Only react to significant changes
-        const threshold = 0.1;
+        // Lower threshold for more sensitivity
+        const threshold = 0.05;
         return this.audioSmoothing[type] > threshold ? this.audioSmoothing[type] : 0;
     }
     
