@@ -331,14 +331,53 @@ export class HolographicSystem {
         }
         high /= ((this.frequencyData.length - midEnd) * 255);
         
-        this.audioData = { bass, mid, high };
+        // Smooth and musical audio processing
+        const smoothedAudio = {
+            bass: this.smoothAudioValue(bass, 'bass'),
+            mid: this.smoothAudioValue(mid, 'mid'), 
+            high: this.smoothAudioValue(high, 'high'),
+            // Add musical features
+            energy: (bass + mid + high) / 3,
+            rhythm: this.detectRhythm(bass),
+            melody: this.detectMelody(mid, high)
+        };
         
-        // Apply audio reactivity to all visualizers
+        this.audioData = smoothedAudio;
+        
+        // Apply controlled audio reactivity to all visualizers
         if (this.audioEnabled) {
             this.visualizers.forEach(visualizer => {
                 visualizer.updateAudio(this.audioData);
             });
         }
+    }
+    
+    smoothAudioValue(currentValue, type) {
+        // Smooth audio values to prevent jarring changes
+        if (!this.audioSmoothing) {
+            this.audioSmoothing = { bass: 0, mid: 0, high: 0 };
+        }
+        
+        const smoothingFactor = 0.7; // Higher = more smoothing
+        this.audioSmoothing[type] = this.audioSmoothing[type] * smoothingFactor + currentValue * (1 - smoothingFactor);
+        
+        // Only react to significant changes
+        const threshold = 0.1;
+        return this.audioSmoothing[type] > threshold ? this.audioSmoothing[type] : 0;
+    }
+    
+    detectRhythm(bassLevel) {
+        // Simple beat detection based on bass changes
+        if (!this.previousBass) this.previousBass = 0;
+        const beatDetected = bassLevel > this.previousBass + 0.2;
+        this.previousBass = bassLevel;
+        return beatDetected ? 1.0 : 0.0;
+    }
+    
+    detectMelody(midLevel, highLevel) {
+        // Detect melodic movement in mid/high frequencies
+        const melodicActivity = (midLevel + highLevel) / 2;
+        return melodicActivity > 0.3 ? melodicActivity : 0.0;
     }
 
     toggleAudio() {

@@ -493,12 +493,49 @@ export class HolographicVisualizer {
         if (!audioData) return;
         
         this.audioData = audioData;
-        this.audioDensityBoost = audioData.bass * 2.0;
-        this.clickIntensity = Math.max(this.clickIntensity, audioData.bass * 0.8);
-        this.audioMorphBoost = audioData.mid * 1.5;
-        this.audioSpeedBoost = audioData.mid * 0.5;
-        this.audioChaosBoost = audioData.high * 1.2;
-        this.audioColorShift = audioData.high * Math.PI;
+        
+        // Musical visualization approach - controlled and smooth
+        const smoothing = 0.85;
+        
+        // Initialize if needed
+        if (!this.audioSmooth) {
+            this.audioSmooth = {
+                density: 0, morph: 0, speed: 0, chaos: 0, color: 0, beat: 0
+            };
+        }
+        
+        // Speed: Very slow base, only increases with rhythm
+        const targetSpeed = audioData.rhythm > 0 ? audioData.rhythm * 0.3 : -0.1; // Can go negative (reverse)
+        this.audioSmooth.speed = this.audioSmooth.speed * smoothing + targetSpeed * (1 - smoothing);
+        this.audioSpeedBoost = this.audioSmooth.speed;
+        
+        // Density: React to overall energy but stay controlled
+        const targetDensity = audioData.energy * 0.6;
+        this.audioSmooth.density = this.audioSmooth.density * smoothing + targetDensity * (1 - smoothing);
+        this.audioDensityBoost = this.audioSmooth.density;
+        
+        // Morph: Flows with melody
+        const targetMorph = audioData.melody * 0.8;
+        this.audioSmooth.morph = this.audioSmooth.morph * smoothing + targetMorph * (1 - smoothing);
+        this.audioMorphBoost = this.audioSmooth.morph;
+        
+        // Chaos: Only appears with strong bass OR when silent (reverse effect)
+        const targetChaos = audioData.bass > 0.5 ? audioData.bass * 0.4 : 
+                           (audioData.energy < 0.1 ? 0.2 : 0); // Chaos in silence too
+        this.audioSmooth.chaos = this.audioSmooth.chaos * smoothing + targetChaos * (1 - smoothing);
+        this.audioChaosBoost = this.audioSmooth.chaos;
+        
+        // Color: Shifts with melody and high frequencies
+        const targetColor = (audioData.melody + audioData.high) * 0.5;
+        this.audioSmooth.color = this.audioSmooth.color * smoothing + targetColor * (1 - smoothing);
+        this.audioColorShift = this.audioSmooth.color * Math.PI * 0.5;
+        
+        // Beat detection creates sharp visual pulses
+        if (audioData.rhythm > 0.7) {
+            this.clickIntensity = Math.max(this.clickIntensity, 0.8);
+            this.audioSmooth.beat = 1.0;
+        }
+        this.audioSmooth.beat *= 0.9; // Beat decay
     }
     
     updateScrollPhysics() {
