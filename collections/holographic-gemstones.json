@@ -1,0 +1,311 @@
+{
+  "name": "Holographic Gemstones",
+  "description": "20 variations inspired by real gemstones - capturing their colors, crystal structures, and optical properties",
+  "version": "1.0",
+  "type": "holographic-collection",
+  "profileName": "Gemstone Laboratory",
+  "totalVariations": 20,
+  "created": "2025-07-08T20:30:00.000Z",
+  "variations": [
+    {
+      "id": 0,
+      "name": "DIAMOND BRILLIANCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 3.2,
+        "speed": 0.2,
+        "chaos": 0.05,
+        "morph": 0.1,
+        "hue": 200,
+        "saturation": 0.3,
+        "intensity": 1.0
+      }
+    },
+    {
+      "id": 1,
+      "name": "RUBY FIRE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.8,
+        "speed": 0.4,
+        "chaos": 0.15,
+        "morph": 0.2,
+        "hue": 0,
+        "saturation": 0.95,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 2,
+      "name": "EMERALD DEPTHS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.5,
+        "speed": 0.3,
+        "chaos": 0.1,
+        "morph": 0.15,
+        "hue": 120,
+        "saturation": 0.85,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 3,
+      "name": "SAPPHIRE CLARITY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.6,
+        "speed": 0.25,
+        "chaos": 0.08,
+        "morph": 0.12,
+        "hue": 230,
+        "saturation": 0.9,
+        "intensity": 0.85
+      }
+    },
+    {
+      "id": 4,
+      "name": "AMETHYST DREAMS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.2,
+        "speed": 0.35,
+        "chaos": 0.12,
+        "morph": 0.25,
+        "hue": 280,
+        "saturation": 0.8,
+        "intensity": 0.75
+      }
+    },
+    {
+      "id": 5,
+      "name": "CITRINE GLOW",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.0,
+        "speed": 0.5,
+        "chaos": 0.2,
+        "morph": 0.3,
+        "hue": 45,
+        "saturation": 0.85,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 6,
+      "name": "AQUAMARINE FLOW",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 1.8,
+        "speed": 0.6,
+        "chaos": 0.25,
+        "morph": 0.4,
+        "hue": 190,
+        "saturation": 0.7,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 7,
+      "name": "TOPAZ RADIANCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.4,
+        "speed": 0.4,
+        "chaos": 0.15,
+        "morph": 0.2,
+        "hue": 60,
+        "saturation": 0.9,
+        "intensity": 0.95
+      }
+    },
+    {
+      "id": 8,
+      "name": "PERIDOT SPARKLE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 1.9,
+        "speed": 0.7,
+        "chaos": 0.3,
+        "morph": 0.35,
+        "hue": 80,
+        "saturation": 0.8,
+        "intensity": 0.85
+      }
+    },
+    {
+      "id": 9,
+      "name": "GARNET INTENSITY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.7,
+        "speed": 0.3,
+        "chaos": 0.1,
+        "morph": 0.15,
+        "hue": 15,
+        "saturation": 0.9,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 10,
+      "name": "OPAL IRIDESCENCE",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2.5,
+        "density": 1.5,
+        "speed": 1.2,
+        "chaos": 0.6,
+        "morph": 0.8,
+        "hue": 300,
+        "saturation": 0.7,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 11,
+      "name": "TURQUOISE WAVES",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6,
+        "density": 1.6,
+        "speed": 0.8,
+        "chaos": 0.4,
+        "morph": 0.6,
+        "hue": 180,
+        "saturation": 0.8,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 12,
+      "name": "JADE SERENITY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2,
+        "density": 1.8,
+        "speed": 0.3,
+        "chaos": 0.1,
+        "morph": 0.2,
+        "hue": 140,
+        "saturation": 0.6,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 13,
+      "name": "MOONSTONE MYSTERY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 2,
+        "density": 1.4,
+        "speed": 0.4,
+        "chaos": 0.3,
+        "morph": 0.7,
+        "hue": 220,
+        "saturation": 0.4,
+        "intensity": 0.6
+      }
+    },
+    {
+      "id": 14,
+      "name": "TOURMALINE SPECTRUM",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 0.5,
+        "density": 2.1,
+        "speed": 0.9,
+        "chaos": 0.5,
+        "morph": 0.4,
+        "hue": 320,
+        "saturation": 0.85,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 15,
+      "name": "QUARTZ CLARITY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.0,
+        "speed": 0.2,
+        "chaos": 0.05,
+        "morph": 0.1,
+        "hue": 0,
+        "saturation": 0.2,
+        "intensity": 0.9
+      }
+    },
+    {
+      "id": 16,
+      "name": "TANZANITE LUXURY",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 7,
+        "density": 2.3,
+        "speed": 0.35,
+        "chaos": 0.12,
+        "morph": 0.18,
+        "hue": 250,
+        "saturation": 0.9,
+        "intensity": 0.85
+      }
+    },
+    {
+      "id": 17,
+      "name": "MALACHITE SWIRLS",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 6.3,
+        "density": 1.7,
+        "speed": 0.6,
+        "chaos": 0.4,
+        "morph": 0.9,
+        "hue": 160,
+        "saturation": 0.9,
+        "intensity": 0.7
+      }
+    },
+    {
+      "id": 18,
+      "name": "LABRADORITE FLASH",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 4.2,
+        "density": 1.9,
+        "speed": 1.0,
+        "chaos": 0.7,
+        "morph": 0.5,
+        "hue": 210,
+        "saturation": 0.8,
+        "intensity": 0.8
+      }
+    },
+    {
+      "id": 19,
+      "name": "ALEXANDRITE SHIFT",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 5.8,
+        "density": 2.2,
+        "speed": 0.8,
+        "chaos": 0.35,
+        "morph": 0.6,
+        "hue": 270,
+        "saturation": 0.85,
+        "intensity": 0.9
+      }
+    }
+  ]
+}
