@@ -491,22 +491,90 @@
         </div>
     </div>
 
-    <script>
-        // HOLOGRAPHIC VARIANT DATABASE - SEQUENTIAL ORDER
-        const holographicVariants = [
-            // TETRAHEDRON variations (0-3)
-            {
-                id: 0, name: "TETRAHEDRON LATTICE", 
-                tags: ["geometric", "calm", "bass-heavy"], 
-                complexity: 2, density: 0.8, speed: 0.3, chaos: 0.0, morph: 0.0,
-                description: "4-vertex tetrahedral grid with edge connections"
-            },
-            {
-                id: 1, name: "TETRAHEDRON FIELD", 
-                tags: ["geometric", "calm", "full-spectrum"], 
-                complexity: 3, density: 1.0, speed: 0.4, chaos: 0.1, morph: 0.2,
-                description: "Continuous tetrahedral field distortion"
-            },
+    <script type="module">
+        import { CollectionManager } from './src/features/CollectionManager.js';
+        
+        let collectionManager = null;
+        let allVariations = [];
+        
+        // HOLOGRAPHIC VARIANT DATABASE - Now loaded from collections
+        let holographicVariants = [];
+        
+        // Initialize collections on page load
+        async function initializePortfolio() {
+            try {
+                collectionManager = new CollectionManager();
+                const collections = await collectionManager.autoDiscoverCollections();
+                
+                // Flatten all variations from all collections
+                let currentId = 0;
+                holographicVariants = [];
+                
+                collections.forEach(collection => {
+                    collection.variations.forEach(variation => {
+                        holographicVariants.push({
+                            id: currentId++,
+                            name: variation.name,
+                            tags: variation.isCustom ? ["custom"] : ["geometric"],
+                            complexity: Math.round(variation.parameters.density + variation.parameters.chaos + variation.parameters.morph),
+                            density: variation.parameters.density,
+                            speed: variation.parameters.speed,
+                            chaos: variation.parameters.chaos,
+                            morph: variation.parameters.morph,
+                            description: `${getGeometryName(variation.parameters.geometryType)} with ${variation.parameters.density.toFixed(1)} density`,
+                            isCustom: variation.isCustom,
+                            customParams: variation.parameters,
+                            collectionName: collection.name
+                        });
+                    });
+                });
+                
+                console.log(`📊 Loaded ${holographicVariants.length} variations from ${collections.length} collections`);
+                
+                // Initialize the portfolio with loaded data
+                initializeWithData();
+                
+            } catch (error) {
+                console.error('Failed to load collections:', error);
+                // Fall back to empty array if loading fails
+                initializeWithData();
+            }
+        }
+        
+        function getGeometryName(geometryType) {
+            const names = ['TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS', 'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'];
+            return names[Math.floor(geometryType)] || 'HYBRID';
+        }
+        
+        function initializeWithData() {
+            // Portfolio initialization with loaded collection data
+            const portfolio = {
+                variants: holographicVariants,
+                init: function() {
+                    this.renderGrid();
+                    this.setupInteractions();
+                }
+            };
+            
+            portfolio.init();
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePortfolio();
+        });
+        
+        // Portfolio functionality starts here
+        let currentFilter = 'all';
+        let searchTerm = '';
+        
+        // PORTFOLIO INTERFACE
+        class HolographicPortfolio {
+            constructor() {
+                this.variants = holographicVariants; // Use loaded data directly
+                this.filteredVariants = [...this.variants];
+                this.init();
+            }
             {
                 id: 2, name: "TETRAHEDRON MATRIX", 
                 tags: ["geometric", "intense", "bass-heavy"], 

@@ -19,6 +19,8 @@ export class CollectionManager {
         const knownCollections = [
             'base-variations.json',
             'community-favorites.json',
+            'dual-geometry-experiments.json',
+            'holographic-gemstones.json',
             'geometric-dreams.json',
             'experimental-forms.json',
             'paul-custom-pack.json'
