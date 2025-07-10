@@ -465,7 +465,6 @@
                 <div class="section-title">Batch Operations</div>
                 <button class="generate-btn" onclick="engine.generateBatch()" style="background: linear-gradient(45deg, #00ff00, #00ffff);">📦 EXPORT BATCH</button>
                 <button class="generate-btn" onclick="engine.generatePortfolioUpdate()" style="background: linear-gradient(45deg, #ff00ff, #00ffff);">🎨 PORTFOLIO UPDATE</button>
-                <button class="generate-btn" onclick="clearStoredVariations()" style="background: linear-gradient(45deg, #ff4757, #ff6b9d);">🗑️ CLEAR STORED VARIATIONS</button>
                 <button class="generate-btn" onclick="engine.clearQueue()" style="background: linear-gradient(45deg, #ff4757, #ff6b9d);">🗑️ CLEAR QUEUE</button>
             
             <!-- GENERATION QUEUE -->
@@ -593,7 +592,6 @@
                 const params = new URLSearchParams();
                 params.set('hideui', 'true');
                 params.set('noaudio', 'true');
-                params.set('preview', 'true'); // Add preview flag to prevent saving
                 Object.keys(this.currentParams).forEach(key => {
                     params.set(key, this.currentParams[key]);
                 });
@@ -1083,15 +1081,6 @@ ${portfolioAdditions.map(v =>
                 engine.currentParams = {...variation};
                 engine.syncControlsWithParams();
                 engine.updateDisplay();
-            }
-        }
-        
-        // GLOBAL FUNCTION to clear stored variations
-        function clearStoredVariations() {
-            if (confirm('This will clear ALL stored custom variations from browser storage. This cannot be undone. Continue?')) {
-                localStorage.removeItem('customHolographicVariations');
-                alert('Stored variations cleared! The gallery variation count should be much lower now.');
-                console.log('🗑️ Cleared all stored custom variations');
             }
         }
         
