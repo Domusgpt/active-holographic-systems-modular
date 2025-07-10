@@ -436,7 +436,9 @@
         
         <!-- CENTER PANEL - LIVE PREVIEW -->
         <div class="preview-panel">
-            <canvas class="preview-canvas" id="previewCanvas"></canvas>
+            <iframe class="preview-canvas" id="previewIframe" 
+                    src="demo-modular.html?hideui=true&noaudio=true&geometry=0&density=1.0&speed=0.5&chaos=0.0&morph=0.0&hue=0&saturation=0.8&intensity=0.5"
+                    style="border: none; width: 100%; height: 100%; background: #000;"></iframe>
             <div class="preview-overlay">
                 <div class="current-variant" id="currentVariant">CUSTOM VARIATION</div>
                 <div class="variant-stats" id="variantStats">
@@ -568,16 +570,8 @@
             }
             
             setupPreview() {
-                this.canvas = document.getElementById('previewCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.resizeCanvas();
-                
-                window.addEventListener('resize', () => this.resizeCanvas());
-            }
-            
-            resizeCanvas() {
-                this.canvas.width = this.canvas.clientWidth;
-                this.canvas.height = this.canvas.clientHeight;
+                this.previewIframe = document.getElementById('previewIframe');
+                this.updatePreview();
             }
             
             updateDisplay() {
@@ -589,6 +583,23 @@
                     
                 document.getElementById('variantStats').innerHTML = 
                     `Geometry: ${geometryName} • Complexity: ${'★'.repeat(complexity)}${'☆'.repeat(5-complexity)}`;
+                
+                // Update live preview
+                this.updatePreview();
+            }
+            
+            updatePreview() {
+                const params = new URLSearchParams();
+                params.set('hideui', 'true');
+                params.set('noaudio', 'true');
+                Object.keys(this.currentParams).forEach(key => {
+                    params.set(key, this.currentParams[key]);
+                });
+                
+                const newSrc = `demo-modular.html?${params.toString()}`;
+                if (this.previewIframe && this.previewIframe.src !== newSrc) {
+                    this.previewIframe.src = newSrc;
+                }
             }
             
             calculateComplexity(variation) {
@@ -599,70 +610,7 @@
             }
             
             startPreviewAnimation() {
-                const animate = () => {
-                    this.renderPreview();
-                    requestAnimationFrame(animate);
-                };
-                animate();
-            }
-            
-            renderPreview() {
-                const { width, height } = this.canvas;
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const time = Date.now() * 0.001;
-                
-                // Clear canvas
-                this.ctx.fillStyle = '#000';
-                this.ctx.fillRect(0, 0, width, height);
-                
-                // Apply current parameters to visualization
-                this.ctx.save();
-                this.ctx.translate(centerX, centerY);
-                
-                const layers = Math.ceil(this.currentParams.density * 3);
-                const baseRadius = Math.min(width, height) * 0.15;
-                
-                for (let layer = 0; layer < layers; layer++) {
-                    this.ctx.save();
-                    
-                    const layerRotation = time * this.currentParams.speed + layer * 0.5;
-                    this.ctx.rotate(layerRotation);
-                    
-                    const radius = baseRadius + layer * 20 + 
-                                 Math.sin(time * 2 + layer) * this.currentParams.morph * 20;
-                    
-                    const sides = 6 + (this.currentParams.geometry * 2) + 
-                                Math.floor(this.currentParams.chaos * 8);
-                    
-                    // Draw geometry
-                    this.ctx.beginPath();
-                    for (let i = 0; i <= sides; i++) {
-                        const angle = (i / sides) * Math.PI * 2;
-                        const chaosOffset = this.currentParams.chaos * 
-                                          Math.sin(angle * 3 + time + layer) * 15;
-                        const r = radius + chaosOffset;
-                        const x = Math.cos(angle) * r;
-                        const y = Math.sin(angle) * r;
-                        
-                        if (i === 0) this.ctx.moveTo(x, y);
-                        else this.ctx.lineTo(x, y);
-                    }
-                    
-                    // Apply colors based on parameters
-                    const hue = (this.currentParams.hue + layer * 30) % 360;
-                    const saturation = this.currentParams.saturation * 100;
-                    const lightness = (30 + this.currentParams.intensity * 50 + layer * 10) % 100;
-                    const alpha = 0.3 + this.currentParams.intensity * 0.4;
-                    
-                    this.ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
-                    this.ctx.lineWidth = 1 + this.currentParams.intensity * 3;
-                    this.ctx.stroke();
-                    
-                    this.ctx.restore();
-                }
-                
-                this.ctx.restore();
+                // No longer needed - iframe handles the animation
             }
             
             // GENERATION METHODS
