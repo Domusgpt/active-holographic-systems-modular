@@ -641,15 +641,17 @@ export class HolographicSystem {
         
         // Convert string parameters to appropriate types
         const params = {
-            geometry: parseInt(customParams.geometry) || 0,
-            density: parseFloat(customParams.density) || 1.0,
-            speed: parseFloat(customParams.speed) || 0.5,
-            chaos: parseFloat(customParams.chaos) || 0.0,
-            morph: parseFloat(customParams.morph) || 0.0,
-            hue: parseFloat(customParams.hue) || 0,
-            saturation: parseFloat(customParams.saturation) || 0.8,
-            intensity: parseFloat(customParams.intensity) || 0.5
+            geometry: customParams.geometry !== null ? parseInt(customParams.geometry) : 0,
+            density: customParams.density !== null ? parseFloat(customParams.density) : 1.0,
+            speed: customParams.speed !== null ? parseFloat(customParams.speed) : 0.5,
+            chaos: customParams.chaos !== null ? parseFloat(customParams.chaos) : 0.0,
+            morph: customParams.morph !== null ? parseFloat(customParams.morph) : 0.0,
+            hue: customParams.hue !== null ? parseFloat(customParams.hue) : 0,
+            saturation: customParams.saturation !== null ? parseFloat(customParams.saturation) : 0.8,
+            intensity: customParams.intensity !== null ? parseFloat(customParams.intensity) : 0.5
         };
+        
+        console.log('🔍 Parsed parameters:', params);
         
         // Check if this exact variation already exists
         const existingIndex = this.customVariants.findIndex(cv => 

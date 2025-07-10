@@ -548,15 +548,7 @@
         
         function initializeWithData() {
             // Portfolio initialization with loaded collection data
-            const portfolio = {
-                variants: holographicVariants,
-                init: function() {
-                    this.renderGrid();
-                    this.setupInteractions();
-                }
-            };
-            
-            portfolio.init();
+            window.portfolio = new HolographicPortfolio();
         }
         
         // Initialize on page load
@@ -568,19 +560,9 @@
         let currentFilter = 'all';
         let searchTerm = '';
         
-        // PORTFOLIO INTERFACE
-        class HolographicPortfolio {
-            constructor() {
-                this.variants = holographicVariants; // Use loaded data directly
-                this.filteredVariants = [...this.variants];
-                this.init();
-            }
-            {
-                id: 2, name: "TETRAHEDRON MATRIX", 
-                tags: ["geometric", "intense", "bass-heavy"], 
-                complexity: 3, density: 1.2, speed: 0.5, chaos: 0.2, morph: 0.4,
-                description: "Matrix-based tetrahedral transformations"
-            },
+        // Portfolio functionality starts here
+        let currentFilter = 'all';
+        let searchTerm = '';
             {
                 id: 3, name: "TETRAHEDRON RESONANCE", 
                 tags: ["geometric", "intense", "full-spectrum"], 
