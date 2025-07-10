@@ -734,58 +734,9 @@
         // PORTFOLIO INTERFACE
         class HolographicPortfolio {
             constructor() {
-                this.variants = this.loadAllVariations();
+                this.variants = holographicVariants; // Use data loaded from CollectionManager
                 this.filteredVariants = [...this.variants];
                 this.init();
-            }
-            
-            loadAllVariations() {
-                // Start with base 30 variations
-                const allVariations = [...holographicVariants];
-                
-                // Load custom variations from localStorage
-                try {
-                    console.log('🔍 Checking localStorage for custom variations...');
-                    console.log('🔍 All localStorage keys:', Object.keys(localStorage).filter(k => k.includes('holographic')));
-                    const customVariationsData = localStorage.getItem('customHolographicVariations');
-                    console.log('🔍 Raw data:', customVariationsData ? 'Found data' : 'No data');
-                    
-                    if (customVariationsData) {
-                        const savedData = JSON.parse(customVariationsData);
-                        console.log('🔍 Parsed data:', savedData);
-                        // Handle the format from HolographicSystem: {variations: array, timestamp: number}
-                        const customVariations = savedData.variations || savedData;
-                        console.log('🔍 Custom variations array:', customVariations);
-                        
-                        if (customVariations && Array.isArray(customVariations)) {
-                            // Add custom variations starting from ID 30
-                            customVariations.forEach((cv, index) => {
-                                allVariations.push({
-                                    id: 30 + index,
-                                    name: cv.name || `Custom Variation ${index + 1}`,
-                                    tags: ["custom", "generated"],
-                                    complexity: 3,
-                                    density: cv.params.density || 1.0,
-                                    speed: cv.params.speed || 0.5,
-                                    chaos: cv.params.chaos || 0.0,
-                                    morph: cv.params.morph || 0.0,
-                                    description: `Custom variation with ${cv.params.geometry || 0} geometry`,
-                                    isCustom: true,
-                                    customParams: cv.params
-                                });
-                            });
-                            
-                            console.log(`📁 Loaded ${customVariations.length} custom variations from 'customHolographicVariations'`);
-                        } else {
-                            console.log('🔍 Custom variations is not a valid array:', customVariations);
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Could not load custom variations:', e);
-                }
-                
-                console.log(`📊 Total variations loaded: ${allVariations.length}`);
-                return allVariations;
             }
             
             init() {
