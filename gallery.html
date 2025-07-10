@@ -328,6 +328,13 @@
             const customBadge = variation.isCustom ? '<div class="custom-badge">CUSTOM</div>' : '';
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             
+            // Calculate ultimate global ID across all collections
+            let globalId = 0;
+            for (let i = 0; i < collectionIndex; i++) {
+                globalId += collections[i].variations.length;
+            }
+            globalId += variationIndex + 1; // +1 for 1-based display numbering
+            
             return `
                 <div class="variation-card" 
                      data-collection="${collectionIndex}" 
@@ -342,7 +349,7 @@
                         </div>
                     </div>
                     <div class="card-info">
-                        <h3>${escapeHtml(variation.name)}</h3>
+                        <h3>${escapeHtml(variation.name)} <span style="color: rgba(255,255,255,0.4); font-size: 0.7em;">#${globalId}</span></h3>
                         <div class="card-params">
                             Geometry: ${getGeometryName(variation.parameters.geometryType)} | 
                             Density: ${variation.parameters.density.toFixed(1)} | 
