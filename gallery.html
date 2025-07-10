@@ -436,7 +436,7 @@
             document.getElementById('collectionsContainer').style.display = 'block';
         }
         
-        // Preview management - create on hover, destroy on leave
+        // Preview management - replace static with live on hover
         let previewTimeouts = new Map(); // Track timeouts per card
         
         window.startPreview = function(card, params) {
@@ -449,7 +449,7 @@
                 previewTimeouts.delete(cardId);
             }
             
-            // Only create if not already exists
+            // Replace static preview with live iframe
             const container = card.querySelector('[data-preview-container]');
             if (container && !container.querySelector('iframe')) {
                 const iframe = document.createElement('iframe');
@@ -457,7 +457,13 @@
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.border = 'none';
-                container.innerHTML = '';
+                iframe.style.borderRadius = '8px';
+                
+                // Hide static preview and show iframe
+                const staticPreview = container.querySelector('.static-preview');
+                if (staticPreview) {
+                    staticPreview.style.display = 'none';
+                }
                 container.appendChild(iframe);
             }
         };
@@ -471,17 +477,18 @@
                 clearTimeout(previewTimeouts.get(cardId));
             }
             
-            // Set 1 second delay before destroying
+            // Set 1 second delay before destroying live preview
             const destroyTimeout = setTimeout(() => {
                 const container = card.querySelector('[data-preview-container]');
-                if (container && container.querySelector('iframe')) {
-                    // Destroy iframe to free WebGL context
-                    container.innerHTML = `
-                        <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
-                            Hover to preview
-                        </div>
-                    `;
+                const iframe = container.querySelector('iframe');
+                const staticPreview = container.querySelector('.static-preview');
+                
+                if (iframe) {
+                    // Remove iframe and show static preview again
+                    iframe.remove();
+                    if (staticPreview) {
+                        staticPreview.style.display = 'block';
+                    }
                 }
                 previewTimeouts.delete(cardId);
             }, 1000); // 1 second delay
@@ -494,11 +501,11 @@
             event.preventDefault();
             const container = card.querySelector('[data-preview-container]');
             
-            // If already previewing, open the variation
+            // If already showing live preview, open the variation
             if (container && container.querySelector('iframe')) {
                 openVariation(card);
             } else {
-                // First tap: start preview
+                // First tap: show live preview
                 const params = card.getAttribute('data-params');
                 startPreview(card, params);
             }
