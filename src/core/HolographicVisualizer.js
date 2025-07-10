@@ -351,8 +351,12 @@ export class HolographicVisualizer {
                 float audioDensityMod = 1.0 + u_audioDensityBoost * 0.5;
                 float roleDensity = ((u_density + u_densityVariation) * u_roleDensity) * scrollDensityMod * audioDensityMod;
                 
-                float morphedGeometry = u_geometryType + u_morph * 3.0 + u_touchMorph * 2.0 + u_audioMorphBoost * 1.5;
-                float lattice = getDynamicGeometry(p, roleDensity, morphedGeometry);
+                // Keep geometry type pure, use morph for internal shape distortion only
+                float lattice = getDynamicGeometry(p, roleDensity, u_geometryType);
+                
+                // Apply morph as shape distortion within the same geometry
+                float morphDistortion = u_morph * 0.5 + u_touchMorph * 0.3 + u_audioMorphBoost * 0.2;
+                lattice = mix(lattice, sin(lattice * 3.14159 + morphDistortion * 10.0), morphDistortion);
                 
                 // Use the passed RGB as base color and modulate with lattice patterns
                 vec3 baseColor = u_color;
@@ -369,9 +373,9 @@ export class HolographicVisualizer {
                 color = rgbGlitch(color, uv, enhancedChaos);
                 
                 // Apply morph distortion to position
-                vec2 morphDistortion = vec2(sin(uv.y * 10.0 + u_time * 0.001) * u_morph * 0.1, 
+                vec2 positionDistortion = vec2(sin(uv.y * 10.0 + u_time * 0.001) * u_morph * 0.1, 
                                            cos(uv.x * 10.0 + u_time * 0.001) * u_morph * 0.1);
-                color = mix(color, color * (1.0 + length(morphDistortion)), u_morph * 0.5);
+                color = mix(color, color * (1.0 + length(positionDistortion)), u_morph * 0.5);
                 
                 float mouseDist = length(uv - (u_mouse - 0.5) * vec2(aspectRatio, 1.0));
                 float mouseGlow = exp(-mouseDist * 1.5) * u_mouseIntensity * 0.2;
@@ -389,7 +393,6 @@ export class HolographicVisualizer {
             resolution: this.gl.getUniformLocation(this.program, 'u_resolution'),
             time: this.gl.getUniformLocation(this.program, 'u_time'),
             mouse: this.gl.getUniformLocation(this.program, 'u_mouse'),
-            geometry: this.gl.getUniformLocation(this.program, 'u_geometry'),
             density: this.gl.getUniformLocation(this.program, 'u_density'),
             speed: this.gl.getUniformLocation(this.program, 'u_speed'),
             color: this.gl.getUniformLocation(this.program, 'u_color'),
@@ -594,7 +597,7 @@ export class HolographicVisualizer {
         this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
         this.gl.uniform1f(this.uniforms.time, time);
         this.gl.uniform2f(this.uniforms.mouse, this.mouseX, this.mouseY);
-        this.gl.uniform1f(this.uniforms.geometryType, this.variantParams.geometryType || 0);
+        this.gl.uniform1f(this.uniforms.geometryType, this.variantParams.geometryType !== undefined ? this.variantParams.geometryType : 0);
         this.gl.uniform1f(this.uniforms.density, this.variantParams.density || 1.0);
         this.gl.uniform1f(this.uniforms.speed, (this.variantParams.speed || 0.5) + (this.audioSpeedBoost || 0.0));
         this.gl.uniform3fv(this.uniforms.color, new Float32Array(rgbColor));
@@ -606,7 +609,6 @@ export class HolographicVisualizer {
         this.gl.uniform1f(this.uniforms.mouseIntensity, this.mouseIntensity);
         this.gl.uniform1f(this.uniforms.clickIntensity, this.clickIntensity);
         this.gl.uniform1f(this.uniforms.densityVariation, this.densityVariation);
-        this.gl.uniform1f(this.uniforms.geometryType, this.variantParams.geometryType !== undefined ? this.variantParams.geometryType : this.variant || 0);
         this.gl.uniform1f(this.uniforms.chaos, this.variantParams.chaos || 0.0);
         this.gl.uniform1f(this.uniforms.morph, this.variantParams.morph || 0.0);
         
