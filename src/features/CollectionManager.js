@@ -21,6 +21,7 @@ export class CollectionManager {
             'community-favorites.json',
             'dual-geometry-experiments.json',
             'holographic-gemstones.json',
+            'special-variations.json',
             'geometric-dreams.json',
             'experimental-forms.json',
             'paul-custom-pack.json'

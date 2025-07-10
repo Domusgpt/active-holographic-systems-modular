@@ -1,0 +1,26 @@
+{
+  "name": "Special Variations",
+  "description": "Unique custom variations with special properties",
+  "version": "1.0",
+  "type": "holographic-collection",
+  "profileName": "Special Collection",
+  "totalVariations": 1,
+  "created": "2025-07-10T00:00:00.000Z",
+  "variations": [
+    {
+      "id": 0,
+      "name": "QUANTUM FLUX +",
+      "isCustom": true,
+      "parameters": {
+        "geometryType": 4.5,
+        "density": 2.4,
+        "speed": 0.7,
+        "chaos": 0.4,
+        "morph": 0.8,
+        "hue": 180,
+        "saturation": 0.9,
+        "intensity": 0.85
+      }
+    }
+  ]
+}
