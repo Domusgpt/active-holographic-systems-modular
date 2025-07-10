@@ -444,18 +444,7 @@
         }
         
         // Preview management - replace static with live on hover
-        let previewTimeouts = new Map(); // Track timeouts per card
-        
         window.startPreview = function(card, params) {
-            const cardId = card.getAttribute('data-card-id') || Math.random().toString(36);
-            card.setAttribute('data-card-id', cardId);
-            
-            // Clear any pending destroy timeout for this card
-            if (previewTimeouts.has(cardId)) {
-                clearTimeout(previewTimeouts.get(cardId));
-                previewTimeouts.delete(cardId);
-            }
-            
             // Replace static preview with live iframe
             const container = card.querySelector('[data-preview-container]');
             if (container && !container.querySelector('iframe')) {
@@ -476,14 +465,9 @@
         };
         
         window.stopPreview = function(card) {
-            // Don't do anything - keep the live preview frozen on last frame
-            const container = card.querySelector('[data-preview-container]');
-            const iframe = container.querySelector('iframe');
-            
-            if (iframe) {
-                // Just disable pointer events so it stays frozen
-                iframe.style.pointerEvents = 'none';
-            }
+            // Don't do anything - just let it keep running
+            // The iframe will continue to animate in the background
+            return;
         };
         
         // Mobile touch handling
