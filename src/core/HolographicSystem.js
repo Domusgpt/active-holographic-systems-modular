@@ -709,6 +709,51 @@ export class HolographicSystem {
         console.log('✅ Custom variation loaded successfully');
     }
     
+    applyParametersDirectly(customParams) {
+        console.log('🎛️ Applying parameters directly (preview mode):', customParams);
+        
+        // Convert string parameters to appropriate types and map correctly
+        const params = {
+            geometryType: customParams.geometry !== null ? parseInt(customParams.geometry) : 0,
+            density: customParams.density !== null ? parseFloat(customParams.density) : 1.0,
+            speed: customParams.speed !== null ? parseFloat(customParams.speed) : 0.5,
+            chaos: customParams.chaos !== null ? parseFloat(customParams.chaos) : 0.0,
+            morph: customParams.morph !== null ? parseFloat(customParams.morph) : 0.0,
+            hue: customParams.hue !== null ? parseFloat(customParams.hue) : 0,
+            saturation: customParams.saturation !== null ? parseFloat(customParams.saturation) : 0.8,
+            intensity: customParams.intensity !== null ? parseFloat(customParams.intensity) : 0.5,
+            bassResponse: customParams.bassResponse !== null ? parseFloat(customParams.bassResponse) : 1.0,
+            midResponse: customParams.midResponse !== null ? parseFloat(customParams.midResponse) : 1.0,
+            highResponse: customParams.highResponse !== null ? parseFloat(customParams.highResponse) : 1.0
+        };
+        
+        console.log('🔍 Parsed parameters:', params);
+        
+        // DIRECTLY apply parameters to all visualizers without saving as custom variation
+        this.visualizers.forEach(visualizer => {
+            visualizer.variantParams = {
+                geometryType: params.geometryType,
+                density: params.density,
+                speed: params.speed,
+                chaos: params.chaos,
+                morph: params.morph,
+                hue: params.hue,
+                saturation: params.saturation,
+                intensity: params.intensity,
+                bassResponse: params.bassResponse,
+                midResponse: params.midResponse,
+                highResponse: params.highResponse,
+                name: `PREVIEW ${this.getGeometryName(params.geometryType)}`
+            };
+            
+            // Regenerate role parameters with new variant values
+            visualizer.roleParams = visualizer.generateRoleParams(visualizer.role);
+        });
+        
+        this.updateVariantDisplay();
+        console.log('✅ Parameters applied directly (not saved)');
+    }
+    
     getGeometryName(geometryId) {
         const geometryNames = [
             'TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS',

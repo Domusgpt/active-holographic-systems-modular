@@ -406,7 +406,13 @@
             
             if (hasCustomParams) {
                 console.log('🎛️ Loading custom parametric variation...');
-                holographicSystem.loadCustomVariation(customParams);
+                // Only save as custom variation if NOT in preview mode
+                if (previewMode) {
+                    console.log('📋 Preview mode: applying parameters without saving');
+                    holographicSystem.applyParametersDirectly(customParams);
+                } else {
+                    holographicSystem.loadCustomVariation(customParams);
+                }
             } else if (variantParam !== null) {
                 const variantId = parseInt(variantParam);
                 if (variantId >= 0 && variantId < holographicSystem.totalVariants) {
