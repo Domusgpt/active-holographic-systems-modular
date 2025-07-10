@@ -444,8 +444,8 @@
         }
         
         // Preview management - replace static with live on hover
-        let activeIframes = new Set(); // Track active iframes
-        const MAX_WEBGL_CONTEXTS = 3; // Browser limit
+        let activeIframes = new Map(); // Track active iframes by card
+        const MAX_WEBGL_CONTEXTS = 16; // Actually allow more - browser will handle the limit
         
         window.startPreview = function(card, params) {
             const container = card.querySelector('[data-preview-container]');
@@ -455,22 +455,8 @@
                 return;
             }
             
-            // Check if we've hit the WebGL context limit BEFORE creating anything
-            if (activeIframes.size >= MAX_WEBGL_CONTEXTS) {
-                console.log('⚠️ WebGL context limit reached, keeping static preview');
-                // Make sure static preview is visible
-                const staticPreview = container.querySelector('.static-preview');
-                if (staticPreview) {
-                    staticPreview.style.display = 'flex';
-                }
-                return; // Don't create new iframe at all
-            }
-            
-            // Only create iframe if under the limit
+            // Just try to create it - let the browser handle WebGL limits
             const iframe = document.createElement('iframe');
-            
-            // Track this iframe BEFORE setting src to prevent race conditions
-            activeIframes.add(iframe);
             
             // Set iframe properties
             iframe.style.width = '100%';
@@ -479,7 +465,32 @@
             iframe.style.borderRadius = '8px';
             iframe.style.background = '#000'; // Black background to prevent white flash
             
-            // Hide static preview FIRST
+            // Handle load completion
+            iframe.onload = function() {
+                // Give it a moment to see if WebGL initialized
+                setTimeout(() => {
+                    try {
+                        // Check if the iframe loaded but is showing an error
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        const bodyText = iframeDoc.body.innerText || '';
+                        
+                        // If the iframe body is empty or shows an error, revert
+                        if (bodyText.includes('error') || bodyText.trim() === '' || iframeDoc.querySelector('img[alt*="error"]')) {
+                            console.log('❌ WebGL failed, reverting to static preview');
+                            iframe.remove();
+                            const staticPreview = container.querySelector('.static-preview');
+                            if (staticPreview) {
+                                staticPreview.style.display = 'flex';
+                            }
+                        }
+                    } catch (e) {
+                        // Cross-origin or other error - just leave it
+                        console.log('⚠️ Could not check iframe status');
+                    }
+                }, 500); // Wait 500ms for WebGL to initialize
+            };
+            
+            // Hide static preview
             const staticPreview = container.querySelector('.static-preview');
             if (staticPreview) {
                 staticPreview.style.display = 'none';
@@ -488,8 +499,8 @@
             // Add iframe to DOM
             container.appendChild(iframe);
             
-            // NOW set the src (this triggers the load)
-            iframe.src = `./demo-modular.html?${params}&hideui=true`;
+            // Set the src (this triggers the load)
+            iframe.src = `./demo-modular.html?${params}&hideui=true&noaudio=true`;
         };
         
         window.stopPreview = function(card) {
