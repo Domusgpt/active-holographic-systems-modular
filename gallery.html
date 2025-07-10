@@ -343,9 +343,10 @@
                      ${isMobile ? 'onclick="handleMobileTouch(this, event)"' : 'onclick="openVariation(this)" onmouseenter="startPreview(this, \''+parametersQuery+'\')" onmouseleave="stopPreview(this)"'}>
                     ${customBadge}
                     <div class="card-preview" data-preview-container>
-                        <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
-                            ${isMobile ? 'Tap to preview' : 'Hover to preview'}
+                        <div class="static-preview" style="width: 100%; height: 100%; background: ${generateStaticPreview(variation.parameters)}; border-radius: 8px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #0ff; padding: 3px 6px; border-radius: 3px; font-size: 0.6rem;">
+                                ${isMobile ? 'TAP' : 'HOVER'} → LIVE
+                            </div>
                         </div>
                     </div>
                     <div class="card-info">
@@ -380,6 +381,42 @@
         function getGeometryName(geometryType) {
             const names = ['TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS', 'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'];
             return names[geometryType] || 'UNKNOWN';
+        }
+        
+        function generateStaticPreview(params) {
+            // Convert hue to HSL color
+            const hue = params.hue || 0;
+            const saturation = (params.saturation || 0.8) * 100;
+            const lightness = (params.intensity || 0.5) * 50 + 20; // 20-70% lightness
+            
+            // Create gradient based on geometry type and parameters
+            const baseColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            const accentColor = `hsl(${(hue + 60) % 360}, ${saturation}%, ${lightness + 20}%)`;
+            
+            // Different patterns based on geometry
+            const geomType = Math.floor(params.geometryType || 0);
+            const density = params.density || 1.0;
+            const chaos = params.chaos || 0.0;
+            
+            switch(geomType) {
+                case 0: // TETRAHEDRON
+                    return `radial-gradient(circle at 30% 30%, ${accentColor} 0%, ${baseColor} 40%, transparent 70%), radial-gradient(circle at 70% 70%, ${baseColor} 0%, transparent 50%), linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 1: // HYPERCUBE
+                    return `repeating-linear-gradient(45deg, ${baseColor} 0px, transparent ${10 + density * 5}px, ${accentColor} ${20 + density * 10}px), linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 2: // SPHERE
+                    return `radial-gradient(circle at center, ${accentColor} 0%, ${baseColor} 30%, transparent 70%), radial-gradient(circle at 80% 20%, ${baseColor} 0%, transparent 40%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 3: // TORUS
+                    return `radial-gradient(ellipse 60% 30% at center, transparent 20%, ${baseColor} 40%, transparent 60%), radial-gradient(ellipse 40% 60% at center, ${accentColor} 0%, transparent 50%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 4: // KLEIN BOTTLE
+                    return `conic-gradient(from 45deg at 50% 50%, ${baseColor} 0deg, ${accentColor} 90deg, ${baseColor} 180deg, ${accentColor} 270deg), linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 5: // FRACTAL
+                    return `repeating-radial-gradient(circle at 25% 25%, ${baseColor} 0%, ${accentColor} ${15 + chaos * 20}%, ${baseColor} ${30 + chaos * 40}%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 6: // WAVE
+                    return `repeating-linear-gradient(90deg, ${baseColor} 0px, ${accentColor} ${15 + density * 5}px, ${baseColor} ${30 + density * 10}px), linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.9) 100%)`;
+                case 7: // CRYSTAL
+                default:
+                    return `linear-gradient(45deg, ${baseColor} 25%, transparent 25%), linear-gradient(-45deg, ${accentColor} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${baseColor} 75%), linear-gradient(-45deg, transparent 75%, ${accentColor} 75%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+            }
         }
         
         function escapeHtml(text) {
