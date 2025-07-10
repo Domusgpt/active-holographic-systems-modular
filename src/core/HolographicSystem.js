@@ -144,7 +144,7 @@ export class HolographicSystem {
                 const customData = this.customVariants[customIndex];
                 if (customData) {
                     visualizer.variantParams = {
-                        geometryType: customData.params.geometry,
+                        geometryType: customData.params.geometryType,
                         density: customData.params.density,
                         speed: customData.params.speed,
                         chaos: customData.params.chaos,
@@ -152,6 +152,9 @@ export class HolographicSystem {
                         hue: customData.params.hue,
                         saturation: customData.params.saturation,
                         intensity: customData.params.intensity,
+                        bassResponse: customData.params.bassResponse || 1.0,
+                        midResponse: customData.params.midResponse || 1.0,
+                        highResponse: customData.params.highResponse || 1.0,
                         name: customData.name
                     };
                 }
@@ -639,23 +642,26 @@ export class HolographicSystem {
     loadCustomVariation(customParams) {
         console.log('🎛️ Loading custom variation with parameters:', customParams);
         
-        // Convert string parameters to appropriate types
+        // Convert string parameters to appropriate types and map correctly
         const params = {
-            geometry: customParams.geometry !== null ? parseInt(customParams.geometry) : 0,
+            geometryType: customParams.geometry !== null ? parseInt(customParams.geometry) : 0,
             density: customParams.density !== null ? parseFloat(customParams.density) : 1.0,
             speed: customParams.speed !== null ? parseFloat(customParams.speed) : 0.5,
             chaos: customParams.chaos !== null ? parseFloat(customParams.chaos) : 0.0,
             morph: customParams.morph !== null ? parseFloat(customParams.morph) : 0.0,
             hue: customParams.hue !== null ? parseFloat(customParams.hue) : 0,
             saturation: customParams.saturation !== null ? parseFloat(customParams.saturation) : 0.8,
-            intensity: customParams.intensity !== null ? parseFloat(customParams.intensity) : 0.5
+            intensity: customParams.intensity !== null ? parseFloat(customParams.intensity) : 0.5,
+            bassResponse: customParams.bassResponse !== null ? parseFloat(customParams.bassResponse) : 1.0,
+            midResponse: customParams.midResponse !== null ? parseFloat(customParams.midResponse) : 1.0,
+            highResponse: customParams.highResponse !== null ? parseFloat(customParams.highResponse) : 1.0
         };
         
         console.log('🔍 Parsed parameters:', params);
         
         // Check if this exact variation already exists
         const existingIndex = this.customVariants.findIndex(cv => 
-            cv.params.geometry === params.geometry &&
+            cv.params.geometryType === params.geometryType &&
             cv.params.density === params.density &&
             cv.params.speed === params.speed &&
             cv.params.chaos === params.chaos &&
@@ -676,7 +682,7 @@ export class HolographicSystem {
             this.customVariants.push({
                 id: newVariantId,
                 params: params,
-                name: this.getGeometryName(params.geometry) + ' CUSTOM ' + (this.customVariants.length + 1)
+                name: this.getGeometryName(params.geometryType) + ' CUSTOM ' + (this.customVariants.length + 1)
             });
             this.totalVariants++;
             this.currentVariant = newVariantId;
