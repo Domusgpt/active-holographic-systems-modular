@@ -343,7 +343,14 @@
                      ${isMobile ? 'onclick="handleMobileTouch(this, event)"' : 'onclick="openVariation(this)" onmouseenter="startPreview(this, \''+parametersQuery+'\')" onmouseleave="stopPreview(this)"'}>
                     ${customBadge}
                     <div class="card-preview" data-preview-container>
-                        <div class="static-preview" style="width: 100%; height: 100%; background: ${generateStaticPreview(variation.parameters)}; border-radius: 8px; position: relative; overflow: hidden;">
+                        <div class="static-preview" style="width: 100%; height: 100%; background: #000; border-radius: 8px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(0,255,255,0.2);">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: hsl(${variation.parameters.hue || 0}, ${(variation.parameters.saturation || 0.8) * 100}%, 50%); text-shadow: 0 0 20px currentColor; margin-bottom: 10px;">
+                                #${globalId}
+                            </div>
+                            <div style="font-size: 0.8rem; color: #0ff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">
+                                ${getGeometryName(variation.parameters.geometryType)}
+                            </div>
+                            <div style="width: 60px; height: 4px; background: hsl(${variation.parameters.hue || 0}, ${(variation.parameters.saturation || 0.8) * 100}%, 50%); border-radius: 2px; box-shadow: 0 0 10px currentColor;"></div>
                             <div style="position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #0ff; padding: 3px 6px; border-radius: 3px; font-size: 0.6rem;">
                                 ${isMobile ? 'TAP' : 'HOVER'} → LIVE
                             </div>
@@ -469,31 +476,14 @@
         };
         
         window.stopPreview = function(card) {
-            const cardId = card.getAttribute('data-card-id');
-            if (!cardId) return;
+            // Don't do anything - keep the live preview frozen on last frame
+            const container = card.querySelector('[data-preview-container]');
+            const iframe = container.querySelector('iframe');
             
-            // Clear any existing timeout
-            if (previewTimeouts.has(cardId)) {
-                clearTimeout(previewTimeouts.get(cardId));
+            if (iframe) {
+                // Just disable pointer events so it stays frozen
+                iframe.style.pointerEvents = 'none';
             }
-            
-            // Set 1 second delay before destroying live preview
-            const destroyTimeout = setTimeout(() => {
-                const container = card.querySelector('[data-preview-container]');
-                const iframe = container.querySelector('iframe');
-                const staticPreview = container.querySelector('.static-preview');
-                
-                if (iframe) {
-                    // Remove iframe and show static preview again
-                    iframe.remove();
-                    if (staticPreview) {
-                        staticPreview.style.display = 'block';
-                    }
-                }
-                previewTimeouts.delete(cardId);
-            }, 1000); // 1 second delay
-            
-            previewTimeouts.set(cardId, destroyTimeout);
         };
         
         // Mobile touch handling
