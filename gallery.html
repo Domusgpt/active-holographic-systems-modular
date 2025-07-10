@@ -447,6 +447,9 @@
         let activeIframes = new Map(); // Track active iframes by card
         const MAX_WEBGL_CONTEXTS = 16; // Actually allow more - browser will handle the limit
         
+        // Store hover timeouts
+        let hoverTimeouts = new WeakMap();
+        
         window.startPreview = function(card, params) {
             const container = card.querySelector('[data-preview-container]');
             
@@ -455,56 +458,78 @@
                 return;
             }
             
-            // Just try to create it - let the browser handle WebGL limits
-            const iframe = document.createElement('iframe');
-            
-            // Set iframe properties
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.border = 'none';
-            iframe.style.borderRadius = '8px';
-            iframe.style.background = '#000'; // Black background to prevent white flash
-            
-            // Handle load completion
-            iframe.onload = function() {
-                // Give it a moment to see if WebGL initialized
-                setTimeout(() => {
-                    try {
-                        // Check if the iframe loaded but is showing an error
-                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        const bodyText = iframeDoc.body.innerText || '';
-                        
-                        // If the iframe body is empty or shows an error, revert
-                        if (bodyText.includes('error') || bodyText.trim() === '' || iframeDoc.querySelector('img[alt*="error"]')) {
-                            console.log('❌ WebGL failed, reverting to static preview');
-                            iframe.remove();
-                            const staticPreview = container.querySelector('.static-preview');
-                            if (staticPreview) {
-                                staticPreview.style.display = 'flex';
-                            }
-                        }
-                    } catch (e) {
-                        // Cross-origin or other error - just leave it
-                        console.log('⚠️ Could not check iframe status');
-                    }
-                }, 500); // Wait 500ms for WebGL to initialize
-            };
-            
-            // Hide static preview
-            const staticPreview = container.querySelector('.static-preview');
-            if (staticPreview) {
-                staticPreview.style.display = 'none';
+            // Clear any existing timeout for this card
+            if (hoverTimeouts.has(card)) {
+                clearTimeout(hoverTimeouts.get(card));
             }
             
-            // Add iframe to DOM
-            container.appendChild(iframe);
+            // Set a delay before starting the preview (800ms)
+            const timeoutId = setTimeout(() => {
+                // Double-check the card is still being hovered
+                if (!card.matches(':hover')) {
+                    return;
+                }
+                
+                // Just try to create it - let the browser handle WebGL limits
+                const iframe = document.createElement('iframe');
+                
+                // Set iframe properties
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '8px';
+                iframe.style.background = '#000'; // Black background to prevent white flash
+                
+                // Handle load completion
+                iframe.onload = function() {
+                    // Give it a moment to see if WebGL initialized
+                    setTimeout(() => {
+                        try {
+                            // Check if the iframe loaded but is showing an error
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            const bodyText = iframeDoc.body.innerText || '';
+                            
+                            // If the iframe body is empty or shows an error, revert
+                            if (bodyText.includes('error') || bodyText.trim() === '' || iframeDoc.querySelector('img[alt*="error"]')) {
+                                console.log('❌ WebGL failed, reverting to static preview');
+                                iframe.remove();
+                                const staticPreview = container.querySelector('.static-preview');
+                                if (staticPreview) {
+                                    staticPreview.style.display = 'flex';
+                                }
+                            }
+                        } catch (e) {
+                            // Cross-origin or other error - just leave it
+                            console.log('⚠️ Could not check iframe status');
+                        }
+                    }, 500); // Wait 500ms for WebGL to initialize
+                };
+                
+                // Hide static preview
+                const staticPreview = container.querySelector('.static-preview');
+                if (staticPreview) {
+                    staticPreview.style.display = 'none';
+                }
+                
+                // Add iframe to DOM
+                container.appendChild(iframe);
+                
+                // Set the src (this triggers the load)
+                iframe.src = `./demo-modular.html?${params}&hideui=true&noaudio=true`;
+            }, 800); // 800ms delay before starting preview
             
-            // Set the src (this triggers the load)
-            iframe.src = `./demo-modular.html?${params}&hideui=true&noaudio=true`;
+            // Store the timeout ID
+            hoverTimeouts.set(card, timeoutId);
         };
         
         window.stopPreview = function(card) {
-            // Don't do anything - just let it keep running
+            // Clear any pending timeout if the user stops hovering
+            if (hoverTimeouts.has(card)) {
+                clearTimeout(hoverTimeouts.get(card));
+                hoverTimeouts.delete(card);
+            }
+            
+            // Don't do anything to existing previews - just let them keep running
             // The iframe will continue to animate in the background
             return;
         };
