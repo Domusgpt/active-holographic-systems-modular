@@ -71,6 +71,48 @@
                 0 0 0 1px rgba(0, 255, 255, 0.2);
             touch-action: manipulation;
             pointer-events: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .control-panel.collapsed {
+            padding: 10px;
+        }
+        
+        .control-panel.collapsed .control-group:not(.toggle-group) {
+            display: none;
+        }
+        
+        .toggle-menu-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #0ff;
+            color: #0ff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-menu-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .control-panel {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                padding: 15px;
+            }
+            
+            .control-panel.collapsed {
+                left: auto;
+                width: auto;
+            }
         }
         
         .param-display {
@@ -211,6 +253,7 @@
     <div class="grid-overlay" id="gridOverlay"></div>
     
     <div class="control-panel">
+        <button class="toggle-menu-btn" onclick="toggleMenu()">☰</button>
         <div class="variant-display">
             <div>HOLOGRAPHIC VARIANT</div>
             <div class="variant-number" id="variantNumber">01</div>
@@ -320,6 +363,11 @@
                 // Use the working standalone export instead
                 holographicSystem.exportSystem.exportSingleVariation(holographicSystem.currentVariant);
             }
+        };
+        
+        window.toggleMenu = () => {
+            const panel = document.querySelector('.control-panel');
+            panel.classList.toggle('collapsed');
         };
         
         window.exportJSON = () => {

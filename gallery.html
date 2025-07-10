@@ -303,7 +303,7 @@
                 return;
             }
             
-            collections.forEach(collection => {
+            collections.forEach((collection, collectionIndex) => {
                 const section = document.createElement('div');
                 section.className = 'collection-section';
                 section.innerHTML = `
@@ -314,24 +314,31 @@
                         </div>
                     </div>
                     <div class="variations-grid">
-                        ${collection.variations.map(variation => createVariationCard(variation)).join('')}
+                        ${collection.variations.map((variation, variationIndex) => 
+                            createVariationCard(variation, collectionIndex, variationIndex)
+                        ).join('')}
                     </div>
                 `;
                 container.appendChild(section);
             });
         }
         
-        function createVariationCard(variation) {
+        function createVariationCard(variation, collectionIndex, variationIndex) {
             const parametersQuery = buildParametersQuery(variation.parameters);
             const customBadge = variation.isCustom ? '<div class="custom-badge">CUSTOM</div>' : '';
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             
             return `
-                <div class="variation-card" onclick="openVariation(${variation.id})" onmouseenter="startPreview(this, '${parametersQuery}')" onmouseleave="stopPreview(this)">
+                <div class="variation-card" 
+                     data-collection="${collectionIndex}" 
+                     data-variation="${variationIndex}"
+                     data-params="${parametersQuery}"
+                     ${isMobile ? 'onclick="handleMobileTouch(this, event)"' : 'onclick="openVariation(this)" onmouseenter="startPreview(this, \''+parametersQuery+'\')" onmouseleave="stopPreview(this)"'}>
                     ${customBadge}
                     <div class="card-preview" data-preview-container>
                         <div style="color: #0ff; text-align: center; padding: 60px 20px; font-size: 0.8rem;">
                             <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
-                            Hover to preview
+                            ${isMobile ? 'Tap to preview' : 'Hover to preview'}
                         </div>
                     </div>
                     <div class="card-info">
@@ -343,8 +350,8 @@
                         </div>
                     </div>
                     <div class="card-controls">
-                        <button class="card-btn" onclick="openFullscreen(${variation.id}, event)">Fullscreen</button>
-                        <button class="card-btn" onclick="openParametric(${variation.id}, event)">Edit</button>
+                        <button class="card-btn" onclick="openFullscreen(this.parentElement.parentElement, event)">Fullscreen</button>
+                        <button class="card-btn" onclick="openParametric(this.parentElement.parentElement, event)">Edit</button>
                     </div>
                 </div>
             `;
@@ -438,31 +445,37 @@
             previewTimeouts.set(cardId, destroyTimeout);
         };
         
+        // Mobile touch handling
+        window.handleMobileTouch = function(card, event) {
+            event.preventDefault();
+            const container = card.querySelector('[data-preview-container]');
+            
+            // If already previewing, open the variation
+            if (container && container.querySelector('iframe')) {
+                openVariation(card);
+            } else {
+                // First tap: start preview
+                const params = card.getAttribute('data-params');
+                startPreview(card, params);
+            }
+        };
+        
         // Global functions
-        window.openVariation = function(id) {
-            const variation = findVariationById(id);
-            if (variation) {
-                const params = buildParametersQuery(variation.parameters);
-                window.open(`./demo-modular.html?${params}`, '_blank');
-            }
+        window.openVariation = function(card) {
+            const params = card.getAttribute('data-params');
+            window.open(`./demo-modular.html?${params}`, '_blank');
         };
         
-        window.openFullscreen = function(id, event) {
+        window.openFullscreen = function(card, event) {
             event.stopPropagation();
-            const variation = findVariationById(id);
-            if (variation) {
-                const params = buildParametersQuery(variation.parameters);
-                window.open(`./demo-modular.html?${params}&autoplay=true`, '_blank');
-            }
+            const params = card.getAttribute('data-params');
+            window.open(`./demo-modular.html?${params}&autoplay=true`, '_blank');
         };
         
-        window.openParametric = function(id, event) {
+        window.openParametric = function(card, event) {
             event.stopPropagation();
-            const variation = findVariationById(id);
-            if (variation) {
-                const params = buildParametersQuery(variation.parameters);
-                window.open(`./parametric-engine.html?${params}`, '_blank');
-            }
+            const params = card.getAttribute('data-params');
+            window.open(`./parametric-engine.html?${params}`, '_blank');
         };
         
         window.refreshCollections = async function() {
