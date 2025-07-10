@@ -463,12 +463,9 @@
                 clearTimeout(hoverTimeouts.get(card));
             }
             
-            // Set a delay before starting the preview (800ms)
+            // Set a delay before starting the preview (200ms)
             const timeoutId = setTimeout(() => {
-                // Double-check the card is still being hovered
-                if (!card.matches(':hover')) {
-                    return;
-                }
+                // Create preview immediately without hover check
                 
                 // Just try to create it - let the browser handle WebGL limits
                 const iframe = document.createElement('iframe');
@@ -516,7 +513,7 @@
                 
                 // Set the src (this triggers the load)
                 iframe.src = `./demo-modular.html?${params}&hideui=true&noaudio=true`;
-            }, 800); // 800ms delay before starting preview
+            }, 200); // 200ms delay before starting preview
             
             // Store the timeout ID
             hoverTimeouts.set(card, timeoutId);
