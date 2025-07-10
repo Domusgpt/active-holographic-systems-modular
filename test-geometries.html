@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geometry Test</title>
+    <style>
+        body { margin: 0; background: #000; color: #0ff; font-family: monospace; }
+        .controls { position: fixed; top: 10px; left: 10px; z-index: 100; }
+        .btn { padding: 5px 10px; margin: 2px; background: rgba(0,255,255,0.2); border: 1px solid #0ff; color: #0ff; cursor: pointer; }
+        .btn.active { background: rgba(0,255,255,0.5); }
+        iframe { width: 100vw; height: 100vh; border: none; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <div>Geometry Test - Pure Types (No Morphing)</div>
+        <button class="btn active" onclick="testGeometry(0)">0: TETRAHEDRON</button>
+        <button class="btn" onclick="testGeometry(1)">1: HYPERCUBE</button>
+        <button class="btn" onclick="testGeometry(2)">2: SPHERE</button>
+        <button class="btn" onclick="testGeometry(3)">3: TORUS</button>
+        <button class="btn" onclick="testGeometry(4)">4: KLEIN</button>
+        <button class="btn" onclick="testGeometry(5)">5: FRACTAL</button>
+        <button class="btn" onclick="testGeometry(6)">6: WAVE</button>
+        <button class="btn" onclick="testGeometry(7)">7: CRYSTAL</button>
+        <div style="margin-top: 10px; font-size: 12px;">
+            Current: <span id="current">TETRAHEDRON</span><br>
+            Morph: 0.0 (no blending)<br>
+            Chaos: 0.0 (clean patterns)
+        </div>
+    </div>
+    
+    <iframe id="testFrame" src="demo-modular.html?hideui=true&noaudio=true&geometry=0&density=1.5&speed=0.3&chaos=0.0&morph=0.0&hue=180&saturation=0.9&intensity=0.6"></iframe>
+
+    <script>
+        const geometryNames = ['TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS', 'KLEIN', 'FRACTAL', 'WAVE', 'CRYSTAL'];
+        
+        function testGeometry(type) {
+            // Clear active buttons
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update display
+            document.getElementById('current').textContent = geometryNames[type];
+            
+            // Test with pure geometry (no morphing or chaos)
+            const params = new URLSearchParams({
+                hideui: 'true',
+                noaudio: 'true',
+                geometry: type,
+                density: 1.5,
+                speed: 0.3,
+                chaos: 0.0,      // No chaos
+                morph: 0.0,      // No morphing 
+                hue: type * 45,  // Different color per geometry
+                saturation: 0.9,
+                intensity: 0.6
+            });
+            
+            document.getElementById('testFrame').src = `demo-modular.html?${params.toString()}`;
+        }
+    </script>
+</body>
+</html>

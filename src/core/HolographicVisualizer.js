@@ -98,6 +98,7 @@ export class HolographicVisualizer {
             density: config.density,
             speed: config.speed,
             hue: (variant * 12.27) % 360,
+            saturation: 0.8 + (variationLevel * 0.05), // Add saturation parameter
             intensity: 0.5 + (variationLevel * 0.1),
             chaos: config.chaos,
             morph: config.morph
@@ -562,7 +563,7 @@ export class HolographicVisualizer {
         // Convert HSL to RGB for color uniform
         const hue = (this.variantParams.hue || 0) / 360; // Convert to 0-1 range
         const saturation = this.variantParams.saturation || 0.8;
-        const lightness = 0.5; // Keep at 50% for vibrant colors
+        const lightness = Math.max(0.2, Math.min(0.8, this.variantParams.intensity || 0.5)); // Use intensity for lightness
         
         // HSL to RGB conversion
         const hslToRgb = (h, s, l) => {
@@ -593,7 +594,7 @@ export class HolographicVisualizer {
         this.gl.uniform2f(this.uniforms.resolution, this.canvas.width, this.canvas.height);
         this.gl.uniform1f(this.uniforms.time, time);
         this.gl.uniform2f(this.uniforms.mouse, this.mouseX, this.mouseY);
-        this.gl.uniform1f(this.uniforms.geometry, this.variantParams.geometryType || 0);
+        this.gl.uniform1f(this.uniforms.geometryType, this.variantParams.geometryType || 0);
         this.gl.uniform1f(this.uniforms.density, this.variantParams.density || 1.0);
         this.gl.uniform1f(this.uniforms.speed, (this.variantParams.speed || 0.5) + (this.audioSpeedBoost || 0.0));
         this.gl.uniform3fv(this.uniforms.color, new Float32Array(rgbColor));
