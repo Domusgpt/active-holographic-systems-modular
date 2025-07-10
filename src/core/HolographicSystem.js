@@ -659,29 +659,54 @@ export class HolographicSystem {
         
         console.log('🔍 Parsed parameters:', params);
         
-        // DIRECTLY apply parameters to all visualizers without saving as custom variation
-        this.visualizers.forEach(visualizer => {
-            visualizer.variantParams = {
-                geometryType: params.geometryType,
-                density: params.density,
-                speed: params.speed,
-                chaos: params.chaos,
-                morph: params.morph,
-                hue: params.hue,
-                saturation: params.saturation,
-                intensity: params.intensity,
-                bassResponse: params.bassResponse,
-                midResponse: params.midResponse,
-                highResponse: params.highResponse,
-                name: `CUSTOM ${this.getGeometryName(params.geometryType)}`
-            };
-            
-            // Regenerate role parameters with new variant values
-            visualizer.roleParams = visualizer.generateRoleParams(visualizer.role);
-        });
+        // Check if this exact variation already exists
+        const existingIndex = this.customVariants.findIndex(cv => 
+            cv.params.geometryType === params.geometryType &&
+            cv.params.density === params.density &&
+            cv.params.speed === params.speed &&
+            cv.params.chaos === params.chaos &&
+            cv.params.morph === params.morph &&
+            Math.abs(cv.params.hue - params.hue) < 0.01 &&
+            Math.abs(cv.params.saturation - params.saturation) < 0.01 &&
+            Math.abs(cv.params.intensity - params.intensity) < 0.01
+        );
         
+        if (existingIndex !== -1) {
+            const existingId = this.customVariants[existingIndex].id;
+            console.log(`♻️ Variation already exists at #${existingId}, switching to it`);
+            this.updateVariant(existingId);
+            return;
+        }
+        
+        // Add as a new variation if under the limit
+        if (this.totalVariants < this.maxVariants) {
+            const newVariantId = this.totalVariants;
+            this.customVariants.push({
+                id: newVariantId,
+                params: params,
+                name: this.getGeometryName(params.geometryType) + ' CUSTOM ' + (this.customVariants.length + 1)
+            });
+            this.totalVariants++;
+            this.currentVariant = newVariantId;
+            this.isCustomVariation = true;
+            
+            this.variantNames[newVariantId] = this.customVariants[this.customVariants.length - 1].name;
+            this.saveVariations();
+            
+            console.log(`✅ Added custom variation #${newVariantId}`);
+        } else {
+            console.warn('⚠️ Maximum variations limit reached (10000)');
+            if (confirm('Maximum 10000 variations allowed. Would you like to clear saved variations and start fresh?')) {
+                this.clearSavedVariations();
+                this.loadCustomVariation(customParams);
+            }
+            return;
+        }
+        
+        // Update visualizers with custom parameters
+        this.updateVariant(this.currentVariant);
         this.updateVariantDisplay();
-        console.log('✅ Custom parameters applied directly to visualizers');
+        console.log('✅ Custom variation loaded successfully');
     }
     
     getGeometryName(geometryId) {
