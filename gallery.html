@@ -448,62 +448,48 @@
         const MAX_WEBGL_CONTEXTS = 3; // Browser limit
         
         window.startPreview = function(card, params) {
-            // Replace static preview with live iframe
             const container = card.querySelector('[data-preview-container]');
-            if (container && !container.querySelector('iframe')) {
-                // Check if we've hit the WebGL context limit
-                if (activeIframes.size >= MAX_WEBGL_CONTEXTS) {
-                    console.log('⚠️ WebGL context limit reached, keeping static preview');
-                    return; // Don't create new iframe, keep the static preview
-                }
-                
-                const iframe = document.createElement('iframe');
-                iframe.src = `./demo-modular.html?${params}&hideui=true`;
-                iframe.style.width = '100%';
-                iframe.style.height = '100%';
-                iframe.style.border = 'none';
-                iframe.style.borderRadius = '8px';
-                
-                // Track this iframe
-                activeIframes.add(iframe);
-                
-                // Listen for load errors
-                iframe.onerror = function() {
-                    console.log('❌ Iframe failed to load, reverting to static preview');
-                    activeIframes.delete(iframe);
-                    iframe.remove();
-                    const staticPreview = container.querySelector('.static-preview');
-                    if (staticPreview) {
-                        staticPreview.style.display = 'flex';
-                    }
-                };
-                
-                // Also listen for the window inside reporting WebGL failure
-                iframe.onload = function() {
-                    try {
-                        // Check if WebGL failed inside the iframe
-                        const iframeWindow = iframe.contentWindow;
-                        if (iframeWindow && !iframeWindow.WebGLRenderingContext) {
-                            throw new Error('WebGL not available in iframe');
-                        }
-                    } catch (e) {
-                        console.log('❌ WebGL failed in iframe, reverting to static preview');
-                        activeIframes.delete(iframe);
-                        iframe.remove();
-                        const staticPreview = container.querySelector('.static-preview');
-                        if (staticPreview) {
-                            staticPreview.style.display = 'flex';
-                        }
-                    }
-                };
-                
-                // Hide static preview and show iframe
+            
+            // If there's already an iframe, don't do anything
+            if (container && container.querySelector('iframe')) {
+                return;
+            }
+            
+            // Check if we've hit the WebGL context limit BEFORE creating anything
+            if (activeIframes.size >= MAX_WEBGL_CONTEXTS) {
+                console.log('⚠️ WebGL context limit reached, keeping static preview');
+                // Make sure static preview is visible
                 const staticPreview = container.querySelector('.static-preview');
                 if (staticPreview) {
-                    staticPreview.style.display = 'none';
+                    staticPreview.style.display = 'flex';
                 }
-                container.appendChild(iframe);
+                return; // Don't create new iframe at all
             }
+            
+            // Only create iframe if under the limit
+            const iframe = document.createElement('iframe');
+            
+            // Track this iframe BEFORE setting src to prevent race conditions
+            activeIframes.add(iframe);
+            
+            // Set iframe properties
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            iframe.style.borderRadius = '8px';
+            iframe.style.background = '#000'; // Black background to prevent white flash
+            
+            // Hide static preview FIRST
+            const staticPreview = container.querySelector('.static-preview');
+            if (staticPreview) {
+                staticPreview.style.display = 'none';
+            }
+            
+            // Add iframe to DOM
+            container.appendChild(iframe);
+            
+            // NOW set the src (this triggers the load)
+            iframe.src = `./demo-modular.html?${params}&hideui=true`;
         };
         
         window.stopPreview = function(card) {
