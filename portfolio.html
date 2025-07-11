@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holographic Systems Portfolio - Visual Quiver</title>
+    <title>Holographic Gallery - Collection Auto-Discovery</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
@@ -34,1111 +34,709 @@
             color: #00ffff;
             font-size: 1.5rem;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-            flex: 1;
+            text-align: center;
         }
         
-        .header-top {
+        .header-stats {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        
-        .nav-btn {
-            background: rgba(255, 150, 0, 0.2);
-            border: 1px solid #ff9600;
-            color: #ff9600;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-        }
-        
-        .nav-btn:hover {
-            background: rgba(255, 150, 0, 0.4);
-            box-shadow: 0 0 15px rgba(255, 150, 0, 0.6);
-            transform: translateY(-2px);
-        }
-        
-        .header-controls {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .search-box {
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid #00ffff;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.8rem;
-            width: 200px;
-        }
-        
-        .filter-tag {
-            background: rgba(0, 255, 255, 0.2);
-            border: 1px solid #00ffff;
-            color: #00ffff;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-tag.active {
-            background: rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-        
-        .export-button-main {
-            background: rgba(0, 255, 0, 0.2);
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        }
-        
-        .export-button-main:hover {
-            background: rgba(0, 255, 0, 0.4);
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
-            transform: translateY(-2px) scale(1.05);
-        }
-        
-        .engine-button-pro {
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid #ffd700;
-            color: #ffd700;
-            padding: 8px 15px;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            position: relative;
-        }
-        
-        .engine-button-pro:hover {
-            background: rgba(255, 215, 0, 0.4);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-            transform: translateY(-2px);
-        }
-        
-        .engine-button-pro::after {
-            content: "⭐";
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.8rem;
-            animation: sparkle 2s infinite;
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-            50% { transform: scale(1.2) rotate(180deg); opacity: 0.7; }
-        }
-        
-        .stats {
-            margin-left: auto;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.7rem;
-        }
-        
-        /* MAIN CONTENT */
-        .content {
-            margin-top: 120px;
-            padding: 30px;
-        }
-        
-        /* PORTFOLIO GRID */
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 100px;
-        }
-        
-        .variant-card {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .variant-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: #00ffff;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.6),
-                0 0 30px rgba(0, 255, 255, 0.3);
-        }
-        
-        .preview-container {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-            background: #000;
-            border-radius: 8px;
-        }
-        
-        .preview-canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .preview-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 8px;
-            background: #000;
-            pointer-events: none;
-        }
-        
-        .static-preview {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            border: 1px solid rgba(0,255,255,0.2);
-            border-radius: 8px;
-            background: #000;
-            position: relative;
-            overflow: hidden;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
         }
         
-        .preview-id {
-            font-size: 2.5rem;
-            font-weight: bold;
-            text-shadow: 0 0 20px currentColor;
-            margin-bottom: 10px;
+        .stat-item {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
         }
         
-        .preview-geometry {
-            font-size: 0.8rem;
-            color: #0ff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-        
-        .preview-bar {
-            width: 60px;
-            height: 4px;
-            border-radius: 2px;
-            box-shadow: 0 0 10px currentColor;
-        }
-        
-        .preview-hint {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.7);
-            color: #0ff;
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-size: 0.6rem;
-        }
-        
-        .preview-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent 0%, rgba(0, 255, 255, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .variant-card:hover .preview-overlay {
-            opacity: 1;
-        }
-        
-        .play-button {
-            position: absolute;
+        .loading {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 255, 255, 0.8);
-            border: none;
-            border-radius: 50%;
-            color: #000;
+            color: #00ffff;
             font-size: 1.2rem;
-            cursor: pointer;
-            opacity: 0;
-            transition: all 0.3s ease;
+            text-align: center;
+            z-index: 100;
         }
         
-        .variant-card:hover .play-button {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
+        /* COLLECTIONS GRID */
+        .collections-container {
+            margin-top: 180px;
+            padding: 30px;
         }
         
-        .variant-info {
-            padding: 15px;
+        .collection-section {
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
         }
         
-        .variant-title {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-        }
-        
-        .variant-meta {
+        .collection-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .collection-title {
+            color: #00ffff;
+            font-size: 1.2rem;
+        }
+        
+        .collection-meta {
             font-size: 0.7rem;
             color: rgba(255, 255, 255, 0.6);
         }
         
-        .variant-id {
-            background: rgba(0, 255, 255, 0.2);
-            padding: 2px 6px;
-            border-radius: 8px;
-        }
-        
-        .complexity-rating {
-            display: flex;
-            gap: 2px;
-        }
-        
-        .complexity-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .complexity-dot.active {
-            background: #00ffff;
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-        }
-        
-        .variant-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        
-        .tag {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.6rem;
-            border: 1px solid transparent;
-        }
-        
-        .tag.geometric { border-color: #ff6b9d; color: #ff6b9d; }
-        .tag.organic { border-color: #4ecdc4; color: #4ecdc4; }
-        .tag.calm { border-color: #45b7d1; color: #45b7d1; }
-        .tag.intense { border-color: #ff4757; color: #ff4757; }
-        .tag.bass-heavy { border-color: #ff9ff3; color: #ff9ff3; }
-        .tag.full-spectrum { border-color: #54a0ff; color: #54a0ff; }
-        
-        .variant-params {
-            font-size: 0.6rem;
-            color: rgba(255, 255, 255, 0.5);
+        .variations-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 25px;
+            margin: 0 auto;
+            padding: 0 40px;
         }
         
-        .param {
-            display: flex;
-            justify-content: space-between;
+        .variation-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 280px;
         }
         
-        .card-actions {
+        .variation-card:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .card-preview {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background: #111;
+            position: relative;
+        }
+        
+        .card-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none;
+        }
+        
+        .card-info h3 {
+            color: #00ffff;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .card-params {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .card-controls {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
         
-        .variant-card:hover .card-actions {
-            opacity: 1;
-        }
-        
-        .action-btn {
+        .card-btn {
             background: rgba(0, 255, 255, 0.2);
-            border: 1px solid rgba(0, 255, 255, 0.4);
+            border: 1px solid #00ffff;
             color: #00ffff;
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .card-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+        }
+        
+        .custom-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 100, 255, 0.3);
+            color: #ff64ff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.6rem;
+            border: 1px solid #ff64ff;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 20px;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 255, 255, 0.3);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+        
+        /* COLLECTION TABS */
+        .collection-tabs {
+            display: flex !important;
+            gap: 15px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .tab-button {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 12px;
             font-size: 0.7rem;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Orbitron', monospace;
-            flex: 1;
-        }
-        
-        .action-btn:hover {
-            background: rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-            transform: translateY(-1px);
-        }
-        
-        /* MODAL SYSTEM */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal.active {
+            font-weight: bold;
             display: flex;
-        }
-        
-        .modal-content {
-            width: 90%;
-            height: 90%;
-            max-width: 1200px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ffff;
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 0, 77, 0.3);
-            border: 1px solid #ff004d;
-            color: #ff004d;
-            padding: 10px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            z-index: 2001;
-            font-family: 'Orbitron', monospace;
-        }
-        
-        .modal-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 18px;
-        }
-        
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header-controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .search-box {
-                width: 100%;
-            }
-            
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
-            }
-            
-            .content {
-                padding: 20px;
-                margin-top: 140px;
-            }
-        }
-        
-        /* LOADING ANIMATION */
-        .loading {
-            display: flex;
-            justify-content: center;
             align-items: center;
-            height: 200px;
+            gap: 6px;
+        }
+        
+        .tab-button.active {
+            background: rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
             color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
         }
         
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(0, 255, 255, 0.3);
-            border-top: 3px solid #00ffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .tab-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .tab-button span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+        }
+        
+        .tab-button.active span {
+            background: rgba(0, 255, 255, 0.4);
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
     <div class="header">
-        <div class="header-top">
-            <h1>🌌 Holographic Systems Portfolio</h1>
-            <div class="header-nav">
-                <button class="nav-btn" onclick="openParametricEngine()">⚙️ PARAMETRIC ENGINE</button>
-            </div>
+        <h1>🌌 Holographic Portfolio</h1>
+        <div class="header-stats">
+            <div class="stat-item">Base: <span id="baseCount">0</span></div>
+            <div class="stat-item">Custom: <span id="customCount">0</span></div>
+            <div class="stat-item">Total: <span id="totalCount">0</span></div>
+            <div class="stat-item">Status: <span id="statusText">Loading...</span></div>
         </div>
-        <div class="header-controls">
-            <input type="text" class="search-box" placeholder="Search variations..." id="searchBox">
-            
-            <div class="filter-tag" data-filter="all">ALL</div>
-            <div class="filter-tag" data-filter="geometric">GEOMETRIC</div>
-            <div class="filter-tag" data-filter="organic">ORGANIC</div>
-            <div class="filter-tag" data-filter="calm">CALM</div>
-            <div class="filter-tag" data-filter="intense">INTENSE</div>
-            <div class="filter-tag" data-filter="bass-heavy">BASS</div>
-            <div class="filter-tag" data-filter="full-spectrum">SPECTRUM</div>
-            <div class="filter-tag" data-filter="custom">CUSTOM</div>
-            
-            <button class="export-button-main" onclick="exportGallery()">📁 DOWNLOAD MY GALLERY (FREE)</button>
-            <button class="engine-button-pro" onclick="openParametricEngine()">⚙️ PARAMETRIC ENGINE (PRO)</button>
-            
-            <div class="stats">
-                <span id="visibleCount">30</span> / <span id="totalCount">30</span> variations
-            </div>
+        
+        <!-- COLLECTION TABS -->
+        <div class="collection-tabs">
+            <button class="tab-button active" data-tab="base" onclick="switchTab('base')">
+                📦 BASE COLLECTION <span id="baseTabCount">0</span>
+            </button>
+            <button class="tab-button" data-tab="custom" onclick="switchTab('custom')">
+                🎨 CUSTOM VARIATIONS <span id="customTabCount">0</span>
+            </button>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <a href="parametric-engine.html" class="card-btn" style="background: rgba(255, 150, 0, 0.3); border-color: #ff9600; color: #ff9600; text-decoration: none; display: inline-block; padding: 8px 16px;">
+                🎛️ Open Parametric Engine
+            </a>
         </div>
     </div>
     
-    <!-- MAIN CONTENT -->
-    <div class="content">
-        <div class="portfolio-grid" id="portfolioGrid">
-            <!-- Variant cards will be generated here -->
-        </div>
+    <div class="loading" id="loadingMsg">
+        🔍 Auto-discovering collections...<br>
+        <small>Scanning collections/ folder for JSON files</small>
     </div>
     
-    <!-- MODAL -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
-            <iframe class="modal-iframe" id="modalIframe" src=""></iframe>
-        </div>
+    <div class="collections-container" id="collectionsContainer" style="display: none;">
+        <!-- Collections will be populated here -->
     </div>
-
+    
+    <div class="refresh-btn" onclick="refreshCollections()">
+        🔄 Refresh Collections
+    </div>
+    
     <script type="module">
         import { CollectionManager } from './src/features/CollectionManager.js';
         
+        console.log('🎨 Holographic Gallery - Auto-Discovery System');
+        
         let collectionManager = null;
-        let allVariations = [];
+        let collections = [];
+        let customVariations = [];
+        let currentTab = 'base';
+        let baseCount = 0;
+        let customCount = 0;
         
-        // HOLOGRAPHIC VARIANT DATABASE - Now loaded from collections
-        let holographicVariants = [];
+        // Initialize gallery
+        window.addEventListener('load', async () => {
+            console.log('🚀 Initializing portfolio...');
+            await initializePortfolio();
+        });
         
-        // Initialize collections on page load
         async function initializePortfolio() {
             try {
+                // Initialize collection manager
                 collectionManager = new CollectionManager();
-                const collections = await collectionManager.autoDiscoverCollections();
                 
-                // Flatten all variations from all collections
-                let currentId = 0;
-                holographicVariants = [];
+                // Auto-discover collections
+                collections = await collectionManager.autoDiscoverCollections();
                 
-                collections.forEach(collection => {
-                    collection.variations.forEach(variation => {
-                        holographicVariants.push({
-                            id: currentId++,
-                            name: variation.name,
-                            tags: variation.isCustom ? ["custom"] : ["geometric"],
-                            complexity: Math.round(variation.parameters.density + variation.parameters.chaos + variation.parameters.morph),
-                            density: variation.parameters.density,
-                            speed: variation.parameters.speed,
-                            chaos: variation.parameters.chaos,
-                            morph: variation.parameters.morph,
-                            description: `${getGeometryName(variation.parameters.geometryType)} with ${variation.parameters.density.toFixed(1)} density`,
-                            isCustom: variation.isCustom,
-                            customParams: variation.parameters,
-                            collectionName: collection.name
-                        });
-                    });
-                });
+                // Calculate base count
+                baseCount = collections.reduce((sum, collection) => sum + collection.variations.length, 0);
                 
-                console.log(`📊 Loaded ${holographicVariants.length} variations from ${collections.length} collections`);
+                // Load custom variations from localStorage
+                loadCustomVariations();
                 
-                // Initialize the portfolio with loaded data
-                initializeWithData();
+                // Update stats
+                updateStats();
                 
+                // Render current tab
+                renderCurrentTab();
+                
+                // Hide loading
+                document.getElementById('loadingMsg').style.display = 'none';
+                document.getElementById('collectionsContainer').style.display = 'block';
+                
+                console.log('✅ Portfolio initialized successfully');
             } catch (error) {
-                console.error('Failed to load collections:', error);
-                // Fall back to empty array if loading fails
-                initializeWithData();
+                console.error('❌ Failed to initialize portfolio:', error);
+                showError('Failed to load collections. Please refresh the page.');
             }
+        }
+        
+        function loadCustomVariations() {
+            try {
+                const saved = localStorage.getItem('customHolographicVariations');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    const customParams = data.variations || [];
+                    
+                    customVariations = customParams.map((cv, index) => ({
+                        id: baseCount + index,
+                        name: cv.name,
+                        isCustom: true,
+                        parameters: cv.params
+                    }));
+                    
+                    customCount = customVariations.length;
+                    console.log(`💾 Loaded ${customCount} custom variations from localStorage`);
+                }
+            } catch (e) {
+                console.error('Failed to load custom variations:', e);
+                customVariations = [];
+                customCount = 0;
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('baseCount').textContent = baseCount;
+            document.getElementById('customCount').textContent = customCount;
+            document.getElementById('totalCount').textContent = baseCount + customCount;
+            document.getElementById('baseTabCount').textContent = baseCount;
+            document.getElementById('customTabCount').textContent = customCount;
+            document.getElementById('statusText').textContent = (baseCount + customCount) > 0 ? 'Ready' : 'No variations';
+        }
+        
+        function renderCurrentTab() {
+            if (currentTab === 'base') {
+                renderCollections();
+            } else {
+                renderCustomVariations();
+            }
+        }
+        
+        function renderCustomVariations() {
+            const container = document.getElementById('collectionsContainer');
+            container.innerHTML = '';
+            
+            if (customVariations.length === 0) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <h3>No Custom Variations Found</h3>
+                        <p>Create custom variations using the Parametric Engine</p>
+                        <br>
+                        <a href="parametric-engine.html" class="card-btn">Open Parametric Engine</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            const section = document.createElement('div');
+            section.className = 'collection-section';
+            section.innerHTML = `
+                <div class="collection-header">
+                    <div class="collection-title">Custom Variations</div>
+                    <div class="collection-meta">
+                        ${customVariations.length} variations • Created with Parametric Engine
+                    </div>
+                </div>
+                <div class="variations-grid">
+                    ${customVariations.map((variation, index) => 
+                        createVariationCard(variation, 'custom', index)
+                    ).join('')}
+                </div>
+            `;
+            container.appendChild(section);
+        }
+        
+        // Tab switching function
+        window.switchTab = function(tabName) {
+            currentTab = tabName;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Render current tab
+            renderCurrentTab();
+        };
+        
+        function renderCollections() {
+            const container = document.getElementById('collectionsContainer');
+            container.innerHTML = '';
+            
+            if (collections.length === 0) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <h3>No Collections Found</h3>
+                        <p>Add JSON collection files to the <code>collections/</code> folder and refresh</p>
+                        <br>
+                        <button class="card-btn" onclick="refreshCollections()">Refresh Collections</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            collections.forEach((collection, collectionIndex) => {
+                const section = document.createElement('div');
+                section.className = 'collection-section';
+                section.innerHTML = `
+                    <div class="collection-header">
+                        <div class="collection-title">${escapeHtml(collection.name)}</div>
+                        <div class="collection-meta">
+                            ${collection.variations.length} variations • ${collection.filename}
+                        </div>
+                    </div>
+                    <div class="variations-grid">
+                        ${collection.variations.map((variation, variationIndex) => 
+                            createVariationCard(variation, collectionIndex, variationIndex)
+                        ).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+        
+        function createVariationCard(variation, collectionIndex, variationIndex) {
+            const parametersQuery = buildParametersQuery(variation.parameters);
+            const customBadge = variation.isCustom ? '<div class="custom-badge">CUSTOM</div>' : '';
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            // Calculate ultimate global ID across all collections
+            let globalId = 0;
+            for (let i = 0; i < collectionIndex; i++) {
+                globalId += collections[i].variations.length;
+            }
+            globalId += variationIndex + 1; // +1 for 1-based display numbering
+            
+            return `
+                <div class="variation-card" 
+                     data-collection="${collectionIndex}" 
+                     data-variation="${variationIndex}"
+                     data-params="${parametersQuery}"
+                     ${isMobile ? 'onclick="handleMobileTouch(this, event)"' : 'onclick="openVariation(this)" onmouseenter="startPreview(this, \''+parametersQuery+'\')" onmouseleave="stopPreview(this)"'}>
+                    ${customBadge}
+                    <div class="card-preview" data-preview-container>
+                        <div class="static-preview" style="width: 100%; height: 100%; background: #000; border-radius: 8px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(0,255,255,0.2);">
+                            <div style="font-size: 2.5rem; font-weight: bold; color: hsl(${variation.parameters.hue || 0}, ${(variation.parameters.saturation || 0.8) * 100}%, 50%); text-shadow: 0 0 20px currentColor; margin-bottom: 10px;">
+                                #${globalId}
+                            </div>
+                            <div style="font-size: 0.8rem; color: #0ff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">
+                                ${getGeometryName(variation.parameters.geometryType)}
+                            </div>
+                            <div style="width: 60px; height: 4px; background: hsl(${variation.parameters.hue || 0}, ${(variation.parameters.saturation || 0.8) * 100}%, 50%); border-radius: 2px; box-shadow: 0 0 10px currentColor;"></div>
+                            <div style="position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #0ff; padding: 3px 6px; border-radius: 3px; font-size: 0.6rem;">
+                                ${isMobile ? 'TAP' : 'HOVER'} → LIVE
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h3>${escapeHtml(variation.name)} <span style="color: rgba(255,255,255,0.4); font-size: 0.7em;">#${globalId}</span></h3>
+                        <div class="card-params">
+                            Geometry: ${getGeometryName(variation.parameters.geometryType)} | 
+                            Density: ${variation.parameters.density.toFixed(1)} | 
+                            Speed: ${variation.parameters.speed.toFixed(1)}
+                        </div>
+                    </div>
+                    <div class="card-controls">
+                        <button class="card-btn" onclick="openFullscreen(this.parentElement.parentElement, event)">Fullscreen</button>
+                        <button class="card-btn" onclick="openParametric(this.parentElement.parentElement, event)">Edit</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function buildParametersQuery(params) {
+            const urlParams = new URLSearchParams();
+            if (params.geometryType !== undefined) urlParams.set('geometry', params.geometryType);
+            if (params.density !== undefined) urlParams.set('density', params.density);
+            if (params.speed !== undefined) urlParams.set('speed', params.speed);
+            if (params.chaos !== undefined) urlParams.set('chaos', params.chaos);
+            if (params.morph !== undefined) urlParams.set('morph', params.morph);
+            if (params.hue !== undefined) urlParams.set('hue', params.hue);
+            if (params.saturation !== undefined) urlParams.set('saturation', params.saturation);
+            if (params.intensity !== undefined) urlParams.set('intensity', params.intensity);
+            return urlParams.toString();
         }
         
         function getGeometryName(geometryType) {
             const names = ['TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS', 'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'];
-            return names[Math.floor(geometryType)] || 'HYBRID';
+            return names[geometryType] || 'UNKNOWN';
         }
         
-        function initializeWithData() {
-            // Portfolio initialization with loaded collection data
-            window.portfolio = new HolographicPortfolio();
-        }
-        
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            initializePortfolio();
-        });
-        
-        // Portfolio functionality starts here
-        let currentFilter = 'all';
-        let searchTerm = '';
-        
-        // PORTFOLIO INTERFACE
-        class HolographicPortfolio {
-            constructor() {
-                this.variants = holographicVariants; // Use data loaded from CollectionManager
-                this.filteredVariants = [...this.variants];
-                this.init();
-            }
+        function generateStaticPreview(params) {
+            // Convert hue to HSL color
+            const hue = params.hue || 0;
+            const saturation = (params.saturation || 0.8) * 100;
+            const lightness = (params.intensity || 0.5) * 50 + 20; // 20-70% lightness
             
-            init() {
-                this.renderGrid();
-                this.setupEventListeners();
-                this.updateStats();
-            }
+            // Create gradient based on geometry type and parameters
+            const baseColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            const accentColor = `hsl(${(hue + 60) % 360}, ${saturation}%, ${lightness + 20}%)`;
             
-            renderGrid() {
-                const grid = document.getElementById('portfolioGrid');
-                grid.innerHTML = '';
-                
-                this.filteredVariants.forEach(variant => {
-                    const card = this.createVariantCard(variant);
-                    grid.appendChild(card);
-                });
-            }
+            // Different patterns based on geometry
+            const geomType = Math.floor(params.geometryType || 0);
+            const density = params.density || 1.0;
+            const chaos = params.chaos || 0.0;
             
-            createVariantCard(variant) {
-                const card = document.createElement('div');
-                card.className = 'variant-card';
-                card.dataset.id = variant.id;
-                
-                card.innerHTML = `
-                    <div class="preview-container">
-                        <canvas class="preview-canvas" width="280" height="200"></canvas>
-                        <div class="preview-overlay"></div>
-                        <button class="play-button">▶</button>
-                    </div>
-                    <div class="variant-info">
-                        <div class="variant-title">${variant.name}</div>
-                        <div class="variant-meta">
-                            <span class="variant-id">#${String(variant.id + 1).padStart(3, '0')}</span>
-                            <div class="complexity-rating">
-                                ${[1,2,3,4,5].map(i => 
-                                    `<div class="complexity-dot ${i <= variant.complexity ? 'active' : ''}"></div>`
-                                ).join('')}
-                            </div>
-                        </div>
-                        <div class="variant-tags">
-                            ${variant.tags.map(tag => `<span class="tag ${tag}">${tag.toUpperCase()}</span>`).join('')}
-                        </div>
-                        <div class="variant-params">
-                            <div class="param"><span>Density:</span><span>${variant.density}</span></div>
-                            <div class="param"><span>Speed:</span><span>${variant.speed}</span></div>
-                            <div class="param"><span>Chaos:</span><span>${variant.chaos}</span></div>
-                            <div class="param"><span>Morph:</span><span>${variant.morph}</span></div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="action-btn" onclick="event.stopPropagation(); addToPersonalGallery(${variant.id})" title="Add to Personal Gallery">
-                                💾 Save
-                            </button>
-                            <button class="action-btn" onclick="event.stopPropagation(); shareVariation(${variant.id})" title="Share Variation">
-                                🔗 Share
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                // Generate preview
-                this.generatePreview(card.querySelector('.preview-canvas'), variant);
-                
-                // Add click handler
-                card.addEventListener('click', () => this.openVariant(variant.id));
-                
-                return card;
-            }
-            
-            generatePreview(canvas, variant) {
-                const ctx = canvas.getContext('2d');
-                const width = canvas.width;
-                const height = canvas.height;
-                
-                // Clear canvas
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0, 0, width, height);
-                
-                // Generate preview based on variant parameters
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const time = Date.now() * 0.001;
-                
-                // Draw simplified version of the holographic pattern
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                
-                // Use variant parameters to influence the preview
-                const layers = Math.ceil(variant.complexity);
-                const hue = (variant.id * 12.27) % 360;
-                
-                for (let layer = 0; layer < layers; layer++) {
-                    ctx.save();
-                    ctx.rotate(layer * 0.5 + time * variant.speed);
-                    
-                    const radius = 30 + layer * 20 + variant.density * 10;
-                    const sides = 6 + (variant.id % 8);
-                    
-                    ctx.beginPath();
-                    for (let i = 0; i <= sides; i++) {
-                        const angle = (i / sides) * Math.PI * 2;
-                        const r = radius + Math.sin(time * 2 + i) * variant.morph * 10;
-                        const x = Math.cos(angle) * r;
-                        const y = Math.sin(angle) * r;
-                        
-                        if (i === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    
-                    const alpha = 0.3 + variant.chaos * 0.4;
-                    ctx.strokeStyle = `hsla(${hue + layer * 60}, 70%, 60%, ${alpha})`;
-                    ctx.lineWidth = 1 + variant.intensity * 2;
-                    ctx.stroke();
-                    
-                    ctx.restore();
-                }
-                
-                ctx.restore();
-            }
-            
-            setupEventListeners() {
-                // Search functionality
-                document.getElementById('searchBox').addEventListener('input', (e) => {
-                    searchTerm = e.target.value.toLowerCase();
-                    this.applyFilters();
-                });
-                
-                // Filter tags
-                document.querySelectorAll('.filter-tag').forEach(tag => {
-                    tag.addEventListener('click', () => {
-                        document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-                        tag.classList.add('active');
-                        currentFilter = tag.dataset.filter;
-                        this.applyFilters();
-                    });
-                });
-                
-                // Set initial active filter
-                document.querySelector('.filter-tag[data-filter="all"]').classList.add('active');
-            }
-            
-            applyFilters() {
-                this.filteredVariants = this.variants.filter(variant => {
-                    const matchesSearch = !searchTerm || 
-                        variant.name.toLowerCase().includes(searchTerm) ||
-                        variant.description.toLowerCase().includes(searchTerm) ||
-                        variant.tags.some(tag => tag.toLowerCase().includes(searchTerm));
-                    
-                    const matchesFilter = currentFilter === 'all' || variant.tags.includes(currentFilter);
-                    
-                    return matchesSearch && matchesFilter;
-                });
-                
-                this.renderGrid();
-                this.updateStats();
-            }
-            
-            updateStats() {
-                document.getElementById('visibleCount').textContent = this.filteredVariants.length;
-                document.getElementById('totalCount').textContent = this.variants.length;
-                
-                // Debug logging
-                console.log(`📊 Portfolio Stats: ${this.filteredVariants.length} visible / ${this.variants.length} total`);
-                console.log(`📦 Base variants: 30, Custom variants: ${this.variants.length - 30}`);
-            }
-            
-            openVariant(id) {
-                const modal = document.getElementById('modal');
-                const iframe = document.getElementById('modalIframe');
-                
-                // Find the variant data
-                const variant = this.variants.find(v => v.id === id);
-                
-                let url;
-                if (variant && variant.isCustom && variant.customParams) {
-                    // For custom variations, pass the actual parameters
-                    const params = new URLSearchParams({
-                        geometry: variant.customParams.geometry || 0,
-                        density: variant.customParams.density || 1.0,
-                        speed: variant.customParams.speed || 0.5,
-                        chaos: variant.customParams.chaos || 0.0,
-                        morph: variant.customParams.morph || 0.0,
-                        hue: variant.customParams.hue || 0,
-                        saturation: variant.customParams.saturation || 0.8,
-                        intensity: variant.customParams.intensity || 0.5,
-                        autoplay: 'true'
-                    });
-                    url = `demo-modular.html?${params.toString()}`;
-                } else {
-                    // For base variations, use variant ID
-                    url = `demo-modular.html?variant=${id}&autoplay=true`;
-                }
-                
-                iframe.src = url;
-                modal.classList.add('active');
+            switch(geomType) {
+                case 0: // TETRAHEDRON
+                    return `radial-gradient(circle at 30% 30%, ${accentColor} 0%, ${baseColor} 40%, transparent 70%), radial-gradient(circle at 70% 70%, ${baseColor} 0%, transparent 50%), linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 1: // HYPERCUBE
+                    return `repeating-linear-gradient(45deg, ${baseColor} 0px, transparent ${10 + density * 5}px, ${accentColor} ${20 + density * 10}px), linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 2: // SPHERE
+                    return `radial-gradient(circle at center, ${accentColor} 0%, ${baseColor} 30%, transparent 70%), radial-gradient(circle at 80% 20%, ${baseColor} 0%, transparent 40%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 3: // TORUS
+                    return `radial-gradient(ellipse 60% 30% at center, transparent 20%, ${baseColor} 40%, transparent 60%), radial-gradient(ellipse 40% 60% at center, ${accentColor} 0%, transparent 50%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 4: // KLEIN BOTTLE
+                    return `conic-gradient(from 45deg at 50% 50%, ${baseColor} 0deg, ${accentColor} 90deg, ${baseColor} 180deg, ${accentColor} 270deg), linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 5: // FRACTAL
+                    return `repeating-radial-gradient(circle at 25% 25%, ${baseColor} 0%, ${accentColor} ${15 + chaos * 20}%, ${baseColor} ${30 + chaos * 40}%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
+                case 6: // WAVE
+                    return `repeating-linear-gradient(90deg, ${baseColor} 0px, ${accentColor} ${15 + density * 5}px, ${baseColor} ${30 + density * 10}px), linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.9) 100%)`;
+                case 7: // CRYSTAL
+                default:
+                    return `linear-gradient(45deg, ${baseColor} 25%, transparent 25%), linear-gradient(-45deg, ${accentColor} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${baseColor} 75%), linear-gradient(-45deg, transparent 75%, ${accentColor} 75%), linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%)`;
             }
         }
         
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            const iframe = document.getElementById('modalIframe');
-            modal.classList.remove('active');
-            iframe.src = '';
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
-        // Close modal on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-        
-        // Portfolio will be initialized by initializeWithData()
-        
-        // Animate previews
-        function animatePreviews() {
-            document.querySelectorAll('.preview-canvas').forEach((canvas, index) => {
-                const variant = holographicVariants[index];
-                if (variant) {
-                    portfolio.generatePreview(canvas, variant);
-                }
-            });
-            requestAnimationFrame(animatePreviews);
+        function showError(message) {
+            document.getElementById('loadingMsg').style.display = 'none';
+            document.getElementById('collectionsContainer').innerHTML = `
+                <div class="error-message">
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+            document.getElementById('collectionsContainer').style.display = 'block';
         }
         
-        animatePreviews();
+        // Preview management - replace static with live on hover
+        let activeIframes = new Map(); // Track active iframes by card
+        const MAX_WEBGL_CONTEXTS = 16; // Actually allow more - browser will handle the limit
         
-        // Navigation functions
-        function openParametricEngine() {
-            const proceed = confirm('🌟 PARAMETRIC ENGINE PRO\n\nCreate unlimited custom holographic variations with:\n\n⚙️ Real-time parameter controls\n🎨 Advanced geometry options\n💾 Save & share custom creations\n📤 Individual variation exports\n🔗 Direct sharing links\n\n✨ This is a PRO feature.\n\nClick OK to explore the demo, or Cancel to stay in the free gallery.');
-            
-            if (proceed) {
-                window.open('parametric-engine.html', '_blank');
-            }
-        }
+        // Store hover timeouts
+        let hoverTimeouts = new WeakMap();
         
-        function addToPersonalGallery(variantId) {
-            const variant = portfolio.variants.find(v => v.id === variantId);
-            if (!variant) return;
+        window.startPreview = function(card, params) {
+            const container = card.querySelector('[data-preview-container]');
             
-            // Get existing personal gallery
-            let personalGallery = [];
-            try {
-                const saved = localStorage.getItem('holographicPersonalGallery');
-                if (saved) {
-                    personalGallery = JSON.parse(saved);
-                }
-            } catch (e) {
-                console.warn('Could not load personal gallery:', e);
-            }
-            
-            // Check if already saved
-            const exists = personalGallery.some(item => 
-                item.id === variant.id && 
-                JSON.stringify(item.customParams) === JSON.stringify(variant.customParams)
-            );
-            
-            if (exists) {
-                alert('💾 This variation is already in your personal gallery!');
+            // If there's already an iframe, don't do anything
+            if (container && container.querySelector('iframe')) {
                 return;
             }
             
-            // Add to personal gallery
-            personalGallery.push({
-                ...variant,
-                savedDate: new Date().toISOString(),
-                savedFrom: 'portfolio'
-            });
-            
-            // Save to localStorage
-            try {
-                localStorage.setItem('holographicPersonalGallery', JSON.stringify(personalGallery));
-                console.log(`💾 Added "${variant.name}" to personal gallery`);
-                alert(`💾 Added "${variant.name}" to your personal gallery!\n\nTotal saved: ${personalGallery.length} variations`);
-            } catch (e) {
-                console.error('Failed to save to personal gallery:', e);
-                alert('❌ Failed to save to personal gallery. Storage may be full.');
+            // Clear any existing timeout for this card
+            if (hoverTimeouts.has(card)) {
+                clearTimeout(hoverTimeouts.get(card));
             }
-        }
-        
-        function shareVariation(variantId) {
-            const variant = portfolio.variants.find(v => v.id === variantId);
-            if (!variant) return;
             
-            let shareUrl;
-            if (variant.isCustom && variant.customParams) {
-                // For custom variations, create shareable URL with parameters
-                const params = new URLSearchParams({
-                    geometry: variant.customParams.geometry || 0,
-                    density: variant.customParams.density || 1.0,
-                    speed: variant.customParams.speed || 0.5,
-                    chaos: variant.customParams.chaos || 0.0,
-                    morph: variant.customParams.morph || 0.0,
-                    hue: variant.customParams.hue || 0,
-                    saturation: variant.customParams.saturation || 0.8,
-                    intensity: variant.customParams.intensity || 0.5,
-                    name: encodeURIComponent(variant.name)
-                });
-                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?${params.toString()}`;
+            // Set a delay before starting the preview (50ms)
+            const timeoutId = setTimeout(() => {
+                // Create preview immediately without hover check
+                
+                // Just try to create it - let the browser handle WebGL limits
+                const iframe = document.createElement('iframe');
+                
+                // Set iframe properties
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.style.borderRadius = '8px';
+                iframe.style.background = '#000'; // Black background to prevent white flash
+                
+                // Handle load completion
+                iframe.onload = function() {
+                    // Give it a moment to see if WebGL initialized
+                    setTimeout(() => {
+                        try {
+                            // Check if the iframe loaded but is showing an error
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            const bodyText = iframeDoc.body.innerText || '';
+                            
+                            // If the iframe body is empty or shows an error, revert
+                            if (bodyText.includes('error') || bodyText.trim() === '' || iframeDoc.querySelector('img[alt*="error"]')) {
+                                console.log('❌ WebGL failed, reverting to static preview');
+                                iframe.remove();
+                                const staticPreview = container.querySelector('.static-preview');
+                                if (staticPreview) {
+                                    staticPreview.style.display = 'flex';
+                                }
+                            }
+                        } catch (e) {
+                            // Cross-origin or other error - just leave it
+                            console.log('⚠️ Could not check iframe status');
+                        }
+                    }, 500); // Wait 500ms for WebGL to initialize
+                };
+                
+                // Hide static preview
+                const staticPreview = container.querySelector('.static-preview');
+                if (staticPreview) {
+                    staticPreview.style.display = 'none';
+                }
+                
+                // Add iframe to DOM
+                container.appendChild(iframe);
+                
+                // Set the src (this triggers the load)
+                iframe.src = `./demo-modular.html?${params}&hideui=true&noaudio=true`;
+            }, 50); // 50ms delay before starting preview
+            
+            // Store the timeout ID
+            hoverTimeouts.set(card, timeoutId);
+        };
+        
+        window.stopPreview = function(card) {
+            // Clear any pending timeout if the user stops hovering
+            if (hoverTimeouts.has(card)) {
+                clearTimeout(hoverTimeouts.get(card));
+                hoverTimeouts.delete(card);
+            }
+            
+            // Don't do anything to existing previews - just let them keep running
+            // The iframe will continue to animate in the background
+            return;
+        };
+        
+        // Mobile touch handling
+        window.handleMobileTouch = function(card, event) {
+            event.preventDefault();
+            const container = card.querySelector('[data-preview-container]');
+            
+            // If already showing live preview, open the variation
+            if (container && container.querySelector('iframe')) {
+                openVariation(card);
             } else {
-                // For base variations, use variant ID
-                shareUrl = `${window.location.origin}${window.location.pathname.replace('portfolio.html', 'demo-modular.html')}?variant=${variant.id}&name=${encodeURIComponent(variant.name)}`;
+                // First tap: show live preview
+                const params = card.getAttribute('data-params');
+                startPreview(card, params);
             }
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                alert(`🔗 Share link copied to clipboard!\n\n"${variant.name}"\n\nAnyone can view this variation by opening the link.`);
-            }).catch(() => {
-                // Fallback for browsers without clipboard API
-                prompt('🔗 Copy this shareable link:', shareUrl);
-            });
+        };
+        
+        // Global functions
+        window.openVariation = function(card) {
+            const params = card.getAttribute('data-params');
+            window.open(`./demo-modular.html?${params}`, '_blank');
+        };
+        
+        window.openFullscreen = function(card, event) {
+            event.stopPropagation();
+            const params = card.getAttribute('data-params');
+            window.open(`./demo-modular.html?${params}&autoplay=true`, '_blank');
+        };
+        
+        window.openParametric = function(card, event) {
+            event.stopPropagation();
+            const params = card.getAttribute('data-params');
+            window.open(`./parametric-engine.html?${params}`, '_blank');
+        };
+        
+        window.refreshCollections = async function() {
+            document.getElementById('statusText').textContent = 'Refreshing...';
+            await initializePortfolio();
+        };
+        
+        function findVariationById(id) {
+            for (const collection of collections) {
+                const variation = collection.variations.find(v => v.id === id);
+                if (variation) return variation;
+            }
+            return null;
         }
         
-        function exportGallery() {
-            // Export personal gallery instead of all variations
-            let personalGallery = [];
-            try {
-                const saved = localStorage.getItem('holographicPersonalGallery');
-                if (saved) {
-                    personalGallery = JSON.parse(saved);
-                }
-            } catch (e) {
-                console.warn('Could not load personal gallery:', e);
-            }
-            
-            if (personalGallery.length === 0) {
-                alert('📁 Your personal gallery is empty!\n\nHover over variations and click "💾 Save to Gallery" to add them to your collection first.\n\n✨ This is a FREE feature - build and share your curated holographic collection!');
-                return;
-            }
-            
-            // Create shareable gallery HTML
-            let galleryHTML = generatePersonalGalleryExport(personalGallery);
-            
-            // Download the file
-            const blob = new Blob([galleryHTML], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `my-holographic-gallery-${personalGallery.length}variations.html`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            console.log(`📁 Exported personal gallery with ${personalGallery.length} variations`);
-            alert(`✅ FREE Gallery Export Complete!\n\n${personalGallery.length} variations saved to shareable HTML file.\n\n📤 Send this file to anyone to share your curated holographic collection!\n\n⚙️ Want to create custom variations? Upgrade to Parametric Engine PRO!`);
-        }
-    </script>
-
-    <script>
-        function generatePersonalGalleryExport(personalGallery) {
-            // Helper function for geometry names
-            const getGeometryName = (geometryType) => {
-                const geometryNames = [
-                    'TETRAHEDRON', 'HYPERCUBE', 'SPHERE', 'TORUS',
-                    'KLEIN BOTTLE', 'FRACTAL', 'WAVE', 'CRYSTAL'
-                ];
-                return geometryNames[geometryType] || 'UNKNOWN';
-            };
-            
-            const variationCards = personalGallery.map(variant => {
-                const params = variant.isCustom && variant.customParams ? 
-                    new URLSearchParams({
-                        geometry: variant.customParams.geometry || 0,
-                        density: variant.customParams.density || 1.0,
-                        speed: variant.customParams.speed || 0.5,
-                        chaos: variant.customParams.chaos || 0.0,
-                        morph: variant.customParams.morph || 0.0,
-                        hue: variant.customParams.hue || 0,
-                        saturation: variant.customParams.saturation || 0.8,
-                        intensity: variant.customParams.intensity || 0.5,
-                        autoplay: 'true'
-                    }).toString() :
-                    `variant=${variant.id}&autoplay=true`;
-                
-                return `
-                <div class="variant-card" onclick="openVariation('https://domusgpt.github.io/active-holographic-systems-modular/demo-modular.html?${params}')">
-                    <h3>${variant.name}</h3>
-                    <div class="variant-preview">
-                        <div class="preview-placeholder" style="width: 100%; height: 200px; background: radial-gradient(circle, #1a0033 0%, #000 70%); display: flex; align-items: center; justify-content: center; color: #00ffff; font-size: 0.8rem; text-align: center; border-radius: 10px;">
-                            🌌 ${variant.name}<br>
-                            <small style="color: rgba(0,255,255,0.6); margin-top: 5px;">Click to view live</small>
-                        </div>
-                    </div>
-                    <p><strong>ID:</strong> ${variant.id + 1}</p>
-                    <p><strong>Type:</strong> ${variant.isCustom ? 'Custom' : 'Base'}</p>
-                    <p><strong>Parameters:</strong></p>
-                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); margin: 5px 0;">
-                        Geometry: ${getGeometryName(variant.isCustom ? variant.customParams?.geometry || 0 : Math.floor(variant.id / 4))}<br>
-                        Density: ${variant.density || 1.0} | Speed: ${variant.speed || 0.5}<br>
-                        Chaos: ${variant.chaos || 0.0} | Morph: ${variant.morph || 0.0}
-                    </div>
-                    <div class="variant-tags">
-                        ${variant.tags.map(tag => '<span class="tag">' + tag + '</span>').join('')}
-                    </div>
-                    <div class="click-hint">Click to open fullscreen on GitHub Pages</div>
-                </div>`;
-            }).join('');
-            
-            return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holographic Systems Portfolio Export</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #000;
-            color: #fff;
-            font-family: 'Orbitron', monospace;
-            line-height: 1.6;
-            background: radial-gradient(ellipse at center, #1a0033 0%, #000000 70%);
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #00ffff;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-        }
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .variant-card {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-        .variant-card:hover {
-            border-color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            transform: translateY(-5px);
-        }
-        .variant-card h3 {
-            color: #00ffff;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-        .variant-preview {
-            margin-bottom: 15px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .variant-preview iframe {
-            width: 100%;
-            height: 200px;
-            border: none;
-        }
-        .variant-tags {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .tag {
-            background: rgba(0, 255, 255, 0.2);
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            border: 1px solid rgba(0, 255, 255, 0.4);
-        }
-        .export-info {
-            text-align: center;
-            margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .click-hint {
-            text-align: center;
-            margin-top: 10px;
-            color: rgba(0, 255, 255, 0.6);
-            font-size: 0.7rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .variant-card:hover .click-hint {
-            opacity: 1;
-        }
-    </style>
-</head>
-<body>
-    <h1>🌌 Holographic Systems Portfolio</h1>
-    <div class="export-info">
-        <p>📁 Personal Holographic Gallery</p>
-        <p>Exported: ${new Date().toLocaleString()}</p>
-        <p>Total Saved: ${personalGallery.length} variations</p>
-        <p><a href="https://domusgpt.github.io/active-holographic-systems-modular/" style="color: #00ffff;">Visit Live Portfolio</a></p>
-        <p style="font-size: 0.8rem; margin-top: 10px; color: rgba(255,255,255,0.6);">
-            This is a personal collection saved from the holographic systems portfolio.<br>
-            Each variation can be opened by clicking on it.
-        </p>
-    </div>
-    <div class="portfolio-grid">
-        ${variationCards}
-    </div>
-    
-    <script>
-        function openVariation(url) {
-            window.open(url, '_blank');
-        }
-        
-        // Placeholder functions for any missing references
-        function frameLoaded() {
-            console.log('Frame loaded');
-        }
-    </script>
-</body>
-</html>`;
-        }
     </script>
 </body>
 </html>
